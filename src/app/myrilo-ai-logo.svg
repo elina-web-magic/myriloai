@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="55.296 55.296 401.408 401.408" style="max-height: 500px; background: transparent;" width="401.408" height="401.408">
+  <title>Myrilo AI Logo</title>
+  <defs>
+    <linearGradient gradientUnits="userSpaceOnUse" y2="442" x2="438" y1="66" x1="74" id="aurora">
+      <stop stop-color="#2FFFE2" offset="0"/>
+      <stop stop-color="#38BDF8" offset="0.38"/>
+      <stop stop-color="#8B5CF6" offset="0.72"/>
+      <stop stop-color="#D946EF" offset="1"/>
+    </linearGradient>
+    <linearGradient gradientUnits="userSpaceOnUse" y2="458" x2="452" y1="54" x1="64" id="glass">
+      <stop stop-opacity="0.82" stop-color="#FFFFFF" offset="0"/>
+      <stop stop-opacity="0.22" stop-color="#B6F6FF" offset="0.46"/>
+      <stop stop-opacity="0.18" stop-color="#7C3AED" offset="1"/>
+    </linearGradient>
+    <radialGradient gradientTransform="translate(166 144) rotate(42) scale(196 148)" gradientUnits="userSpaceOnUse" r="1" cy="0" cx="0" id="mintGlow">
+      <stop stop-opacity="0.88" stop-color="#2FFFE2" offset="0"/>
+      <stop stop-opacity="0" stop-color="#2FFFE2" offset="1"/>
+    </radialGradient>
+    <radialGradient gradientTransform="translate(374 374) rotate(-34) scale(188 142)" gradientUnits="userSpaceOnUse" r="1" cy="0" cx="0" id="violetGlow">
+      <stop stop-opacity="0.9" stop-color="#A855F7" offset="0"/>
+      <stop stop-opacity="0" stop-color="#A855F7" offset="1"/>
+    </radialGradient>
+    <filter color-interpolation-filters="sRGB" height="140%" width="140%" y="-20%" x="-20%" id="shadow">
+      <feDropShadow flood-opacity="0.44" flood-color="#060817" stdDeviation="34" dy="28" dx="0"/>
+      <feDropShadow flood-opacity="0.32" flood-color="#38BDF8" stdDeviation="28" dy="0" dx="0"/>
+    </filter>
+    <filter color-interpolation-filters="sRGB" height="260%" width="260%" y="-80%" x="-80%" id="softGlow">
+      <feGaussianBlur result="blur" stdDeviation="8"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="iconClip">
+      <rect rx="108" height="400" width="400" y="56" x="56"/>
+    </clipPath>
+  </defs>
+  
+  <g filter="url(#shadow)">
+    <rect fill-opacity="0.74" fill="url(#glass)" rx="108" height="400" width="400" y="56" x="56"/>
+    <rect stroke-width="4.4" stroke="url(#aurora)" rx="105.8" height="395.6" width="395.6" y="58.2" x="58.2"/>
+  </g>
+  <g clip-path="url(#iconClip)">
+    <circle fill="url(#mintGlow)" r="164" cy="142" cx="164"/>
+    <circle fill="url(#violetGlow)" r="164" cy="376" cx="376"/>
+    <path stroke-linecap="round" stroke-width="44" stroke-opacity="0.12" stroke="#FFFFFF" d="M56 304 C148 236 204 376 288 298 C352 238 392 240 456 194"/>
+    <path stroke-width="1.4" stroke-opacity="0.1" stroke="#FFFFFF" d="M88 90 L426 426"/>
+    <path stroke-width="1.4" stroke-opacity="0.08" stroke="#FFFFFF" d="M108 424 L432 92"/>
+  </g>
+  <g filter="url(#softGlow)">
+    <path stroke-linejoin="round" stroke-linecap="round" stroke-width="38" stroke="url(#aurora)" d="M148 344 V170 C148 144 181 134 196 156 L256 244 L316 156 C331 134 364 144 364 170 V344"/>
+    <path stroke-linejoin="round" stroke-linecap="round" stroke-width="10" stroke-opacity="0.76" stroke="#F4FDFF" d="M178 344 V210 L256 312 L334 210 V344"/>
+    <circle fill="#EAFEFF" r="14" cy="170" cx="148"/>
+    <circle fill="#CFFBFF" r="14" cy="244" cx="256"/>
+    <circle fill="#F6EDFF" r="14" cy="170" cx="364"/>
+    <circle fill="#2FFFE2" r="11" cy="344" cx="148"/>
+    <circle fill="#A855F7" r="11" cy="344" cx="364"/>
+  </g>
+  <path stroke-dasharray="4 18" stroke-linecap="round" stroke-width="6" stroke-opacity="0.58" stroke="#9CEBFF" d="M376 122 C412 154 432 202 432 256 C432 312 408 362 368 394"/>
+  <circle fill="#38BDF8" r="7" cy="174" cx="408"/>
+  <circle fill="#C084FC" r="6" cy="256" cx="430"/>
+  <circle fill="#2FFFE2" r="7" cy="344" cx="398"/>
+</svg>
