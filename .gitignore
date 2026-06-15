@@ -45,3 +45,8 @@ next-env.d.ts
 # custom ignores
 .nvmrc
 docs/
+.lazyweb/
+.vscode/
+.agents/
+.ladle/
+styleguide/
