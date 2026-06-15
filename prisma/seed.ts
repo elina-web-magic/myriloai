@@ -3,7 +3,7 @@ import path from 'node:path'
 import 'dotenv/config'
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
-import { PrismaClient } from '../src/generated/prisma'
+import { PrismaClient } from '@/generated/prisma'
 
 const connectionString = process.env.DATABASE_URL
 const pool = new Pool({ connectionString })
