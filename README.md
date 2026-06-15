@@ -1,17 +1,19 @@
 # Myrilo AI - Prompt Testing Environment
 
-Myrilo AI is a dedicated web application designed for prompt engineering and testing. It allows developers and AI researchers to experiment, evaluate, and optimize their prompts iteratively. The application provides an isolated, retro-styled environment to rigorously test AI interactions, specifically integrated with the Claude API.
+Myrilo AI is a dedicated web application designed for prompt engineering, testing, and evaluation. It allows developers and AI researchers to experiment, chain, evaluate, and optimize their prompts iteratively. The application provides an advanced environment with an LLM-as-a-judge evaluation engine, specifically integrated with the Claude API.
 
 ## Design Aesthetic
 
-The application features a strict **Windows 95 retro aesthetic**. It utilizes classic gray borders, sharp window bevels, and pixelated typography (e.g., `Pixelify Sans` or `MS Sans Serif`) to evoke nostalgia. The `98.css` library powers the core visual components, creating an authentic 90s OS experience.
+The application features a modern **Dual-Theme Cyan-Sky-Violet Aurora** (Aurora Liquid Glass) design. It utilizes high-transparency frosted glass cards, dynamic neon sphere glows, and a sleek triadic gradient palette (Cyan-Mint, Sky, Violet). The UI seamlessly adapts between dark and light themes, powered by Shadcn UI and Tailwind CSS, using crisp modern typography like `Inter` and `JetBrains Mono`.
 
 ## Tech Stack
 
 - **Framework**: Next.js (App Router)
 - **Database**: Vercel Postgres & Prisma ORM
 - **Authentication**: NextAuth.js
-- **Styling**: 98.css & Tailwind CSS
+- **Evaluation Engine**: Inngest (Durable Queues)
+- **Styling**: Shadcn UI & Tailwind CSS
+- **Tooling**: Biome, Knip, Ladle
 
 ## Getting Started
 
@@ -29,5 +31,5 @@ You can start editing the page by modifying `src/app/page.tsx`. The page auto-up
 
 When contributing to this repository, please adhere to Semantic Branching and Conventional Commits.
 
-- **Branch Naming**: Use prefixes like `feat/`, `fix/`, or `chore/` (e.g., `feat/windows-95-ui`).
+- **Branch Naming**: Use prefixes like `feat/`, `fix/`, or `chore/` (e.g., `feat/aurora-ui`).
 - **Commits**: Use the `<type>(<scope>): <message>` format (e.g., `feat(auth): init Prisma schema`).

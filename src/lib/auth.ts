@@ -1,17 +1,18 @@
 import { PrismaAdapter } from '@auth/prisma-adapter'
 import type { NextAuthOptions } from 'next-auth'
 import GithubProvider from 'next-auth/providers/github'
-import { PrismaClient } from '@/generated/prisma'
+import { prisma } from '@/lib/prisma'
 
-const prisma = new PrismaClient()
+if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
+	throw new Error('Missing GITHUB_ID or GITHUB_SECRET environment variables')
+}
 
 export const authOptions: NextAuthOptions = {
-	// biome-ignore lint/suspicious/noExplicitAny: NextAuth v4 adapter type mismatch
-	adapter: PrismaAdapter(prisma) as any,
+	adapter: PrismaAdapter(prisma as never),
 	providers: [
 		GithubProvider({
-			clientId: process.env.GITHUB_ID || 'mock_id',
-			clientSecret: process.env.GITHUB_SECRET || 'mock_secret',
+			clientId: process.env.GITHUB_ID,
+			clientSecret: process.env.GITHUB_SECRET,
 		}),
 	],
 	session: {

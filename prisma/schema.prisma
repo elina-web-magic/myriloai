@@ -1,8 +1,9 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// ═══════════════════════════════════════════════
+// prisma/schema.prisma — Myrilo AI Schema
+// ═══════════════════════════════════════════════
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../src/generated/prisma"
 }
 
@@ -10,19 +11,38 @@ datasource db {
   provider = "postgresql"
 }
 
+// ───────────────────────────────────────────────
+// AUTH MODELS (NextAuth.js)
+// ───────────────────────────────────────────────
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
+
+  projects Project[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
 model Account {
-  id                 String  @id @default(cuid())
-  userId             String
-  type               String
-  provider           String
-  providerAccountId  String
-  refresh_token      String?  @db.Text
-  access_token       String?  @db.Text
-  expires_at         Int?
-  token_type         String?
-  scope              String?
-  id_token           String?  @db.Text
-  session_state      String?
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -37,17 +57,6 @@ model Session {
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  emailVerified DateTime?
-  image         String?
-  accounts      Account[]
-  sessions      Session[]
-  favorites     FavoriteArticle[]
-}
-
 model VerificationToken {
   identifier String
   token      String   @unique
@@ -56,26 +65,206 @@ model VerificationToken {
   @@unique([identifier, token])
 }
 
-model Article {
-  id          String   @id @default(cuid())
-  arxivId     String   @unique
-  title       String
-  abstract    String
-  mermaidData String?
-  publishedAt DateTime
-  
-  favoritedBy FavoriteArticle[]
+// ───────────────────────────────────────────────
+// CORE: PROJECT & ORGANIZATION (MVP Features)
+// ───────────────────────────────────────────────
+
+model Project {
+  id          String  @id @default(cuid())
+  name        String
+  description String? @db.Text
+  userId      String
+  user        User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  datasets    Dataset[]
+  runs        EvaluationRun[]
+  collections PromptCollection[]
+  snippets    PromptSnippet[]
+  chains      PromptChain[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
-model FavoriteArticle {
-  id        String   @id @default(cuid())
-  userId    String
-  articleId String
-  savedAt   DateTime @default(now())
+model PromptCollection {
+  id        String  @id @default(cuid())
+  name      String
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  savedRuns SavedPrompt[]
+}
 
-  @@unique([userId, articleId])
-  @@index([userId])
+model PromptSnippet {
+  id        String  @id @default(cuid())
+  name      String
+  content   String  @db.Text
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
+
+model Category {
+  id   String          @id @default(cuid())
+  name String          @unique
+  runs EvaluationRun[]
+}
+
+// ───────────────────────────────────────────────
+// DATASETS & SCENARIOS
+// ───────────────────────────────────────────────
+
+model Dataset {
+  id        String     @id @default(cuid())
+  name      String
+  projectId String
+  project   Project    @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  scenarios Scenario[]
+}
+
+model Scenario {
+  id              String  @id @default(cuid())
+  name            String
+  taskDescription String  @db.Text
+  promptInputs    Json
+  scoringMetrics  Json
+  datasetId       String
+  dataset         Dataset @relation(fields: [datasetId], references: [id], onDelete: Cascade)
+
+  results EvaluationResult[]
+}
+
+// ───────────────────────────────────────────────
+// EVALUATOR OVERRIDES ("Armor-Piercing")
+// ───────────────────────────────────────────────
+
+model EvaluatorOverride {
+  id          String  @id @default(cuid())
+  name        String
+  instruction String  @db.Text
+  priority    Int     @default(0)
+  isActive    Boolean @default(true)
+
+  runs EvaluationRunOverride[]
+}
+
+model EvaluationRunOverride {
+  runId      String
+  overrideId String
+  run        EvaluationRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  override   EvaluatorOverride @relation(fields: [overrideId], references: [id], onDelete: Cascade)
+
+  @@id([runId, overrideId])
+}
+
+// ───────────────────────────────────────────────
+// PROMPT CHAINING (Configuration & Templates)
+// ───────────────────────────────────────────────
+
+model PromptChain {
+  id          String  @id @default(cuid())
+  name        String
+  description String? @db.Text
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  steps ChainStep[]
+  runs  EvaluationRun[]
+}
+
+model ChainStep {
+  id           String  @id @default(cuid())
+  chainId      String
+  stepOrder    Int
+  stepName     String
+  systemPrompt String? @db.Text
+  userPrompt   String  @db.Text
+  maxTokens    Int     @default(4096)
+  temperature  Float   @default(1.0)
+
+  chain PromptChain @relation(fields: [chainId], references: [id], onDelete: Cascade)
+
+  @@index([chainId])
+}
+
+// ───────────────────────────────────────────────
+// EVALUATION ENGINE (Runs & Results)
+// ───────────────────────────────────────────────
+
+model EvaluationRun {
+  id         String  @id @default(cuid())
+  projectId  String
+  categoryId String?
+  status     String  @default("PENDING")
+
+  promptSnapshot Json
+
+  model String @default("claude-sonnet-4")
+
+  summaryStats   Json?
+  inputTokens    Int?
+  outputTokens   Int?
+  maxTotalTokens Int? // Added for budget enforcement
+
+  chainId String?
+  chain   PromptChain? @relation(fields: [chainId], references: [id], onDelete: SetNull)
+
+  project   Project                 @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  category  Category?               @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  results   EvaluationResult[]
+  overrides EvaluationRunOverride[]
+  savedIn   SavedPrompt[]
+
+  createdAt DateTime @default(now())
+}
+
+model EvaluationResult {
+  id         String @id @default(cuid())
+  runId      String
+  scenarioId String
+
+  rawOutput       String  @db.Text
+  sanitizedOutput String? @db.Text
+
+  totalScore Int
+  scores     Json
+  reasoning  String @db.Text
+
+  run          EvaluationRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
+  scenario     Scenario          @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
+  chainResults ChainStepResult[]
+
+  @@index([runId])
+}
+
+// ───────────────────────────────────────────────
+// PROMPT CHAINING (Saving step-by-step results)
+// ───────────────────────────────────────────────
+
+model ChainStepResult {
+  id                 String @id @default(cuid())
+  evaluationResultId String
+  stepOrder          Int
+  stepName           String
+  rawOutput          String @db.Text
+  inputTokens        Int?
+  outputTokens       Int?
+  executionTimeMs    Int?
+
+  evaluationResult EvaluationResult @relation(fields: [evaluationResultId], references: [id], onDelete: Cascade)
+
+  @@index([evaluationResultId])
+}
+
+// ───────────────────────────────────────────────
+// JUNCTION TABLE: Saved Prompts (MVP-6)
+// ───────────────────────────────────────────────
+
+model SavedPrompt {
+  collectionId String
+  runId        String
+
+  collection PromptCollection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  run        EvaluationRun    @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@id([collectionId, runId])
 }
