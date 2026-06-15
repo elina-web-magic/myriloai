@@ -22,9 +22,6 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Approve build scripts
-        run: pnpm approve-builds
-
       - name: Install dependencies
         run: pnpm install
 
