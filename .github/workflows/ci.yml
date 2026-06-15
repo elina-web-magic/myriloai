@@ -22,11 +22,11 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Install dependencies
-        run: pnpm install
-
       - name: Approve build scripts
         run: pnpm approve-builds
+
+      - name: Install dependencies
+        run: pnpm install
 
       - name: Run Biome (Linter & Formatter)
         run: pnpm biome ci .
