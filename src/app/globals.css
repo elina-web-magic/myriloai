@@ -1,6 +1,5 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+@plugin "tailwindcss-animate";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -240,8 +239,7 @@
 	--glass-blur: blur(12px) saturate(180%);
 	--shadow-1: 0 1px 2px rgba(4, 120, 87, 0.1);
 	--shadow-2: 0 4px 12px rgba(4, 120, 87, 0.15);
-	--shadow-3:
-		0 20px 40px rgba(0, 0, 0, 0.05), inset 1px 1px 20px rgba(167, 243, 208, 0.4);
+	--shadow-3: 0 20px 40px rgba(0, 0, 0, 0.05), inset 1px 1px 20px rgba(167, 243, 208, 0.4);
 
 	--background: #f8fafc;
 	--foreground: var(--ink);
@@ -389,12 +387,7 @@ body {
 }
 [data-theme="dark"] body {
 	background:
-		linear-gradient(
-			135deg,
-			rgba(15, 23, 42, 0.5) 0%,
-			rgba(15, 23, 42, 0.2) 100%
-		),
-		#020617;
+		linear-gradient(135deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.2) 100%), #020617;
 }
 
 body::before,
@@ -544,7 +537,6 @@ img {
 		border-bottom: 1px solid var(--line);
 	}
 	.nav a {
-		display: inline-block;
 		margin-right: var(--sp-3);
 	}
 	.main {
@@ -575,7 +567,6 @@ img {
 	background: linear-gradient(135deg, #047857, #5b21b6);
 	-webkit-background-clip: text;
 	-webkit-text-fill-color: transparent;
-	display: inline-block;
 	filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 [data-theme="dark"] .hero h1,
@@ -945,8 +936,7 @@ td code {
 	color: var(--ink);
 	width: 100%;
 	border: 1px solid transparent;
-	background-image:
-		linear-gradient(var(--surface-2), var(--surface-2)), var(--accent-gradient);
+	background-image: linear-gradient(var(--surface-2), var(--surface-2)), var(--accent-gradient);
 	background-origin: border-box;
 	background-clip: padding-box, border-box;
 	transition: all 0.3s ease;
@@ -957,13 +947,11 @@ td code {
 }
 .input.err {
 	background-image:
-		linear-gradient(var(--surface-2), var(--surface-2)),
-		linear-gradient(135deg, #ef4444, #7f1d1d);
+		linear-gradient(var(--surface-2), var(--surface-2)), linear-gradient(135deg, #ef4444, #7f1d1d);
 }
 .input.ok {
 	background-image:
-		linear-gradient(var(--surface-2), var(--surface-2)),
-		linear-gradient(135deg, #10b981, #047857);
+		linear-gradient(var(--surface-2), var(--surface-2)), linear-gradient(135deg, #10b981, #047857);
 }
 .input:disabled {
 	color: var(--ink-4);
@@ -1134,7 +1122,6 @@ td code {
 	width: 9px;
 	height: 9px;
 	border-radius: 50%;
-	display: inline-block;
 }
 .avatar {
 	width: 36px;
@@ -1211,7 +1198,6 @@ td code {
 }
 .tooltip {
 	position: relative;
-	display: inline-block;
 }
 .tooltip .tip {
 	background: linear-gradient(135deg, #020617, #1e293b);
@@ -1432,14 +1418,19 @@ table.tbl tr:hover td {
 	font-family: var(--font-display);
 	font-weight: 700;
 	font-size: 44px;
-	line-height: 1;
+	line-height: 1.15;
 	letter-spacing: -0.02em;
+	padding-bottom: 0.1em;
+	margin-bottom: -0.1em;
 }
 .t-h2 {
 	font-family: var(--font-display);
 	font-weight: 600;
 	font-size: 34px;
+	line-height: 1.2;
 	letter-spacing: -0.01em;
+	padding-bottom: 0.1em;
+	margin-bottom: -0.1em;
 }
 .t-h3 {
 	font-family: var(--font-display);
@@ -1642,8 +1633,7 @@ footer {
 	--glass-blur: blur(12px) saturate(180%);
 	--shadow-1: 0 1px 2px rgba(4, 120, 87, 0.1);
 	--shadow-2: 0 4px 12px rgba(4, 120, 87, 0.15);
-	--shadow-3:
-		0 20px 40px rgba(0, 0, 0, 0.05), inset 1px 1px 20px rgba(167, 243, 208, 0.4);
+	--shadow-3: 0 20px 40px rgba(0, 0, 0, 0.05), inset 1px 1px 20px rgba(167, 243, 208, 0.4);
 
 	--font-display: "Outfit", system-ui, sans-serif;
 	--font-body: "Outfit", system-ui, sans-serif;
@@ -1661,4 +1651,123 @@ footer {
 	--sp-6: 32px;
 	--sp-7: 48px;
 	--sp-8: 64px;
+}
+
+[data-theme="dark"] {
+	--paper: #020617;
+	--ink: #ffffff;
+	--ink-2: #f1f5f9;
+	--ink-3: #cbd5e1;
+	--ink-4: #94a3b8;
+	--surface: rgba(15, 23, 42, 0.5);
+	--surface-2: rgba(255, 255, 255, 0.1);
+	--line: rgba(255, 255, 255, 0.2);
+	--line-strong: rgba(255, 255, 255, 0.35);
+	--orb-opacity: 0.35;
+	--accent: #34d399;
+	--accent-press: #6ee7b7;
+	--accent-gradient: linear-gradient(135deg, #059669, #4c1d95);
+	--accent-soft: rgba(52, 211, 153, 0.15);
+	--success: #5bd98c;
+	--success-soft: rgba(91, 217, 140, 0.15);
+	--warning: #e8b765;
+	--warning-soft: rgba(232, 183, 101, 0.15);
+	--error: #f08585;
+	--error-soft: rgba(240, 133, 133, 0.15);
+	--info: #7ba9fb;
+	--info-soft: rgba(123, 169, 251, 0.15);
+}
+
+body {
+	background: var(--paper);
+}
+
+.meta {
+	font-family: var(--font-mono);
+	font-size: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.05em;
+	color: var(--ink-4);
+	font-weight: 600;
+}
+
+.lead {
+	font-size: 18px;
+	color: var(--ink-2);
+	line-height: 1.5;
+}
+
+.card,
+.cell,
+.elev > div {
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 100%);
+	border: 1px solid rgba(255, 255, 255, 0.8);
+	box-shadow:
+		inset 0 2px 6px rgba(255, 255, 255, 1),
+		0 12px 32px rgba(0, 0, 0, 0.05);
+	backdrop-filter: blur(24px) saturate(200%);
+	-webkit-backdrop-filter: blur(24px) saturate(200%);
+	border-radius: var(--radius);
+}
+
+[data-theme="dark"] .card,
+[data-theme="dark"] .cell,
+[data-theme="dark"] .elev > div {
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+	border: 1px solid rgba(255, 255, 255, 0.2);
+	box-shadow:
+		inset 0 2px 4px rgba(255, 255, 255, 0.05),
+		0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.text-gradient-accent {
+	background-image: var(--accent-gradient);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	padding-bottom: 0.1em;
+	margin-bottom: -0.1em;
+}
+.text-gradient-1 {
+	background-image: linear-gradient(135deg, #34d399, #a78bfa);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	padding-bottom: 0.1em;
+	margin-bottom: -0.1em;
+}
+.text-gradient-2 {
+	background-image: linear-gradient(135deg, #047857, #5b21b6);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+	-webkit-text-fill-color: transparent;
+	padding-bottom: 0.1em;
+	margin-bottom: -0.1em;
+}
+
+[data-theme="light"] {
+	/* Deepen pastel background to reduce white washout */
+	--paper: linear-gradient(135deg, #c4b5fd 0%, #6ee7b7 100%);
+	/* Increase surface opacity and blur for stronger liquid glass effect */
+	--surface: rgba(255, 255, 255, 0.5);
+	--surface-2: rgba(255, 255, 255, 0.7);
+	--glass-blur: blur(24px) saturate(200%);
+	--line: rgba(255, 255, 255, 0.8);
+	--line-strong: rgba(255, 255, 255, 1);
+}
+
+[data-theme="light"] .card,
+[data-theme="light"] .cell,
+[data-theme="light"] .elev > div {
+	background: linear-gradient(135deg, rgba(255, 255, 255, 0.7) 0%, rgba(255, 255, 255, 0.3) 100%);
+	border: 1px solid rgba(255, 255, 255, 0.8);
+	box-shadow:
+		inset 0 2px 6px rgba(255, 255, 255, 1),
+		0 12px 32px rgba(0, 0, 0, 0.05);
+	backdrop-filter: blur(24px) saturate(200%);
+	-webkit-backdrop-filter: blur(24px) saturate(200%);
+	border-radius: var(--radius);
 }

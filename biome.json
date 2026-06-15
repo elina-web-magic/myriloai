@@ -1,29 +1,106 @@
 {
-  "css": {
-    "parser": {
-      "tailwindDirectives": true
-    }
-  },
-  "linter": {
-    "rules": {
-      "suspicious": {
-        "noUnknownAtRules": {
-          "level": "off",
-          "options": {
-            "ignore": [
-              "theme",
-              "tailwind",
-              "apply",
-              "layer",
-              "custom-variant",
-              "config",
-              "source",
-              "utility",
-              "plugin"
-            ]
-          }
-        }
-      }
-    }
-  }
+	"$schema": "https://biomejs.dev/schemas/2.5.0/schema.json",
+	"vcs": {
+		"enabled": true,
+		"clientKind": "git",
+		"useIgnoreFile": true
+	},
+	"files": {
+		"ignoreUnknown": false,
+		"includes": ["**", "!components/ui"]
+	},
+	"formatter": {
+		"enabled": true,
+		"indentStyle": "tab",
+		"indentWidth": 2,
+		"lineWidth": 100
+	},
+	"assist": {
+		"actions": {
+			"source": {
+				"organizeImports": "on"
+			}
+		}
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"preset": "recommended",
+			"a11y": {
+				"preset": "recommended",
+				"noSvgWithoutTitle": "error"
+			},
+			"complexity": {
+				"noForEach": "error",
+				"useArrowFunction": "error"
+			},
+			"style": {
+				"noDescendingSpecificity": "off"
+			},
+			"suspicious": {
+				"noConsole": "warn",
+				"noEmptyBlock": "error",
+				"noExplicitAny": "error"
+			}
+		}
+	},
+	"css": {
+		"parser": {
+			"cssModules": true,
+			"tailwindDirectives": true
+		}
+	},
+	"javascript": {
+		"formatter": {
+			"indentStyle": "tab",
+			"indentWidth": 2,
+			"quoteStyle": "single",
+			"semicolons": "asNeeded",
+			"trailingCommas": "es5"
+		}
+	},
+	"overrides": [
+		{
+			"includes": ["**/*.stories.tsx"],
+			"linter": {
+				"rules": {
+					"a11y": {
+						"noSvgWithoutTitle": "off",
+						"noLabelWithoutControl": "off",
+						"useValidAnchor": "off",
+						"useButtonType": "off"
+					},
+					"security": {
+						"noDangerouslySetInnerHtml": "off"
+					}
+				}
+			}
+		},
+		{
+			"includes": ["**/*.test.ts", "**/*.spec.ts"],
+			"linter": {
+				"enabled": true,
+				"rules": {
+					"preset": "recommended",
+					"correctness": {
+						"noUnusedVariables": "off",
+						"noUnusedFunctionParameters": "off"
+					},
+					"a11y": {
+						"preset": "recommended",
+						"noSvgWithoutTitle": "error"
+					},
+					"complexity": {
+						"noForEach": "error",
+						"useArrowFunction": "error"
+					},
+					"suspicious": {
+						"noConsole": "warn",
+						"noEmptyBlock": "error",
+						"noExplicitAny": "error"
+					}
+				}
+			}
+		}
+	]
 }
