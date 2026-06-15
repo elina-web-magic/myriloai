@@ -1,5 +1,4 @@
 {
 	"$schema": "https://unpkg.com/knip@5/schema.json",
-	"entry": ["src/components/ui/**/*.tsx"],
-	"ignoreDependencies": ["shadcn", "@/generated/prisma"]
+	"entry": ["src/components/ui/**/*.tsx"]
 }
