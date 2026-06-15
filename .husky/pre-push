@@ -1,0 +1,3 @@
+pnpm biome ci .
+pnpm knip
+pnpm tsc --noEmit
