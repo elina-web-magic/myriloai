@@ -9,6 +9,8 @@
 		"lint": "eslint",
 		"biome:fix": "biome check --write .",
 		"biome:check": "biome check .",
+		"ci:local": "act -j build-and-test",
+		"ci:push": "act push",
 		"knip": "knip",
 		"prepare": "husky"
 	},
