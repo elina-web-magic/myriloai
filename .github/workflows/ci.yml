@@ -22,9 +22,6 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
-      - name: Configure pnpm
-        run: pnpm config set auto-install-peers true && pnpm config set build-types allow
-
       - name: Install dependencies
         run: pnpm install
 
