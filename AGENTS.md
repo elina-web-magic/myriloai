@@ -66,6 +66,7 @@ Design system: Aurora Glass (Cyan, Sky, Violet, glassmorphism cards, light/dark 
   11. `Force push after amend? (command: git push --force-with-lease)`
   — *Pull Request:*
   12. `Generate a Markdown description and Title for a PR in English?`
+- **Logical Footer Presentation:** Reorder or visually separate the footer options based on the logical next step. For example, if the last action was a commit amend (8), propose force push (11) as the primary immediate next option, adding space before listing the other options. If the last action was a commit (7), propose push (10) or PR generation (12), etc.
 - **Next Step Semantics:** In footer item 5, always reference the **next planned step after the last fully completed accepted task in the agreed execution order**. Item 5 must not point to the skipped task from item 4 unless that skipped task is also the actual next task after the latest completed one.
 - **Branch Naming:** Use prefixes `feat/`, `fix/`, or `chore/` followed by a short kebab-case scope (e.g., `feat/aurora-ui`, `fix/prisma-import`, `chore/ladle-config`). Always branch off from `main` unless otherwise agreed.
 - **Commits:** Use the Conventional Commits format `<type>(<scope>): <message>` (e.g., `feat(ui): add Dialog primitive`, `chore(ladle): add config and scripts`). Keep messages in English, imperative mood, ≤72 chars.
