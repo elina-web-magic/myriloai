@@ -1,4 +1,4 @@
-import type { Story } from '@ladle/react'
+import type { Story } from '@ladle/react';
 
 export const Section01: Story = () => {
 	return (
@@ -60,10 +60,10 @@ export const Section01: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section01.storyName = '01 Foundations & design tokens'
+Section01.storyName = '01 Foundations & design tokens';
 
 export const Section02: Story = () => {
 	return (
@@ -239,10 +239,10 @@ export const Section02: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section02.storyName = '02 Color'
+Section02.storyName = '02 Color';
 
 export const Section03: Story = () => {
 	return (
@@ -422,10 +422,10 @@ export const Section03: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section03.storyName = '03 Typography'
+Section03.storyName = '03 Typography';
 
 export const Section04: Story = () => {
 	return (
@@ -502,10 +502,10 @@ export const Section04: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section04.storyName = '04 Spacing & layout'
+Section04.storyName = '04 Spacing & layout';
 
 export const Section05: Story = () => {
 	return (
@@ -548,10 +548,10 @@ export const Section05: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section05.storyName = '05 Elevation & radius'
+Section05.storyName = '05 Elevation & radius';
 
 export const Section06: Story = () => {
 	return (
@@ -633,10 +633,10 @@ export const Section06: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section06.storyName = '06 Iconography'
+Section06.storyName = '06 Iconography';
 
 export const Section07: Story = () => {
 	return (
@@ -744,10 +744,10 @@ export const Section07: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section07.storyName = '07 Buttons'
+Section07.storyName = '07 Buttons';
 
 export const Section08: Story = () => {
 	return (
@@ -876,10 +876,10 @@ export const Section08: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section08.storyName = '08 Form controls'
+Section08.storyName = '08 Form controls';
 
 export const Section09: Story = () => {
 	return (
@@ -1021,10 +1021,10 @@ export const Section09: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section09.storyName = '09 Indicators & status'
+Section09.storyName = '09 Indicators & status';
 
 export const Section10: Story = () => {
 	return (
@@ -1234,10 +1234,10 @@ export const Section10: Story = () => {
 				</ul>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section10.storyName = '10 Components (molecules)'
+Section10.storyName = '10 Components (molecules)';
 
 export const Section11: Story = () => {
 	return (
@@ -1340,10 +1340,10 @@ export const Section11: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section11.storyName = '11 Patterns & organisms'
+Section11.storyName = '11 Patterns & organisms';
 
 export const Section12: Story = () => {
 	return (
@@ -1482,10 +1482,10 @@ export const Section12: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section12.storyName = '12 Data display'
+Section12.storyName = '12 Data display';
 
 export const Section13: Story = () => {
 	return (
@@ -1608,10 +1608,10 @@ export const Section13: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section13.storyName = '13 Feedback & states'
+Section13.storyName = '13 Feedback & states';
 
 export const Section14: Story = () => {
 	return (
@@ -1754,10 +1754,10 @@ export const Section14: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section14.storyName = '14 Navigation'
+Section14.storyName = '14 Navigation';
 
 export const Section15: Story = () => {
 	return (
@@ -1845,10 +1845,10 @@ export const Section15: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section15.storyName = '15 Motion & interaction'
+Section15.storyName = '15 Motion & interaction';
 
 export const Section16: Story = () => {
 	return (
@@ -1959,10 +1959,10 @@ export const Section16: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section16.storyName = '16 Imagery & media'
+Section16.storyName = '16 Imagery & media';
 
 export const Section17: Story = () => {
 	return (
@@ -2080,10 +2080,10 @@ export const Section17: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section17.storyName = '17 Accessibility'
+Section17.storyName = '17 Accessibility';
 
 export const Section18: Story = () => {
 	return (
@@ -2191,10 +2191,10 @@ export const Section18: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section18.storyName = '18 Diagrams'
+Section18.storyName = '18 Diagrams';
 
 export const Section19: Story = () => {
 	return (
@@ -2246,10 +2246,10 @@ export const Section19: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section19.storyName = '19 Content & voice'
+Section19.storyName = '19 Content & voice';
 
 export const Section20: Story = () => {
 	return (
@@ -2313,31 +2313,31 @@ export const Section20: Story = () => {
 				</div>
 			</section>
 		</main>
-	)
-}
+	);
+};
 
-Section20.storyName = '20 Brand foundations'
+Section20.storyName = '20 Brand foundations';
 
-Section01.storyName = '01 Foundations & design tokens'
-Section02.storyName = '02 Color'
-Section03.storyName = '03 Typography'
-Section04.storyName = '04 Spacing & layout'
-Section05.storyName = '05 Elevation & radius'
-Section06.storyName = '06 Iconography'
-Section07.storyName = '07 Buttons'
-Section08.storyName = '08 Form controls'
-Section09.storyName = '09 Indicators & status'
-Section10.storyName = '10 Components (molecules)'
-Section11.storyName = '11 Patterns & organisms'
-Section12.storyName = '12 Data display'
-Section13.storyName = '13 Feedback & states'
-Section14.storyName = '14 Navigation'
-Section15.storyName = '15 Motion & interaction'
-Section16.storyName = '16 Imagery & media'
-Section17.storyName = '17 Accessibility'
-Section18.storyName = '18 Diagrams'
-Section19.storyName = '19 Content & voice'
-Section20.storyName = '20 Brand foundations'
+Section01.storyName = '01 Foundations & design tokens';
+Section02.storyName = '02 Color';
+Section03.storyName = '03 Typography';
+Section04.storyName = '04 Spacing & layout';
+Section05.storyName = '05 Elevation & radius';
+Section06.storyName = '06 Iconography';
+Section07.storyName = '07 Buttons';
+Section08.storyName = '08 Form controls';
+Section09.storyName = '09 Indicators & status';
+Section10.storyName = '10 Components (molecules)';
+Section11.storyName = '11 Patterns & organisms';
+Section12.storyName = '12 Data display';
+Section13.storyName = '13 Feedback & states';
+Section14.storyName = '14 Navigation';
+Section15.storyName = '15 Motion & interaction';
+Section16.storyName = '16 Imagery & media';
+Section17.storyName = '17 Accessibility';
+Section18.storyName = '18 Diagrams';
+Section19.storyName = '19 Content & voice';
+Section20.storyName = '20 Brand foundations';
 
 const meta = {
 	decorators: [
@@ -2481,6 +2481,6 @@ const meta = {
 			</>
 		),
 	],
-}
+};
 
-export default meta
+export default meta;

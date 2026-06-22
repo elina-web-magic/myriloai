@@ -1,10 +1,10 @@
-import { PrismaAdapter } from '@auth/prisma-adapter'
-import type { NextAuthOptions } from 'next-auth'
-import GithubProvider from 'next-auth/providers/github'
-import { prisma } from '@/lib/prisma'
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import type { NextAuthOptions } from 'next-auth';
+import GithubProvider from 'next-auth/providers/github';
+import { prisma } from '@/lib/prisma';
 
 if (!process.env.GITHUB_ID || !process.env.GITHUB_SECRET) {
-	throw new Error('Missing GITHUB_ID or GITHUB_SECRET environment variables')
+	throw new Error('Missing GITHUB_ID or GITHUB_SECRET environment variables');
 }
 
 export const authOptions: NextAuthOptions = {
@@ -21,9 +21,9 @@ export const authOptions: NextAuthOptions = {
 	callbacks: {
 		async session({ session, token }) {
 			if (session.user && token.sub) {
-				;(session.user as { id?: string | null }).id = token.sub
+				(session.user as { id?: string | null }).id = token.sub;
 			}
-			return session
+			return session;
 		},
 	},
-}
+};
