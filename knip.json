@@ -1,5 +1,6 @@
 {
 	"$schema": "https://unpkg.com/knip@5/schema.json",
 	"entry": ["src/components/ui/**/*.tsx"],
-	"ignoreBinaries": ["act"]
+	"ignoreBinaries": ["act"],
+	"ignoreDependencies": ["@prisma/client-runtime-utils"]
 }
