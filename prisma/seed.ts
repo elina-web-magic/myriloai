@@ -1,15 +1,15 @@
-import fs from 'node:fs'
-import path from 'node:path'
-import 'dotenv/config'
-import { PrismaPg } from '@prisma/adapter-pg'
-import { Pool } from 'pg'
-import { PrismaClient } from '@/generated/prisma'
+import fs from 'node:fs';
+import path from 'node:path';
+import 'dotenv/config';
+import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
+import { PrismaClient } from '@/generated/prisma';
 
-const connectionString = process.env.DATABASE_URL
-const pool = new Pool({ connectionString })
-const adapter = new PrismaPg(pool)
+const connectionString = process.env.DATABASE_URL;
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
 
-const prisma = new PrismaClient({ adapter })
+const prisma = new PrismaClient({ adapter });
 
 async function main() {
 	// 1. Ensure user exists
@@ -20,7 +20,7 @@ async function main() {
 			name: 'Myrilo Developer',
 			email: 'dev@myrilo.ai',
 		},
-	})
+	});
 
 	// 2. Ensure project exists
 	const project = await prisma.project.create({
@@ -29,7 +29,7 @@ async function main() {
 			description: 'Main workspace for prompt engineering',
 			userId: user.id,
 		},
-	})
+	});
 
 	// 3. Seed Categories
 	const categories = [
@@ -41,13 +41,13 @@ async function main() {
 		'Technical Writing',
 		'Mathematics',
 		'General',
-	]
+	];
 	for (const name of categories) {
 		await prisma.category.upsert({
 			where: { name },
 			update: {},
 			create: { name },
-		})
+		});
 	}
 
 	// 4. Seed Prompt Snippets
@@ -71,20 +71,20 @@ async function main() {
 					'Act as a senior distinguished engineer with deep expertise in system architecture, performance optimization, and scalable design.',
 			},
 		],
-	})
+	});
 
 	// 5. Seed Dataset & Scenarios
 	type ScenarioItem = {
-		scenario: string
-		task_description: string
-		prompt_inputs: Record<string, string>
-		solution_criteria: string[]
-	}
+		scenario: string;
+		task_description: string;
+		prompt_inputs: Record<string, string>;
+		solution_criteria: string[];
+	};
 
-	const datasetPath = path.join(process.cwd(), 'evaluation-scripts', 'dataset_ailens.json')
+	const datasetPath = path.join(process.cwd(), 'evaluation-scripts', 'dataset_ailens.json');
 	if (fs.existsSync(datasetPath)) {
-		const rawData = fs.readFileSync(datasetPath, 'utf8')
-		const scenarios = JSON.parse(rawData) as ScenarioItem[]
+		const rawData = fs.readFileSync(datasetPath, 'utf8');
+		const scenarios = JSON.parse(rawData) as ScenarioItem[];
 
 		await prisma.dataset.create({
 			data: {
@@ -99,15 +99,15 @@ async function main() {
 					})),
 				},
 			},
-		})
+		});
 	} else {
 	}
 }
 
 main()
 	.catch((_e) => {
-		process.exit(1)
+		process.exit(1);
 	})
 	.finally(async () => {
-		await prisma.$disconnect()
-	})
+		await prisma.$disconnect();
+	});

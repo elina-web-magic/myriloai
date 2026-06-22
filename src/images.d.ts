@@ -1,13 +1,13 @@
 declare module '*.svg' {
-	import { StaticImageData } from 'next/image'
+	import { StaticImageData } from 'next/image';
 
-	const content: StaticImageData
-	export default content
+	const content: StaticImageData;
+	export default content;
 }
 
 declare module '*.png' {
-	import { StaticImageData } from 'next/image'
+	import { StaticImageData } from 'next/image';
 
-	const content: StaticImageData
-	export default content
+	const content: StaticImageData;
+	export default content;
 }

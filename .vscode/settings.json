@@ -19,8 +19,8 @@
 		"typescript",
 		"typescriptreact"
 	],
-	"javascript.format.semicolons": "remove",
-	"typescript.format.semicolons": "remove",
+	"javascript.format.semicolons": "insert",
+	"typescript.format.semicolons": "insert",
 	"[javascript]": {
 		"editor.defaultFormatter": "biomejs.biome"
 	},

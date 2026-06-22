@@ -1,63 +1,63 @@
-import * as React from 'react'
-import { cn } from '@/lib/utils'
+import * as React from 'react';
+import { cn } from '@/lib/utils';
 
 const GlassCard = React.forwardRef<
 	HTMLDivElement,
 	React.HTMLAttributes<HTMLDivElement> & {
-		interactive?: boolean
+		interactive?: boolean;
 	}
 >(({ className, interactive, ...props }, ref) => {
 	return (
 		<div
 			ref={ref}
 			className={cn(
-				'card',
+				'rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)]',
 				interactive &&
 					'transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-[0_25px_50px_rgba(0,0,0,0.25)] hover:border-[var(--accent)]',
 				className
 			)}
 			{...props}
 		/>
-	)
-})
-GlassCard.displayName = 'GlassCard'
+	);
+});
+GlassCard.displayName = 'GlassCard';
 
 const GlassCardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
 	({ className, ...props }, ref) => (
 		<div ref={ref} className={cn('flex flex-col space-y-1.5 p-6', className)} {...props} />
 	)
-)
-GlassCardHeader.displayName = 'GlassCardHeader'
+);
+GlassCardHeader.displayName = 'GlassCardHeader';
 
 const GlassCardTitle = React.forwardRef<
 	HTMLParagraphElement,
 	React.HTMLAttributes<HTMLHeadingElement>
 >(({ className, ...props }, ref) => (
 	<h3 ref={ref} className={cn('t-h3 text-gradient-accent', className)} {...props} />
-))
-GlassCardTitle.displayName = 'GlassCardTitle'
+));
+GlassCardTitle.displayName = 'GlassCardTitle';
 
 const GlassCardDescription = React.forwardRef<
 	HTMLParagraphElement,
 	React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
 	<p ref={ref} className={cn('t-small', className)} style={{ color: 'var(--ink-3)' }} {...props} />
-))
-GlassCardDescription.displayName = 'GlassCardDescription'
+));
+GlassCardDescription.displayName = 'GlassCardDescription';
 
 const GlassCardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
 	({ className, ...props }, ref) => (
 		<div ref={ref} className={cn('p-6 pt-0', className)} {...props} />
 	)
-)
-GlassCardContent.displayName = 'GlassCardContent'
+);
+GlassCardContent.displayName = 'GlassCardContent';
 
 const GlassCardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
 	({ className, ...props }, ref) => (
 		<div ref={ref} className={cn('flex items-center p-6 pt-0', className)} {...props} />
 	)
-)
-GlassCardFooter.displayName = 'GlassCardFooter'
+);
+GlassCardFooter.displayName = 'GlassCardFooter';
 
 export {
 	GlassCard,
@@ -66,4 +66,4 @@ export {
 	GlassCardFooter,
 	GlassCardHeader,
 	GlassCardTitle,
-}
+};
