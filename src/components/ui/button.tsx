@@ -17,7 +17,7 @@ const buttonVariants = cva(
 				ghost:
 					'border border-transparent bg-transparent text-[var(--ink-2)] shadow-none hover:bg-[var(--surface-2)]',
 				destructive:
-					'bg-[image:linear-gradient(135deg,#ef4444,#7f1d1d)] text-white border border-white/20 shadow-[0_4px_12px_rgba(239,68,68,0.3)] hover:-translate-y-0.5 hover:shadow-[0_8px_16px_rgba(239,68,68,0.4)]',
+					'border border-[var(--error)] bg-[var(--error-soft)] text-[var(--error)] shadow-[var(--shadow-1)] [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)] hover:-translate-y-0.5 hover:border-[var(--error)] hover:bg-[var(--error-soft)] hover:shadow-[var(--shadow-2)]',
 				link: 'bg-transparent p-0 text-[var(--accent)] underline-offset-4 shadow-none hover:underline',
 			},
 			size: {

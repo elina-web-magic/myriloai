@@ -13,7 +13,7 @@ const GlassCard = React.forwardRef<
 			className={cn(
 				'rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)]',
 				interactive &&
-					'transition-all duration-300 cursor-pointer hover:-translate-y-1 hover:shadow-[0_25px_50px_rgba(0,0,0,0.25)] hover:border-[var(--accent)]',
+					'cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent)] hover:bg-[var(--surface-hover)] hover:shadow-[var(--shadow-interactive)]',
 				className
 			)}
 			{...props}

@@ -47,6 +47,8 @@ next-env.d.ts
 .lazyweb/
 .agents/
 .ladle/
+.ladle-build/
 docs/
 .artifacts/
 .vscode/
+.ladle-build
