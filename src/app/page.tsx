@@ -3,6 +3,7 @@ import { ResultsDashboard } from '@/components/dashboard/ResultsDashboard';
 import { HeaderBar } from '@/components/shell/HeaderBar';
 import { PromptInputZone } from '@/components/shell/PromptInputZone';
 import type { JsonValue } from '@/generated/prisma/runtime/client';
+import { getDashboardMockState } from '@/lib/dev/static-registry';
 import { prisma } from '@/lib/prisma';
 import fallbackData from '../data/output.json';
 
@@ -46,6 +47,10 @@ function getStringArray(value: JsonValue): string[] {
 }
 
 async function getDashboardReportData(): Promise<DashboardDataState> {
+	if (process.env.NODE_ENV === 'development') {
+		return getDashboardMockState();
+	}
+
 	const latestRun = await prisma.evaluationRun.findFirst({
 		orderBy: { createdAt: 'desc' },
 		include: {

@@ -5,6 +5,20 @@
 Myrilo AI is an Agentic LLM Evaluation Platform (LLM-as-a-Judge) designed for rapid iteration and testing of prompts against datasets.
 Design system: Aurora Glass (Cyan, Sky, Violet, glassmorphism cards, light/dark mode support).
 
+**Strategic Context:**
+This is not an academic exercise, but a production-grade enterprise software proof-of-concept.
+
+- **Goal:** Demonstrate local problem-solving for generative AI operational data leakages and alignment errors in regulated fields.
+- **Execution:** Prove the localized application directly on-device using zero-cost offline mock environments, eliminating risk.
+- **Career Positioning:** Position as a Fullstack Product Multiplier.
+
+**Technical Trust Boundaries:**
+
+- **Prompt vs. Request Ingestion:** Use client-side linting to catch external markers.
+- **Silent Evaluation Failures:** Strict LLM-as-a-Judge framework with definitive domain context and rigid evaluation rubrics.
+- **API Schema Drift:** Enforce strict API boundary filtering using Zod schema runtime validation.
+- **Financial Overhead:** Zero-cost local inference (Ollama) and mock file systems for sandboxed development with client-side token ceilings.
+
 ## 2. Tech Stack
 
 - **Framework:** Next.js 16 (App Router) + React 19
@@ -39,40 +53,74 @@ Design system: Aurora Glass (Cyan, Sky, Violet, glassmorphism cards, light/dark 
 - **Iterative execution:** NEVER write an entire phase at once. Break work into micro-steps.
 - **Documentation:** Always consult `implementation_plan.md` and `task.md` before making architectural decisions.
 - **Tracking:** Remind the user to update `task.md` when a step is fully complete.
-- **Task Completion Tracking:** When a concrete task/checkbox is fully completed, immediately update the corresponding checkbox in `TASK.md` to `[x]`.
-- **Nano-Task Tracking:** Every implementation action completed in a single output must also be represented in `TASK.md` as its own child checkbox with an extended number, for example `1.1.d.1`, `1.1.d.2`, `4.0.k.1`.
+- **Task Completion Tracking:** When a concrete task/checkbox is fully completed, immediately update the corresponding status in `TASK.md` to `✅`.
+- **Nano-Task Tracking:** Every implementation action completed in a single output must also be represented in `TASK.md` as its own child nested list item, following the numbered hierarchy (e.g., `1.`, `2.`).
 - **Progress Output Format:** After each completed micro-step, report the **step number**, **step title**, **phase**, and a short explanation of changes **for each touched file**, not just a file list.
 - **Progress Header:** In every substantive progress output, include a header in this structure:
   - `Phase: <phase title>`
   - `Step: <step title>`
-  - `Task: <task checkbox number>. <task title>`
+  - `Task: <Task Number>. <task title>`
   Use the numbering and titles from `TASK.md` / `docs/IMPLEMENTATION_PLAN.md`, not an ad hoc sequential "Step 16" style label.
-- **Progress Footer:** In every substantive progress output, end with this 12-point footer format:
+- **Progress Footer:** In every substantive progress output, end with this 12-point footer format using unique IDs instead of sequential numbers:
   — *Execution Questions:*
-  1. `Are there any questions regarding the implementation?`
-  2. `Are there any remarks or feedback?`
-  3. `Are there any theoretical questions?`
+  - [E1] `Are there any questions regarding the implementation?`
+  - [E2] `Are there any remarks or feedback?`
+  - [E3] `Are there any theoretical questions?`
   — *Plan Navigation:*
-  4. `Should we return to a skipped step - <part number> <sub-step number> <step_number> <title>?`
-  5. `Should we move to the next step <next_part_number> <next_sub-step_number> <step_number> <title>?`
+  - [N1] `Should we return to a skipped step - Phase <X> --> <Y> --> <Z>. <title>?`
+  - [N2] `Should we move to the next step - Phase <X> --> <Y> --> <Z>. <title>?`
   — *Git — Branch:*
-  6. `Create a new branch for the completed tasks and switch to it? (format: feat/<scope>, fix/<scope>, chore/<scope> — e.g. feat/aurora-ui)`
+  - [G1] `Create a new branch for the completed tasks and switch to it? (format: feat/<scope>, fix/<scope>, chore/<scope> — e.g. feat/aurora-ui)`
   — *Git — Commit:*
-  7. `Commit the changes? (format: <type>(<scope>): <message> — e.g. feat(ui): add Dialog primitive)`
-  8. `Create a commit amend (update the last commit)? (command: git commit --amend --no-edit)`
+  - [G2] `Commit the changes? (format: <type>(<scope>): <message> — e.g. feat(ui): add Dialog primitive)`
+  - [G3] `Create a commit amend (update the last commit)? (command: git commit --amend --no-edit)`
   — *Git — Push:*
-  9. `Push the new branch? (command: git push --set-upstream origin <branch-name>)`
-  10. `Push? (command: git push)`
-  11. `Force push after amend? (command: git push --force-with-lease)`
+  - [G4] `Push the new branch? (command: git push --set-upstream origin <branch-name>)`
+  - [G5] `Push? (command: git push)`
+  - [G6] `Force push after amend? (command: git push --force-with-lease)`
   — *Pull Request:*
-  12. `Generate a Markdown description and Title for a PR in English?`
-- **Logical Footer Presentation:** Reorder or visually separate the footer options based on the logical next step. For example, if the last action was a commit amend (8), propose force push (11) as the primary immediate next option, adding space before listing the other options. If the last action was a commit (7), propose push (10) or PR generation (12), etc.
+  - [PR1] `Generate a Markdown description and Title for a PR in English?`
+- **Logical Footer Presentation:** Reorder or visually separate the footer options based on the logical next step. For example, if the last action was a commit amend ([G3]), propose force push ([G6]) as the primary immediate next option, adding space before listing the other options. If the last action was a commit ([G2]), propose push ([G5]) or PR generation ([PR1]), etc.
 - **Next Step Semantics:** In footer item 5, always reference the **next planned step after the last fully completed accepted task in the agreed execution order**. Item 5 must not point to the skipped task from item 4 unless that skipped task is also the actual next task after the latest completed one.
 - **Branch Naming:** Use prefixes `feat/`, `fix/`, or `chore/` followed by a short kebab-case scope (e.g., `feat/aurora-ui`, `fix/prisma-import`, `chore/ladle-config`). Always branch off from `main` unless otherwise agreed.
 - **Commits:** Use the Conventional Commits format `<type>(<scope>): <message>` (e.g., `feat(ui): add Dialog primitive`, `chore(ladle): add config and scripts`). Keep messages in English, imperative mood, ≤72 chars.
 - **Checklist Numbering:** When editing `TASK.md` or adding tracking checklists to `docs/IMPLEMENTATION_PLAN.md`, every checkbox must have an explicit hierarchical number such as `1.1.a`.
 - **Permission:** After each micro-step, ALWAYS ask the numbered next-step footer question above.
 - **Terminal:** Use `pnpm` instead of `npm` for installing packages and running scripts.
+- **Tool Use Strategy:** Briefly state your plan before calling a tool. If a tool fails, analyze the error and retry. Present final data simply, hiding raw technical output.
+- **Actionable Steps:** Format solutions as clear, numbered lists of actionable steps starting with strong verbs. Keep explanations minimal.
+- **RAG Synthesis:** When processing retrieved documents, focus ONLY on chunks that directly answer the question. Synthesize into a clear, unified answer using simple language and cite sources.
+
+## 5. Developer Context (User Persona & Preferences)
+
+### Identity
+
+- **Name**: Elina Dzhelilova
+- **Location**: Local system environment (Mac OS)
+- **Languages**: Ukrainian and English
+- **Health/Neurodivergence**: Has ADHD
+
+### Career
+
+- No career information learned yet.
+
+### Projects
+
+- **Prompt Library**: Structured and managed a repository of AI prompts (converting Markdown to XML) for guiding agent behavior.
+- **claude-api-training**: Working with Claude API and RAG integration in local workspace.
+
+### Preferences
+
+- **Learning (Chunked)**: Deliver educational info in small, bite-sized chunks (max 3 short paragraphs). Pause and ask for confirmation before proceeding to avoid overwhelm.
+- **Explanations**: Explain complex concepts in plain, simple language without unnecessary jargon. Use relatable analogies and short sentences.
+- **Output Style (Dry)**: Respond only with core information. Start with the first fact and end with the last. No introductions, closing summaries, flattery, or motivational framing.
+- **Communication**: Prefers direct communication; values harsh technical review focused on finding problems over validating correctness.
+- **Language**: Write entire responses in Ukrainian when requested, but strictly keep code, technical terms, APIs, and framework names in English.
+
+## 6. Output Formatting Guidelines
+
+- **Markdown Documents**: Wrap full generated documents in a single 4-backtick `markdown` block. Use a single H1 for the title, H2/H3 for subheadings, and separate sections with `---`. Keep paragraphs short and use plain bullet lists.
+- **Mermaid Diagrams**: Use 3-backtick `mermaid` blocks (inside the 4-backtick markdown). Style nodes with `classDef` (Purple=server/infrastructure, Blue=client/UI, Orange=state/data, Green=logic/services, Red=failure/rollback). Always include a Legend table after the diagram.
 
 ---
 <!-- BEGIN:nextjs-agent-rules -->
