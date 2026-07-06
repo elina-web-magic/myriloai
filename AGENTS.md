@@ -14,7 +14,7 @@ This is not an academic exercise, but a production-grade enterprise software pro
 
 **Technical Trust Boundaries:**
 
-- **Prompt vs. Request Ingestion:** Use client-side linting to catch external markers.
+- **Prompt vs. Request Ingestion:** Client-side linting is a UX nicety only (catches accidental paste before tokens are spent), never a security boundary — it is trivially bypassed by calling the API route directly. The real trust boundary is server-side: delimit untrusted scenario input/model output explicitly in the Evaluator Agent prompt (e.g. XML-tag fencing) and instruct the judge to ignore embedded instructions in the content it scores.
 - **Silent Evaluation Failures:** Strict LLM-as-a-Judge framework with definitive domain context and rigid evaluation rubrics.
 - **API Schema Drift:** Enforce strict API boundary filtering using Zod schema runtime validation.
 - **Financial Overhead:** Zero-cost local inference (Ollama) and mock file systems for sandboxed development with client-side token ceilings.
