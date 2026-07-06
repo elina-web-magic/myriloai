@@ -1,5 +1,3 @@
-import type { EvaluationParsedResponse, EvaluationRequest, EvaluationResponse } from '@/types';
-
 const mockEvaluationFixture = {
 	runId: 'mock-eval-001',
 	scenario: 'Static registry manual evaluation',
@@ -17,9 +15,4 @@ const mockEvaluationFixture = {
 	score: number;
 };
 
-export type {
-	EvaluationParsedResponse as MockEvaluationParsedResponse,
-	EvaluationRequest as MockEvaluationRequest,
-	EvaluationResponse as MockEvaluationResponse,
-};
 export { mockEvaluationFixture };
