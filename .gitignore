@@ -52,6 +52,6 @@ docs/
 .artifacts/
 .vscode/
 .ladle-build
-
+.pnpm-store/
 # Claude Code — personal, per-machine settings (not shared config)
 .claude/settings.local.json

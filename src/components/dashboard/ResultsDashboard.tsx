@@ -5,20 +5,9 @@ import { useState } from 'react';
 import { DetailSplitPane } from '@/components/dashboard/DetailSplitPane';
 import { Button } from '@/components/ui/button';
 
-export type OutputData = {
-	output: string;
-	test_case: {
-		scenario: string;
-		prompt_inputs: Record<string, string>;
-		solution_criteria: string[];
-		task_description?: string;
-	};
-	total_score: number;
-	scores: Record<string, number>;
-	reasoning: string;
-	strengths: string[];
-	weaknesses: string[];
-};
+import type { DashboardResult } from '@/types';
+
+export type OutputData = DashboardResult;
 
 const getScoreColor = (score: number): string => {
 	if (score >= 35) return 'text-[var(--success)] border-[var(--success)] bg-[var(--success-soft)]';
