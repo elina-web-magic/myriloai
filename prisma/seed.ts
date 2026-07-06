@@ -23,13 +23,19 @@ async function main() {
 	});
 
 	// 2. Ensure project exists
-	const project = await prisma.project.create({
-		data: {
-			name: 'Default Workspace',
-			description: 'Main workspace for prompt engineering',
-			userId: user.id,
-		},
+	let project = await prisma.project.findFirst({
+		where: { name: 'Default Workspace', userId: user.id },
 	});
+
+	if (!project) {
+		project = await prisma.project.create({
+			data: {
+				name: 'Default Workspace',
+				description: 'Main workspace for prompt engineering',
+				userId: user.id,
+			},
+		});
+	}
 
 	// 3. Seed Categories
 	const categories = [
@@ -51,27 +57,39 @@ async function main() {
 	}
 
 	// 4. Seed Prompt Snippets
-	await prisma.promptSnippet.createMany({
-		data: [
-			{
-				projectId: project.id,
-				name: 'JSON Format Constraint',
-				content:
-					'Output strictly in valid JSON format. Do not use markdown code blocks or any other wrapping text. Only the JSON object.',
-			},
-			{
-				projectId: project.id,
-				name: 'Step-by-step Reasoning',
-				content: 'Think step-by-step and show your reasoning before providing the final answer.',
-			},
-			{
-				projectId: project.id,
-				name: 'Expert Persona',
-				content:
-					'Act as a senior distinguished engineer with deep expertise in system architecture, performance optimization, and scalable design.',
-			},
-		],
-	});
+	const snippets = [
+		{
+			name: 'JSON Format Constraint',
+			content:
+				'Output strictly in valid JSON format. Do not use markdown code blocks or any other wrapping text. Only the JSON object.',
+		},
+		{
+			name: 'Step-by-step Reasoning',
+			content: 'Think step-by-step and show your reasoning before providing the final answer.',
+		},
+		{
+			name: 'Expert Persona',
+			content:
+				'Act as a senior distinguished engineer with deep expertise in system architecture, performance optimization, and scalable design.',
+		},
+		{
+			name: 'Concise Mode',
+			content:
+				'Provide your answer as concisely as possible. No fluff, no introductory or concluding remarks.',
+		},
+	];
+
+	for (const snippet of snippets) {
+		const existingSnippet = await prisma.promptSnippet.findFirst({
+			where: { projectId: project.id, name: snippet.name },
+		});
+
+		if (!existingSnippet) {
+			await prisma.promptSnippet.create({
+				data: { ...snippet, projectId: project.id },
+			});
+		}
+	}
 
 	// 5. Seed Dataset & Scenarios
 	type ScenarioItem = {
