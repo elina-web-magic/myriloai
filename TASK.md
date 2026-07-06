@@ -119,7 +119,7 @@
 1. ✅ Seed default Categories
     1. ✅ Fix `Category` upsert to use compound `projectId_name` key after tenancy scoping change
 1. ✅ Seed reusable Snippets
-1. ⬜️ Add/verify richer demo seed for live dashboard mode if needed
+1. ✅ Add/verify richer demo seed for live dashboard mode if needed
 
 ---
 
