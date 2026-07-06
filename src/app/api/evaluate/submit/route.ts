@@ -30,7 +30,22 @@ export async function POST(request: Request) {
 		);
 	}
 
-	const mockState = getMockEvaluationSubmitState(requestBody.data);
+	try {
+		const mockState = getMockEvaluationSubmitState(requestBody.data);
 
-	return Response.json(mockState);
+		return Response.json(mockState);
+	} catch (error) {
+		const standardizedError = standardizedErrorSchema.safeParse(error);
+
+		return Response.json(
+			standardizedError.success
+				? standardizedError.data
+				: standardizedErrorSchema.parse({
+						code: 'MOCK_SCENARIO_EXECUTION_FAILED',
+						message: 'Mock scenario execution failed unexpectedly.',
+						severity: 'error',
+					}),
+			{ status: 422 }
+		);
+	}
 }

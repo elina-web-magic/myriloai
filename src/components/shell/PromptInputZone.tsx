@@ -17,10 +17,31 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
-import type { StandardizedError } from '@/types';
+import type { MockScenarioId, StandardizedError } from '@/types';
 
 const modelOptions = ['Claude Sonnet', 'GPT-4.1', 'Gemini 2.5 Pro'] as const;
 const datasetOptions = ['Manual session', 'Ailens seed set', 'Custom dataset'] as const;
+const mockScenarioOptions = [
+	{
+		value: 'success_perfect',
+		label: 'Success perfect',
+		description: 'Valid parsed response with full scoring data.',
+	},
+	{
+		value: 'error_malformed_json',
+		label: 'Error malformed JSON',
+		description: 'Simulate model output that breaks response parsing.',
+	},
+	{
+		value: 'error_missing_context',
+		label: 'Error missing context',
+		description: 'Simulate a scenario that cannot score due to missing context.',
+	},
+] as const satisfies ReadonlyArray<{
+	value: MockScenarioId;
+	label: string;
+	description: string;
+}>;
 const runStates = ['queued', 'sending', 'streaming', 'completed', 'failed'] as const;
 
 type RunState = (typeof runStates)[number];
@@ -88,6 +109,8 @@ export function PromptInputZone() {
 	const [selectedDataset, setSelectedDataset] = useState<(typeof datasetOptions)[number]>(
 		datasetOptions[0]
 	);
+	const [selectedMockScenario, setSelectedMockScenario] =
+		useState<MockScenarioId>('success_perfect');
 	const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 	const [isZoneCollapsed, setIsZoneCollapsed] = useState(false);
 	const [activeRunState, setActiveRunState] = useState<RunState>('completed');
@@ -190,6 +213,7 @@ export function PromptInputZone() {
 					dataset: selectedDataset,
 					projectInstructions,
 					prompt,
+					mockScenarioId: selectedMockScenario,
 				}),
 			});
 
@@ -448,6 +472,35 @@ export function PromptInputZone() {
 											))}
 										</Select>
 									</div>
+								</div>
+
+								<div className="prompt-input-zone__control field">
+									<label
+										htmlFor="prompt-input-zone-mock-scenario"
+										className="prompt-input-zone__control-label"
+									>
+										Mock scenario
+									</label>
+									<Select
+										id="prompt-input-zone-mock-scenario"
+										value={selectedMockScenario}
+										onChange={(event) =>
+											setSelectedMockScenario(event.target.value as MockScenarioId)
+										}
+									>
+										{mockScenarioOptions.map((mockScenarioOption) => (
+											<option key={mockScenarioOption.value} value={mockScenarioOption.value}>
+												{mockScenarioOption.label}
+											</option>
+										))}
+									</Select>
+									<p className="prompt-input-zone__control-note t-small mt-2 text-[var(--ink-3)]">
+										{
+											mockScenarioOptions.find(
+												(mockScenarioOption) => mockScenarioOption.value === selectedMockScenario
+											)?.description
+										}
+									</p>
 								</div>
 
 								<div className="prompt-input-zone__field field">

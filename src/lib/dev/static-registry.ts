@@ -3,9 +3,15 @@ import {
 	dashboardResultSchema,
 	evaluationParsedResponseSchema,
 	evaluationResponseSchema,
+	standardizedErrorSchema,
 } from '@/lib/contracts/evaluation';
-import { mockEvaluationFixture } from '@/lib/dev/fixtures/mock-evaluation';
-import type { DashboardResult, EvaluationRequest, EvaluationResponse } from '@/types';
+import { mockErrorFixtures, mockSuccessFixtures } from '@/lib/dev/fixtures/mock-evaluation';
+import type {
+	DashboardResult,
+	EvaluationRequest,
+	EvaluationResponse,
+	MockScenarioId,
+} from '@/types';
 
 type DashboardMockState = {
 	reportData: DashboardResult[];
@@ -48,29 +54,61 @@ const parseMockEvaluationResponse = (rawResponse: string) => {
 	return evaluationParsedResponseSchema.parse(parsedValue);
 };
 
+const getSelectedMockScenarioId = (request: EvaluationRequest): MockScenarioId => {
+	return request.mockScenarioId ?? 'success_perfect';
+};
+
 const getMockEvaluationSubmitState = (request: EvaluationRequest): MockEvaluationSubmitState => {
 	logMockRegistryResponse('evaluate_submit');
 
+	const selectedScenarioId = getSelectedMockScenarioId(request);
 	const normalizedPrompt = request.prompt.trim();
 	const normalizedInstructions = request.projectInstructions.trim();
 
+	if (selectedScenarioId === 'error_missing_context') {
+		throw standardizedErrorSchema.parse({
+			...mockErrorFixtures.error_missing_context,
+			details: {
+				...mockErrorFixtures.error_missing_context.details,
+				runLabel: request.runLabel,
+			},
+		});
+	}
+
+	if (selectedScenarioId === 'error_malformed_json') {
+		const malformedRawResponse = mockErrorFixtures.error_malformed_json.rawResponse ?? '';
+
+		try {
+			parseMockEvaluationResponse(malformedRawResponse);
+		} catch {
+			throw standardizedErrorSchema.parse({
+				...mockErrorFixtures.error_malformed_json,
+				details: {
+					...mockErrorFixtures.error_malformed_json.details,
+					rawPreview: malformedRawResponse,
+				},
+			});
+		}
+	}
+
+	const selectedFixture = mockSuccessFixtures.success_perfect;
 	const rawResponse = JSON.stringify({
 		summary:
 			normalizedPrompt.length > 0
-				? `${mockEvaluationFixture.summary} Prompt focus: ${normalizedPrompt.slice(0, 80)}`
-				: mockEvaluationFixture.summary,
-		topRisks: mockEvaluationFixture.topRisks,
+				? `${selectedFixture.summary} Prompt focus: ${normalizedPrompt.slice(0, 80)}`
+				: selectedFixture.summary,
+		topRisks: selectedFixture.topRisks,
 		mitigations:
 			normalizedInstructions.length > 0
-				? [...mockEvaluationFixture.mitigations, 'keep evaluator instructions concise']
-				: mockEvaluationFixture.mitigations,
-		score: mockEvaluationFixture.score,
+				? [...selectedFixture.mitigations, 'keep evaluator instructions concise']
+				: selectedFixture.mitigations,
+		score: selectedFixture.score,
 	});
 
 	return {
 		response: evaluationResponseSchema.parse({
-			runId: mockEvaluationFixture.runId,
-			scenario: mockEvaluationFixture.scenario,
+			runId: selectedFixture.runId,
+			scenario: selectedFixture.scenario,
 			rawResponse,
 			parsedResponse: parseMockEvaluationResponse(rawResponse),
 		}),
