@@ -82,9 +82,9 @@
 1. ✅ Add Vitest test runner and Testing Library baseline
     1. ✅ Configure `vitest` for app code and jsdom-based component tests
     1. ✅ Configure Testing Library helpers and shared test setup
-1. ⬜️ Add first high-value component and contract tests for Phase 2 flows
-    1. ⬜️ Cover `PromptInputZone` structured error rendering
-    1. ⬜️ Cover evaluation contract parsing and mock registry submit flow
+1. ✅ Add first high-value component and contract tests for Phase 2 flows
+    1. ✅ Cover `PromptInputZone` structured error rendering
+    1. ✅ Cover evaluation contract parsing and mock registry submit flow
 1. ⬜️ Define testing conventions for future phases
     1. ⬜️ Document where component tests, contract tests, and sandbox tests should live
 
