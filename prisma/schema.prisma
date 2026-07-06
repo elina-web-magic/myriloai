@@ -81,6 +81,8 @@ model Project {
   collections PromptCollection[]
   snippets    PromptSnippet[]
   chains      PromptChain[]
+  categories  Category[]
+  overrides   EvaluatorOverride[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -104,9 +106,14 @@ model PromptSnippet {
 }
 
 model Category {
-  id   String          @id @default(cuid())
-  name String          @unique
+  id        String  @id @default(cuid())
+  name      String
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
   runs EvaluationRun[]
+
+  @@unique([projectId, name])
 }
 
 // ───────────────────────────────────────────────
@@ -143,8 +150,12 @@ model EvaluatorOverride {
   instruction String  @db.Text
   priority    Int     @default(0)
   isActive    Boolean @default(true)
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
 
   runs EvaluationRunOverride[]
+
+  @@index([projectId])
 }
 
 model EvaluationRunOverride {
@@ -200,6 +211,10 @@ model EvaluationRun {
 
   model String @default("claude-sonnet-4")
 
+  // Pinned Evaluator Agent model id for this run — required so scores stay
+  // interpretable after the judge model is upgraded or deprecated.
+  judgeModel String
+
   summaryStats   Json?
   inputTokens    Int?
   outputTokens   Int?
@@ -228,6 +243,11 @@ model EvaluationResult {
   totalScore Int
   scores     Json
   reasoning  String @db.Text
+
+  // Snapshot of Scenario.scoringMetrics (+ taskDescription) at evaluation time,
+  // so a later edit to the live Scenario can't retroactively change what a
+  // historical score meant.
+  rubricSnapshot Json
 
   run          EvaluationRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
   scenario     Scenario          @relation(fields: [scenarioId], references: [id], onDelete: Cascade)

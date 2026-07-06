@@ -44,9 +44,9 @@ async function main() {
 	];
 	for (const name of categories) {
 		await prisma.category.upsert({
-			where: { name },
+			where: { projectId_name: { projectId: project.id, name } },
 			update: {},
-			create: { name },
+			create: { name, projectId: project.id },
 		});
 	}
 
