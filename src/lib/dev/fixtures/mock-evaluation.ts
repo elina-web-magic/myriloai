@@ -69,7 +69,7 @@ const mockErrorFixtures: Record<
 	},
 };
 
-const deferredMockScenarios: readonly DeferredMockScenario[] = [
+const _deferredMockScenarios: readonly DeferredMockScenario[] = [
 	{
 		id: 'success_partial',
 		deferUntil: 'post-MVP',
@@ -87,4 +87,4 @@ const deferredMockScenarios: readonly DeferredMockScenario[] = [
 	},
 ] as const;
 
-export { deferredMockScenarios, mockErrorFixtures, mockSuccessFixtures };
+export { mockErrorFixtures, mockSuccessFixtures };
