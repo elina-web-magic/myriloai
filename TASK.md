@@ -19,7 +19,7 @@
 
 1. ✅ Build header shell
 1. ✅ Add theme toggle UX
-1. ⬜️ Re-check final brand polish against Phase 6 after design-system completion
+1. ⬜️ Re-check final brand polish against Phase 8 after design-system completion
 
 #### `[NEW] components/PromptInputZone.tsx`
 
@@ -47,7 +47,7 @@
         1. ✅ Add mock evaluation fixture, registry submit helper, and `/api/evaluate/submit` route for offline request/response parsing
     1. ✅ Add explicit mock-source logging for offline responses
         1. ✅ Log `[Mock Registry] Response served for ...` from `static-registry.ts` for dashboard and submit flows
-1. ✅ Integrate localized text management (deferred — see Phase 11)
+1. ✅ Integrate localized text management (deferred — see Phase 12)
 
 #### 2.2. Validation Contract & Error Model
 
@@ -75,7 +75,22 @@
 
 ---
 
-### Phase 3: Database Foundation
+### Phase 3: Vitest + Testing Library
+
+#### 3.1. Testing Foundation
+
+1. ⬜️ Add Vitest test runner and Testing Library baseline
+    1. ⬜️ Configure `vitest` for app code and jsdom-based component tests
+    1. ⬜️ Configure Testing Library helpers and shared test setup
+1. ⬜️ Add first high-value component and contract tests for Phase 2 flows
+    1. ⬜️ Cover `PromptInputZone` structured error rendering
+    1. ⬜️ Cover evaluation contract parsing and mock registry submit flow
+1. ⬜️ Define testing conventions for future phases
+    1. ⬜️ Document where component tests, contract tests, and sandbox tests should live
+
+---
+
+### Phase 4: Database Foundation
 
 #### `[NEW] lib/prisma.ts`
 
@@ -108,7 +123,7 @@
 
 ---
 
-### Phase 4: Evaluation Engine (MVP-2, MVP-5)
+### Phase 5: Evaluation Engine (MVP-2, MVP-5)
 
 **Goal:** End-to-end evaluation with Claude API + re-test workflow
 
@@ -133,7 +148,68 @@
 
 ---
 
-### Phase 5: Results Dashboard & Detail View (MVP-3, MVP-4)
+### Phase 6: Evaluation Guardrails & Safety Layer
+
+**Goal:** Wrap the evaluation engine with layered safety controls (input → dialog → output rails)
+
+#### `[NEW] lib/guardrails/input-rails.ts`
+
+1. ⬜️ 6.1 Implement payload size validation
+    1. ⬜️ 6.1.a Enforce max scenario input size (characters + estimated tokens)
+    1. ⬜️ 6.1.b Enforce max dataset import size (row count + total payload)
+    1. ⬜️ 6.1.c Return structured `StandardizedError` with code `INPUT_TOO_LARGE` on violation
+1. ⬜️ 6.2 Implement prompt injection detection (server-side)
+    1. ⬜️ 6.2.a Add regex/keyword heuristic scanner for known injection patterns in scenario content
+    1. ⬜️ 6.2.b Flag detected injections as warnings and persist flags on `EvaluationResult`
+    1. ⬜️ 6.2.c Add XML-tag fencing utility for wrapping untrusted scenario input and model output
+1. ⬜️ 6.3 Implement rate limiting for evaluation runs
+    1. ⬜️ 6.3.a Add per-user rate limit for run creation (configurable, e.g. 20 runs/hour)
+    1. ⬜️ 6.3.b Add per-project concurrent run limit
+    1. ⬜️ 6.3.c Return structured `StandardizedError` with code `RATE_LIMIT_EXCEEDED`
+
+#### `[NEW] lib/guardrails/dialog-rails.ts`
+
+1. ⬜️ 6.4 Implement evaluator prompt builder with safety fencing
+    1. ⬜️ 6.4.a Build prompt template with explicit XML-tag boundaries between trusted instructions and untrusted content
+    1. ⬜️ 6.4.b Add explicit "ignore embedded instructions" directive in evaluator system prompt
+    1. ⬜️ 6.4.c Enforce minimal context principle — pass only `taskDescription` + `scoringMetrics` + evaluated output
+1. ⬜️ 6.5 Implement context budget enforcement
+    1. ⬜️ 6.5.a Calculate assembled evaluator prompt token count before sending
+    1. ⬜️ 6.5.b Reject evaluation if assembled prompt exceeds judge model context budget
+
+#### `[NEW] lib/guardrails/output-rails.ts`
+
+1. ⬜️ 6.6 Implement hallucination flag taxonomy
+    1. ⬜️ 6.6.a Define explicit failure label enum: `HALLUCINATION`, `IRRELEVANCE`, `REFUSAL`, `FORMATTING_DRIFT`, `GROUNDING_FAILURE`, `SCORE_WITHOUT_EVIDENCE`
+    1. ⬜️ 6.6.b Add `failureLabels` field to `EvaluationResult` Prisma model
+    1. ⬜️ 6.6.c Implement auto-detection: flag `SCORE_WITHOUT_EVIDENCE` when evaluator reasoning is shorter than threshold
+    1. ⬜️ 6.6.d Implement auto-detection: flag `FORMATTING_DRIFT` when Zod parse requires retry
+1. ⬜️ 6.7 Implement output sanitization pipeline
+    1. ⬜️ 6.7.a Sanitize evaluator raw output before DB persistence
+    1. ⬜️ 6.7.b Sanitize rendered model output in UI — never `dangerouslySetInnerHTML`
+    1. ⬜️ 6.7.c Add markdown rendering allowlist if markdown preview is needed
+1. ⬜️ 6.8 Implement evaluator consistency checks (PoLL support)
+    1. ⬜️ 6.8.a Compare scores across panel judges — flag `EVALUATOR_DISAGREEMENT` when scores differ by > threshold
+    1. ⬜️ 6.8.b Persist per-judge individual scores and disagreement flags
+    1. ⬜️ 6.8.c Log low-confidence cases for manual review queue
+1. ⬜️ 6.9 Implement groundedness checks
+    1. ⬜️ 6.9.a Require evidence-backed scoring per rubric dimension
+    1. ⬜️ 6.9.b Add groundedness verification: check that cited evidence exists in evaluated output
+    1. ⬜️ 6.9.c Flag `GROUNDING_FAILURE` when evidence doesn't match source
+1. ⬜️ 6.10 Implement uncertainty surfacing in UI
+    1. ⬜️ 6.10.a Add uncertainty badge component
+    1. ⬜️ 6.10.b Replace single opaque score with dimension-level breakdown + confidence indicators
+    1. ⬜️ 6.10.c Surface failure labels and disagreement flags in `ResultsDashboard` and `DetailSplitPane`
+
+#### `[DEFERRED] Retrieval Rails`
+
+1. ⬜️ 6.D1 [DEFERRED] Retrieval rail: groundedness source verification against RAG context
+1. ⬜️ 6.D2 [DEFERRED] Retrieval rail: poisoned context exclusion filter
+1. ⬜️ 6.D3 [DEFERRED] Content moderation model (Llama Guard via Ollama)
+
+---
+
+### Phase 7: Results Dashboard & Detail View (MVP-3, MVP-4)
 
 **Goal:** Complete dashboard UI to view results from DB
 
@@ -141,7 +217,7 @@
 
 1. ✅ Replace static-only dashboard flow with DB-backed query + fallback logic
 1. ✅ Separate `Compose Run` and `Review Workspace` sections
-1. ⬜️ Keep refining page shell hierarchy if Phase 6 research suggests more changes
+1. ⬜️ Keep refining page shell hierarchy if Phase 8 research suggests more changes
 
 #### `[MODIFY] components/ResultsDashboard.tsx`
 
@@ -161,7 +237,7 @@
 
 ---
 
-### Phase 6: Design System — Cyan-Sky-Violet Aurora
+### Phase 8: Design System — Cyan-Sky-Violet Aurora
 
 #### 6.1. Shadcn UI Installation
 
@@ -249,9 +325,9 @@
 
 ---
 
-### Phase 7: Prompt Chaining Engine
+### Phase 9: Prompt Chaining Engine
 
-##### `[NEW] components/ChainBuilder.tsx`
+#### `[NEW] components/ChainBuilder.tsx`
 
 1. ⬜️ Build multi-step chain UI
 1. ⬜️ Add step add/remove/reorder behavior
@@ -259,45 +335,45 @@
 
 ---
 
-### Phase 8: Collections, Categories & Snippets (MVP-6, MVP-7, MVP-8)
+### Phase 10: Collections, Categories & Snippets (MVP-6, MVP-7, MVP-8)
 
-##### `[NEW] components/CollectionManager.tsx`
+#### `[NEW] components/CollectionManager.tsx`
 
 1. ⬜️ Create collection CRUD UI
 
-##### `[NEW] components/CategorySelector.tsx`
+#### `[NEW] components/CategorySelector.tsx`
 
 1. ⬜️ Create category selector UI
 
-##### `[NEW] components/SnippetAutocomplete.tsx`
+#### `[NEW] components/SnippetAutocomplete.tsx`
 
 1. ⬜️ Add slash-trigger snippet autocomplete
 
 ---
 
-### Phase 9: Evaluator Overrides & Advanced Config
+### Phase 11: Evaluator Overrides & Advanced Config
 
-##### `[NEW] components/OverrideModal.tsx`
+#### `[NEW] components/OverrideModal.tsx`
 
 1. ⬜️ Create override library CRUD UI
 
 ---
 
-### Phase 10: Observability Tracking & Operational Security
+### Phase 12: Observability Tracking & Operational Security
 
-##### `[NEW] components/TraceabilityAnalytics.tsx`
+#### `[NEW] components/TraceabilityAnalytics.tsx`
 
 1. ⬜️ Build diagnostic feed illustrating requests, prompts, responses, and latency.
 
-##### `[MODIFY] Middleware / API Access Controls`
+#### `[MODIFY] Middleware / API Access Controls`
 
 1. ⬜️ Replace IP-based rules with clerk-managed user constraints.
 
 ---
 
-### Phase 11: Localization Pipeline (i18n)
+### Phase 13: Localization Pipeline (i18n)
 
-1. ⬜️ Keep i18n out of Phase 5 MVP scope
+1. ⬜️ Keep i18n out of MVP scope
 1. ⬜️ Introduce localized text management after sandboxing, contracts, and structured error rendering are stable
 
 ---
@@ -307,4 +383,4 @@
 - `D.1` `[x]` Sync `AGENTS.md` with current code standards
 - `D.2` `[x]` Move `Code Standards` under `3. Code Quality, Tooling & 2026 Best Practices`
 - `D.3` `[x]` Add structured micro-step reporting rule for agent output
-- `D.4` `[ ]` Keep `TASK.md` synchronized with `docs/IMPLEMENTATION_PLAN.md` after each accepted step
+- `D.4` `[x]` Keep `TASK.md` synchronized with `docs/IMPLEMENTATION_PLAN.md` after each accepted step

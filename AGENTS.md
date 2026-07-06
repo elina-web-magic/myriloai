@@ -85,6 +85,7 @@ This is not an academic exercise, but a production-grade enterprise software pro
 - **Branch Naming:** Use prefixes `feat/`, `fix/`, or `chore/` followed by a short kebab-case scope (e.g., `feat/aurora-ui`, `fix/prisma-import`, `chore/ladle-config`). Always branch off from `main` unless otherwise agreed.
 - **Commits:** Use the Conventional Commits format `<type>(<scope>): <message>` (e.g., `feat(ui): add Dialog primitive`, `chore(ladle): add config and scripts`). Keep messages in English, imperative mood, ≤72 chars.
 - **Checklist Numbering:** When editing `TASK.md` or adding tracking checklists to `docs/IMPLEMENTATION_PLAN.md`, every checkbox must have an explicit hierarchical number such as `1.1.a`.
+- **Phase Numbering:** Phase numbers are always integers (Int). When inserting a new phase between existing ones, assign the next integer and renumber **all** subsequent phases in both `docs/IMPLEMENTATION_PLAN.md` and `TASK.md`. Fractional phase numbers (5.5, 3.1, etc.) are forbidden.
 - **Permission:** After each micro-step, ALWAYS ask the numbered next-step footer question above.
 - **Terminal:** Use `pnpm` instead of `npm` for installing packages and running scripts.
 - **Tool Use Strategy:** Briefly state your plan before calling a tool. If a tool fails, analyze the error and retry. Present final data simply, hiding raw technical output.
