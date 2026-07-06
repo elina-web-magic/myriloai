@@ -1,6 +1,11 @@
 import { z } from 'zod';
 
 const errorSeveritySchema = z.enum(['info', 'warning', 'error']);
+const mockScenarioIdSchema = z.enum([
+	'success_perfect',
+	'error_malformed_json',
+	'error_missing_context',
+]);
 
 const standardizedErrorSchema = z.object({
 	code: z.string().min(1),
@@ -16,6 +21,7 @@ const evaluationRequestSchema = z.object({
 	dataset: z.string().trim().min(1),
 	projectInstructions: z.string().trim(),
 	prompt: z.string().trim().min(1),
+	mockScenarioId: mockScenarioIdSchema.optional(),
 });
 
 const evaluationParsedResponseSchema = z.object({
@@ -58,5 +64,6 @@ export {
 	evaluationParsedResponseSchema,
 	evaluationRequestSchema,
 	evaluationResponseSchema,
+	mockScenarioIdSchema,
 	standardizedErrorSchema,
 };
