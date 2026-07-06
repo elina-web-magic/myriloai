@@ -124,6 +124,14 @@ This is not an academic exercise, but a production-grade enterprise software pro
 - **Mermaid Diagrams**: Use 3-backtick `mermaid` blocks (inside the 4-backtick markdown). Style nodes with `classDef` (Purple=server/infrastructure, Blue=client/UI, Orange=state/data, Green=logic/services, Red=failure/rollback). Always include a Legend table after the diagram.
 
 ---
+## 7. Testing Conventions
+
+- **Component Tests (`.test.tsx`)**: Place directly alongside the component in the same folder (e.g., `src/components/shell/PromptInputZone.test.tsx`). Focus on Testing Library `user-event` behavior and DOM rendering.
+- **Contract Tests (`.test.ts`)**: Place alongside the schema definitions (e.g., `src/lib/contracts/evaluation.test.ts`). Ensure Zod schemas strictly parse valid input and reject invalid data.
+- **Sandbox/Mock Tests (`.test.ts`)**: Place alongside the mock registries (e.g., `src/lib/dev/static-registry.test.ts`). Validate that local mock boundaries and static fixtures are correctly served in offline mode.
+- **Globals**: Vitest globals (`describe`, `it`, `expect`) are enabled. `@testing-library/jest-dom/vitest` is globally injected via `vitest.setup.ts`.
+
+---
 <!-- BEGIN:nextjs-agent-rules -->
 ## This is NOT the Next.js you know
 
