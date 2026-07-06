@@ -99,8 +99,8 @@
 #### `[MODIFY] schema.prisma`
 
 1. ✅ Update schema with current core models and multi-tenancy structure
-1. ⬜️ Add/verify full Collections, Categories, and Snippets model set from plan
-1. ⬜️ Add/verify `maxTotalTokens` on `EvaluationRun`
+1. ✅ Add/verify full Collections, Categories, and Snippets model set from plan
+1. ✅ Add/verify `maxTotalTokens` on `EvaluationRun`
 1. ✅ Fix multi-tenancy holes in `Category` and `EvaluatorOverride` (flagged in `docs/MYRILO_AI_ARCHITECTURE.md` and `docs/ARCHITECTURE_RESEARCH_AUDIT.md`)
     1. ✅ Add `projectId` to `Category`, relation to `Project`, unique constraint changed to `@@unique([projectId, name])`
     1. ✅ Add `projectId` to `EvaluatorOverride`, relation to `Project`, indexed
@@ -118,8 +118,8 @@
 1. ✅ Create seed script
 1. ✅ Seed default Categories
     1. ✅ Fix `Category` upsert to use compound `projectId_name` key after tenancy scoping change
-1. ⬜️ Seed reusable Snippets
-1. ⬜️ Add/verify richer demo seed for live dashboard mode if needed
+1. ✅ Seed reusable Snippets
+1. ✅ Add/verify richer demo seed for live dashboard mode if needed
 
 ---
 
