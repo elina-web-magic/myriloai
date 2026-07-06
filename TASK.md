@@ -67,10 +67,11 @@
     1. ✅ Build `error_malformed_json` fixture
     1. ✅ Build `error_missing_context` fixture
         1. ✅ Add mock scenario selector to `PromptInputZone` and route all three scenarios through `static-registry.ts`
-1. ⬜️ Defer non-MVP mock scenarios explicitly
-    1. ⬜️ Defer `success_partial` until post-MVP
-    1. ⬜️ Defer `error_provider_timeout` until post-MVP
-    1. ⬜️ Defer `error_prompt_injection` until post-MVP
+1. ✅ Defer non-MVP mock scenarios explicitly
+    1. ✅ Defer `success_partial` until post-MVP
+    1. ✅ Defer `error_provider_timeout` until post-MVP
+    1. ✅ Defer `error_prompt_injection` until post-MVP
+        1. ✅ Track deferred post-MVP scenarios in the dev mock layer to keep the sandbox roadmap explicit
 
 ---
 

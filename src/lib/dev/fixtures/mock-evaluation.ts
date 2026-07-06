@@ -18,6 +18,12 @@ type MockErrorFixture = {
 	rawResponse?: string;
 };
 
+type DeferredMockScenario = {
+	id: 'success_partial' | 'error_provider_timeout' | 'error_prompt_injection';
+	deferUntil: 'post-MVP';
+	reason: string;
+};
+
 const mockSuccessFixtures: Record<
 	Extract<MockScenarioId, 'success_perfect'>,
 	MockSuccessFixture
@@ -63,4 +69,22 @@ const mockErrorFixtures: Record<
 	},
 };
 
-export { mockErrorFixtures, mockSuccessFixtures };
+const deferredMockScenarios: readonly DeferredMockScenario[] = [
+	{
+		id: 'success_partial',
+		deferUntil: 'post-MVP',
+		reason: 'MVP only needs one stable happy path before modeling partial-quality outcomes.',
+	},
+	{
+		id: 'error_provider_timeout',
+		deferUntil: 'post-MVP',
+		reason: 'Provider/network simulation belongs after the core offline contract loop is stable.',
+	},
+	{
+		id: 'error_prompt_injection',
+		deferUntil: 'post-MVP',
+		reason: 'Prompt-injection resilience needs the later trust-boundary hardening pass.',
+	},
+] as const;
+
+export { deferredMockScenarios, mockErrorFixtures, mockSuccessFixtures };

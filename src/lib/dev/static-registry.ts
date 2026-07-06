@@ -5,7 +5,11 @@ import {
 	evaluationResponseSchema,
 	standardizedErrorSchema,
 } from '@/lib/contracts/evaluation';
-import { mockErrorFixtures, mockSuccessFixtures } from '@/lib/dev/fixtures/mock-evaluation';
+import {
+	deferredMockScenarios,
+	mockErrorFixtures,
+	mockSuccessFixtures,
+} from '@/lib/dev/fixtures/mock-evaluation';
 import type {
 	DashboardResult,
 	EvaluationRequest,
@@ -57,6 +61,8 @@ const parseMockEvaluationResponse = (rawResponse: string) => {
 const getSelectedMockScenarioId = (request: EvaluationRequest): MockScenarioId => {
 	return request.mockScenarioId ?? 'success_perfect';
 };
+
+const getDeferredMockScenarios = () => deferredMockScenarios;
 
 const getMockEvaluationSubmitState = (request: EvaluationRequest): MockEvaluationSubmitState => {
 	logMockRegistryResponse('evaluate_submit');
@@ -116,4 +122,9 @@ const getMockEvaluationSubmitState = (request: EvaluationRequest): MockEvaluatio
 	};
 };
 
-export { getDashboardMockState, getMockEvaluationSubmitState, isMockModeEnabled };
+export {
+	getDashboardMockState,
+	getDeferredMockScenarios,
+	getMockEvaluationSubmitState,
+	isMockModeEnabled,
+};
