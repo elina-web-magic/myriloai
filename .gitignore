@@ -52,3 +52,6 @@ docs/
 .artifacts/
 .vscode/
 .ladle-build
+
+# Claude Code — personal, per-machine settings (not shared config)
+.claude/settings.local.json
