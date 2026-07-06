@@ -85,8 +85,8 @@
 1. ✅ Add first high-value component and contract tests for Phase 2 flows
     1. ✅ Cover `PromptInputZone` structured error rendering
     1. ✅ Cover evaluation contract parsing and mock registry submit flow
-1. ⬜️ Define testing conventions for future phases
-    1. ⬜️ Document where component tests, contract tests, and sandbox tests should live
+1. ✅ Define testing conventions for future phases
+    1. ✅ Document where component tests, contract tests, and sandbox tests should live
 
 ---
 
