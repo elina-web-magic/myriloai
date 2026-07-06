@@ -2,9 +2,9 @@
 
 ## Current Status
 
-- **Current implementation track:** `PART II → Phase 3: Database Foundation`
-- **Current implementation phase in sequence:** `Phase 3: Database Foundation`
-- **Phase 3 status:** `in progress`
+- **Current implementation track:** `PART II → Phase 2: Local Sandboxing & Validation Contracts`
+- **Current implementation phase in sequence:** `Phase 2: Local Sandboxing & Validation Contracts`
+- **Phase 2 status:** `in progress`
 - **Important:** a phase is complete only when I explicitly tell you it is complete
 
 ---
@@ -43,18 +43,22 @@
 1. ✅ Introduce environment-gated mock mode backed by a local static registry (explicit `ALLOW_MOCK_DATA` flag instead of `NODE_ENV` alone)
     1. ✅ Route dashboard report data through local static registry
     1. ✅ Add environment guard that forbids mock mode in production (`static-registry.ts` throws at import time if `ALLOW_MOCK_DATA=true` and `NODE_ENV=production`)
-    1. ⬜️ Expand static registry usage to evaluate submit and response parsing flows
-    1. ⬜️ Add explicit mock-source logging for offline responses
-1. ⬜️ Integrate localized text management (deferred — see Phase 11)
+    1. ✅ Expand static registry usage to evaluate submit and response parsing flows
+        1. ✅ Add mock evaluation fixture, registry submit helper, and `/api/evaluate/submit` route for offline request/response parsing
+    1. ✅ Add explicit mock-source logging for offline responses
+        1. ✅ Log `[Mock Registry] Response served for ...` from `static-registry.ts` for dashboard and submit flows
+1. ✅ Integrate localized text management (deferred — see Phase 11)
 
 #### 2.2. Validation Contract & Error Model
 
-1. ⬜️ Draft global bi-directional validation contract with Zod
-    1. ⬜️ Define `EvaluationRequest` schema
-    1. ⬜️ Define `EvaluationResponse` schema
-    1. ⬜️ Define `DashboardResult` schema
-    1. ⬜️ Define `StandardizedError` schema and TS type
-    1. ⬜️ Refactor UI error rendering to consume structured error objects
+1. ✅ Draft global bi-directional validation contract with Zod
+    1. ✅ Define `EvaluationRequest` schema
+    1. ✅ Define `EvaluationResponse` schema
+    1. ✅ Define `DashboardResult` schema
+    1. ✅ Define `StandardizedError` schema and TS type
+        1. ✅ Add shared `zod` contracts in `src/lib/contracts/evaluation.ts` and reusable inferred types in `src/types.ts`
+    1. ✅ Refactor UI error rendering to consume structured error objects
+        1. ✅ Keep `StandardizedError` as client state and render severity, code, field, and details in `PromptInputZone`
 
 #### 2.3. MVP Mock Scenarios
 

@@ -1,14 +1,14 @@
-import type { OutputData } from '@/components/dashboard/ResultsDashboard';
 import { ResultsDashboard } from '@/components/dashboard/ResultsDashboard';
 import { HeaderBar } from '@/components/shell/HeaderBar';
 import { PromptInputZone } from '@/components/shell/PromptInputZone';
 import type { JsonValue } from '@/generated/prisma/runtime/client';
+import { dashboardResultSchema } from '@/lib/contracts/evaluation';
 import { getDashboardMockState, isMockModeEnabled } from '@/lib/dev/static-registry';
 import { prisma } from '@/lib/prisma';
-import fallbackData from '../data/output.json';
+import type { DashboardResult } from '@/types';
 
 type DashboardDataState = {
-	reportData: OutputData[];
+	reportData: DashboardResult[];
 	source: 'demo' | 'live';
 };
 
@@ -63,27 +63,26 @@ async function getDashboardReportData(): Promise<DashboardDataState> {
 	});
 
 	if (!latestRun || latestRun.results.length === 0) {
-		return {
-			reportData: fallbackData as OutputData[],
-			source: 'demo',
-		};
+		return getDashboardMockState();
 	}
 
 	return {
-		reportData: latestRun.results.map((result) => ({
-			output: result.sanitizedOutput ?? result.rawOutput,
-			test_case: {
-				scenario: result.scenario.name,
-				prompt_inputs: getStringRecord(result.scenario.promptInputs),
-				solution_criteria: getStringArray(result.scenario.scoringMetrics),
-				task_description: result.scenario.taskDescription,
-			},
-			total_score: result.totalScore,
-			scores: getNumberRecord(result.scores),
-			reasoning: result.reasoning,
-			strengths: [],
-			weaknesses: [],
-		})),
+		reportData: dashboardResultSchema.array().parse(
+			latestRun.results.map((result) => ({
+				output: result.sanitizedOutput ?? result.rawOutput,
+				test_case: {
+					scenario: result.scenario.name,
+					prompt_inputs: getStringRecord(result.scenario.promptInputs),
+					solution_criteria: getStringArray(result.scenario.scoringMetrics),
+					task_description: result.scenario.taskDescription,
+				},
+				total_score: result.totalScore,
+				scores: getNumberRecord(result.scores),
+				reasoning: result.reasoning,
+				strengths: [],
+				weaknesses: [],
+			}))
+		),
 		source: 'live',
 	};
 }

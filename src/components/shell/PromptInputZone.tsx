@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronDown, ChevronUp, GitBranch, Play, Settings2, Sparkles } from 'lucide-react';
-import { useEffect, useRef, useState } from 'react';
+import { useState } from 'react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
@@ -16,6 +16,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
+import type { StandardizedError } from '@/types';
 
 const modelOptions = ['Claude Sonnet', 'GPT-4.1', 'Gemini 2.5 Pro'] as const;
 const datasetOptions = ['Manual session', 'Ailens seed set', 'Custom dataset'] as const;
@@ -66,7 +68,7 @@ const runStateMeta: Record<
 	failed: {
 		label: 'Failed',
 		helper: 'The run could not complete and needs attention.',
-		output: 'Error: Missing provider credentials for manual test execution.',
+		output: 'Error: Evaluation submit failed before a result could be parsed.',
 		notice: 'Show inline failures early so the user can recover fast.',
 		badgeVariant: 'error',
 	},
@@ -80,50 +82,194 @@ export function PromptInputZone() {
 		'Summarize the rollout risks for a new feature flag system and propose mitigations.'
 	);
 	const [runLabel, setRunLabel] = useState('Flag rollout risk review');
+	const [selectedModel, setSelectedModel] = useState<(typeof modelOptions)[number]>(
+		modelOptions[0]
+	);
+	const [selectedDataset, setSelectedDataset] = useState<(typeof datasetOptions)[number]>(
+		datasetOptions[0]
+	);
 	const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 	const [isZoneCollapsed, setIsZoneCollapsed] = useState(false);
-	const [activeRunState, setActiveRunState] = useState<RunState>('streaming');
-	const runTimersRef = useRef<number[]>([]);
+	const [activeRunState, setActiveRunState] = useState<RunState>('completed');
+	const [runOutput, setRunOutput] = useState(runStateMeta.completed.output);
+	const [runNotice, setRunNotice] = useState(runStateMeta.completed.notice);
+	const [submitError, setSubmitError] = useState<StandardizedError | null>(null);
+	const [lastResponseMeta, setLastResponseMeta] = useState<{
+		runId: string;
+		scenario: string;
+		source: 'mock';
+		score: number;
+	} | null>(null);
 
 	const currentRunState = runStateMeta[activeRunState];
 
-	useEffect(() => {
-		return () => {
-			for (const timerId of runTimersRef.current) {
-				window.clearTimeout(timerId);
-			}
-		};
-	}, []);
-
-	const clearRunTimers = () => {
-		for (const timerId of runTimersRef.current) {
-			window.clearTimeout(timerId);
+	const getErrorMessage = (errorValue: StandardizedError | null): string | null => {
+		if (errorValue === null) {
+			return null;
 		}
 
-		runTimersRef.current = [];
+		return errorValue.field ? `${errorValue.field}: ${errorValue.message}` : errorValue.message;
 	};
 
-	const handleRun = () => {
-		clearRunTimers();
+	const getErrorDetails = (errorValue: StandardizedError | null): string[] => {
+		if (errorValue?.details === undefined) {
+			return [];
+		}
 
+		return Object.entries(errorValue.details).flatMap(([key, value]) => {
+			if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
+				return [`${key}: ${String(value)}`];
+			}
+
+			if (Array.isArray(value)) {
+				return [`${key}: ${value.length} item(s)`];
+			}
+
+			if (value !== null && typeof value === 'object') {
+				return [`${key}: object payload`];
+			}
+
+			return [];
+		});
+	};
+
+	const getSeverityBadgeVariant = (
+		severity: StandardizedError['severity']
+	): 'secondary' | 'warning' | 'error' | 'success' => {
+		if (severity === 'warning') {
+			return 'warning';
+		}
+
+		if (severity === 'error') {
+			return 'error';
+		}
+
+		if (severity === 'info') {
+			return 'secondary';
+		}
+
+		return 'success';
+	};
+
+	const handleRun = async () => {
 		if (prompt.trim().length === 0) {
+			const promptError: StandardizedError = {
+				code: 'EMPTY_PROMPT',
+				message: 'Prompt is required before an evaluation can start.',
+				field: 'prompt',
+				severity: 'error',
+			};
+
+			setSubmitError(promptError);
+			setRunOutput(`Error: ${promptError.message}`);
+			setRunNotice('Add a prompt, then submit again.');
+			setLastResponseMeta(null);
 			setActiveRunState('failed');
 			return;
 		}
 
+		setSubmitError(null);
+		setLastResponseMeta(null);
+		setRunOutput(runStateMeta.queued.output);
+		setRunNotice(runStateMeta.queued.notice);
 		setActiveRunState('queued');
 
-		runTimersRef.current = [
-			window.setTimeout(() => {
-				setActiveRunState('sending');
-			}, 500),
-			window.setTimeout(() => {
-				setActiveRunState('streaming');
-			}, 1100),
-			window.setTimeout(() => {
-				setActiveRunState('completed');
-			}, 2400),
-		];
+		setRunOutput(runStateMeta.sending.output);
+		setRunNotice(runStateMeta.sending.notice);
+		setActiveRunState('sending');
+
+		try {
+			const response = await fetch('/api/evaluate/submit', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					runLabel,
+					model: selectedModel,
+					dataset: selectedDataset,
+					projectInstructions,
+					prompt,
+				}),
+			});
+
+			setRunOutput(runStateMeta.streaming.output);
+			setRunNotice(runStateMeta.streaming.notice);
+			setActiveRunState('streaming');
+
+			const responseBody: unknown = await response.json();
+
+			if (!response.ok) {
+				const errorResult = standardizedErrorSchema.safeParse(responseBody);
+				const submitFailure = errorResult.success
+					? errorResult.data
+					: ({
+							code: 'UNEXPECTED_EVALUATION_ERROR',
+							message: 'Evaluation submit failed.',
+							severity: 'error',
+						} satisfies StandardizedError);
+
+				throw submitFailure;
+			}
+
+			const submitResponse = evaluateSubmitSuccessSchema.parse(responseBody);
+			const parsedResponse = submitResponse.response.parsedResponse;
+			const topRisks = parsedResponse.topRisks.map((risk) => `- ${risk}`).join('\n');
+			const mitigations = parsedResponse.mitigations.map((item) => `- ${item}`).join('\n');
+
+			setRunOutput(
+				[
+					`Scenario: ${submitResponse.response.scenario}`,
+					`Run ID: ${submitResponse.response.runId}`,
+					`Source: ${submitResponse.source}`,
+					`Score: ${parsedResponse.score}/40`,
+					'',
+					`Summary: ${parsedResponse.summary}`,
+					'',
+					'Top risks:',
+					topRisks,
+					'',
+					'Mitigations:',
+					mitigations,
+					'',
+					'Parsed from raw response payload:',
+					submitResponse.response.rawResponse,
+				].join('\n')
+			);
+			setRunNotice('Mock registry response submitted and parsed through the API route.');
+			setLastResponseMeta({
+				runId: submitResponse.response.runId,
+				scenario: submitResponse.response.scenario,
+				source: submitResponse.source,
+				score: parsedResponse.score,
+			});
+			setActiveRunState('completed');
+		} catch (error) {
+			let normalizedError: StandardizedError;
+			const fallbackError: StandardizedError = {
+				code: 'UNEXPECTED_EVALUATION_ERROR',
+				message: error instanceof Error ? error.message : 'Evaluation submit failed unexpectedly.',
+				severity: 'error',
+			};
+
+			if (
+				error !== null &&
+				typeof error === 'object' &&
+				'code' in error &&
+				'message' in error &&
+				'severity' in error
+			) {
+				normalizedError = standardizedErrorSchema.parse(error);
+			} else {
+				normalizedError = fallbackError;
+			}
+
+			setSubmitError(normalizedError);
+			setRunOutput(`Error: ${normalizedError.message}`);
+			setRunNotice('Review the request payload or environment mode and try again.');
+			setLastResponseMeta(null);
+			setActiveRunState('failed');
+		}
 	};
 
 	return (
@@ -175,7 +321,7 @@ export function PromptInputZone() {
 							</span>
 						</div>
 						<p className="prompt-input-zone__rail-note t-small text-[var(--ink-3)]">
-							Local demo interaction only. Backend execution arrives in the next phase.
+							Local sandbox route is active when mock mode is enabled.
 						</p>
 					</div>
 				</div>
@@ -266,7 +412,13 @@ export function PromptInputZone() {
 										>
 											Model
 										</label>
-										<Select id="prompt-input-zone-model" defaultValue={modelOptions[0]}>
+										<Select
+											id="prompt-input-zone-model"
+											value={selectedModel}
+											onChange={(event) =>
+												setSelectedModel(event.target.value as (typeof modelOptions)[number])
+											}
+										>
 											{modelOptions.map((modelOption) => (
 												<option key={modelOption} value={modelOption}>
 													{modelOption}
@@ -282,7 +434,13 @@ export function PromptInputZone() {
 										>
 											Dataset
 										</label>
-										<Select id="prompt-input-zone-dataset" defaultValue={datasetOptions[0]}>
+										<Select
+											id="prompt-input-zone-dataset"
+											value={selectedDataset}
+											onChange={(event) =>
+												setSelectedDataset(event.target.value as (typeof datasetOptions)[number])
+											}
+										>
 											{datasetOptions.map((datasetOption) => (
 												<option key={datasetOption} value={datasetOption}>
 													{datasetOption}
@@ -342,7 +500,6 @@ export function PromptInputZone() {
 								return (
 									<Button
 										key={runState}
-										onClick={() => setActiveRunState(runState)}
 										variant="secondary"
 										size="xs"
 										className="prompt-input-zone__output-state capitalize shadow-[0_8px_20px_rgba(148,163,184,0.1),inset_0_1px_0_rgba(255,255,255,0.26)]"
@@ -354,6 +511,7 @@ export function PromptInputZone() {
 											color: isActive ? 'var(--accent)' : 'var(--ink)',
 										}}
 										aria-pressed={isActive}
+										disabled
 									>
 										{runState}
 									</Button>
@@ -367,9 +525,51 @@ export function PromptInputZone() {
 
 						<div className="prompt-input-zone__output-window rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] p-4">
 							<pre className="prompt-input-zone__output-text text-sm leading-6 whitespace-pre-wrap text-[var(--ink-2)]">
-								{currentRunState.output}
+								{runOutput}
 							</pre>
 						</div>
+
+						{submitError ? (
+							<div className="prompt-input-zone__error-panel rounded-[var(--radius)] border border-[var(--error)] bg-[var(--error-soft)] p-4">
+								<div className="prompt-input-zone__error-panel-header flex items-start justify-between gap-3">
+									<div className="prompt-input-zone__error-panel-copy flex flex-col gap-1">
+										<p className="prompt-input-zone__error-panel-label meta text-[var(--error)]">
+											Structured error
+										</p>
+										<p className="prompt-input-zone__error-panel-message text-sm text-[var(--error)]">
+											{getErrorMessage(submitError)}
+										</p>
+									</div>
+									<Badge variant={getSeverityBadgeVariant(submitError.severity)}>
+										{submitError.severity}
+									</Badge>
+								</div>
+
+								<div className="prompt-input-zone__error-panel-meta mt-3 flex flex-wrap gap-2">
+									<Badge variant="error">{submitError.code}</Badge>
+									{submitError.field ? (
+										<Badge variant="secondary">{submitError.field}</Badge>
+									) : null}
+								</div>
+
+								{getErrorDetails(submitError).length > 0 ? (
+									<ul className="prompt-input-zone__error-panel-details mt-3 flex flex-col gap-1 text-sm text-[var(--error)]">
+										{getErrorDetails(submitError).map((detail) => (
+											<li key={detail}>{detail}</li>
+										))}
+									</ul>
+								) : null}
+							</div>
+						) : null}
+
+						{lastResponseMeta ? (
+							<div className="prompt-input-zone__output-meta rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] px-3 py-2">
+								<p className="prompt-input-zone__output-meta-text t-small text-[var(--ink-3)]">
+									Latest parsed response: {lastResponseMeta.scenario} · {lastResponseMeta.score}/40
+									· {lastResponseMeta.source} · {lastResponseMeta.runId}
+								</p>
+							</div>
+						) : null}
 
 						<div
 							className="prompt-input-zone__output-notice rounded-[var(--radius)] border px-3 py-2"
@@ -384,7 +584,7 @@ export function PromptInputZone() {
 									color: activeRunState === 'failed' ? 'var(--error)' : 'var(--ink-3)',
 								}}
 							>
-								{currentRunState.notice}
+								{getErrorMessage(submitError) ?? runNotice}
 							</p>
 						</div>
 					</div>
