@@ -194,6 +194,7 @@
         1. ✅ 6.2.e.iii Injection scanner — true positives: one test case per pattern (all 21 patterns after 6.2.d); each must return `flagged: true` with correct `pattern` name in `matches`
         1. ✅ 6.2.e.iv Injection scanner — true negatives: clean plain text → `flagged: false, matches: []`; legitimate `</context>` tag (after fix xi) → `flagged: false`; `</untrusted-input>` → `flagged: true`
         1. ✅ 6.2.e.v Fencing utilities — `fenceUntrustedInput`: wraps content in correct tags; content containing `<` / `>` is escaped (after fix xii); `fenceModelOutput`: wraps in `<model-output>` tags
+    1. ✅ 6.2.f Translate docs/GUARDRAILS_GUIDE.md to Ukrainian (`docs/GUARDRAILS_GUIDE_UA.md`)
 1. ✅ 6.3 Implement rate limiting for evaluation runs
     1. ✅ 6.3.a Add per-user rate limit for run creation (configurable, e.g. 20 runs/hour)
     1. ✅ 6.3.b Add per-project concurrent run limit
@@ -211,23 +212,23 @@
 
 #### `[NEW] lib/guardrails/output-rails.ts`
 
-1. ⬜️ 6.6 Implement hallucination flag taxonomy
-    1. ⬜️ 6.6.a Define explicit failure label enum: `HALLUCINATION`, `IRRELEVANCE`, `REFUSAL`, `FORMATTING_DRIFT`, `GROUNDING_FAILURE`, `SCORE_WITHOUT_EVIDENCE`
-    1. ⬜️ 6.6.b Add `failureLabels` field to `EvaluationResult` Prisma model
-    1. ⬜️ 6.6.c Implement auto-detection: flag `SCORE_WITHOUT_EVIDENCE` when evaluator reasoning is shorter than threshold
-    1. ⬜️ 6.6.d Implement auto-detection: flag `FORMATTING_DRIFT` when Zod parse requires retry
-1. ⬜️ 6.7 Implement output sanitization pipeline
-    1. ⬜️ 6.7.a Sanitize evaluator raw output before DB persistence
-    1. ⬜️ 6.7.b Sanitize rendered model output in UI — never `dangerouslySetInnerHTML`
-    1. ⬜️ 6.7.c Add markdown rendering allowlist if markdown preview is needed
-1. ⬜️ 6.8 Implement evaluator consistency checks (PoLL support)
-    1. ⬜️ 6.8.a Compare scores across panel judges — flag `EVALUATOR_DISAGREEMENT` when scores differ by > threshold
-    1. ⬜️ 6.8.b Persist per-judge individual scores and disagreement flags
-    1. ⬜️ 6.8.c Log low-confidence cases for manual review queue
-1. ⬜️ 6.9 Implement groundedness checks
-    1. ⬜️ 6.9.a Require evidence-backed scoring per rubric dimension
-    1. ⬜️ 6.9.b Add groundedness verification: check that cited evidence exists in evaluated output
-    1. ⬜️ 6.9.c Flag `GROUNDING_FAILURE` when evidence doesn't match source
+1. ✅ 6.6 Implement hallucination flag taxonomy
+    1. ✅ 6.6.a Define explicit failure label enum: `HALLUCINATION`, `IRRELEVANCE`, `REFUSAL`, `FORMATTING_DRIFT`, `GROUNDING_FAILURE`, `SCORE_WITHOUT_EVIDENCE`
+    1. ✅ 6.6.b Add `failureLabels` field to `EvaluationResult` Prisma model
+    1. ✅ 6.6.c Implement auto-detection: flag `SCORE_WITHOUT_EVIDENCE` when evaluator reasoning is shorter than threshold
+    1. ✅ 6.6.d Implement auto-detection: flag `FORMATTING_DRIFT` when Zod parse requires retry
+1. ✅ 6.7 Implement output sanitization pipeline
+    1. ✅ 6.7.a Sanitize evaluator raw output before DB persistence
+    1. ✅ 6.7.b Sanitize rendered model output in UI — never `dangerouslySetInnerHTML`
+    1. ⏸️ 6.7.c [DEFERRED] Add markdown rendering allowlist — activate when markdown preview is added to UI (DetailSplitPane or ResultsDashboard)
+1. ✅ 6.8 Implement evaluator consistency checks (PoLL support)
+    1. ✅ 6.8.a Compare scores across panel judges — flag `EVALUATOR_DISAGREEMENT` when scores differ by > threshold
+    1. ✅ 6.8.b Persist per-judge individual scores and disagreement flags
+    1. ✅ 6.8.c Log low-confidence cases for manual review queue
+1. ✅ 6.9 Implement groundedness checks
+    1. ✅ 6.9.a Require evidence-backed scoring per rubric dimension
+    1. ✅ 6.9.b Add groundedness verification: check that cited evidence exists in evaluated output
+    1. ✅ 6.9.c Flag `GROUNDING_FAILURE` when evidence doesn't match source
 1. ⬜️ 6.10 Implement uncertainty surfacing in UI
     1. ⬜️ 6.10.a Add uncertainty badge component
     1. ⬜️ 6.10.b Replace single opaque score with dimension-level breakdown + confidence indicators

@@ -18,6 +18,7 @@ import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
 import { ERRORS } from '@/lib/errors';
+import { sanitizeText } from '@/lib/guardrails/output-rails';
 import type { MockScenarioId, StandardizedError } from '@/types';
 
 const modelOptions = ['Claude Sonnet', 'GPT-4.1', 'Gemini 2.5 Pro'] as const;
@@ -249,7 +250,7 @@ export function PromptInputZone() {
 					mitigations,
 					'',
 					'Parsed from raw response payload:',
-					submitResponse.response.rawResponse,
+					sanitizeText(submitResponse.response.rawResponse),
 				].join('\n')
 			);
 			setRunNotice('Mock registry response submitted and parsed through the API route.');

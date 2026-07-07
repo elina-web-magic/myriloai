@@ -253,6 +253,13 @@ model EvaluationResult {
   // null = not scanned; [] = clean; non-empty = flagged pattern names.
   injectionFlags Json?
 
+  // Hallucination flag taxonomy (6.6): auto-detected failure labels.
+  failureLabels String[]
+
+  // PoLL consistency checks (6.8): per-judge scores for disagreement analysis.
+  // Shape: [{ model: string; score: number }]
+  judgeScores Json?
+
   run          EvaluationRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
   scenario     Scenario          @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
   chainResults ChainStepResult[]
