@@ -1,6 +1,14 @@
 'use client';
 
-import { createContext, type ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import {
+	createContext,
+	type ReactNode,
+	useContext,
+	useEffect,
+	useMemo,
+	useRef,
+	useState,
+} from 'react';
 
 type Theme = 'light' | 'dark';
 
@@ -35,21 +43,30 @@ export function ThemeProvider({
 	const [resolvedTheme, setResolvedTheme] = useState<Theme>(defaultTheme);
 
 	useEffect(() => {
-		try {
-			const storedTheme = window.localStorage.getItem(STORAGE_KEY);
+		Promise.resolve().then(() => {
+			try {
+				const storedTheme = window.localStorage.getItem(STORAGE_KEY);
 
-			if (storedTheme === 'light' || storedTheme === 'dark') {
-				setResolvedTheme(storedTheme);
-				return;
+				if (storedTheme === 'light' || storedTheme === 'dark') {
+					setResolvedTheme(storedTheme);
+					return;
+				}
+			} catch {}
+
+			if (enableSystem) {
+				setResolvedTheme(getSystemTheme());
 			}
-		} catch {}
-
-		if (enableSystem) {
-			setResolvedTheme(getSystemTheme());
-		}
+		});
 	}, [enableSystem]);
 
+	const isInitialMount = useRef(true);
+
 	useEffect(() => {
+		if (isInitialMount.current) {
+			isInitialMount.current = false;
+			return;
+		}
+
 		const rootElement = document.documentElement;
 
 		rootElement.setAttribute('data-theme', resolvedTheme);

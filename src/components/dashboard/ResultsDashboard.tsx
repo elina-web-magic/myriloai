@@ -4,6 +4,7 @@ import { Activity, Brain, ListChecks, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { DetailSplitPane } from '@/components/dashboard/DetailSplitPane';
 import { Button } from '@/components/ui/button';
+import { GlassCard } from '@/components/ui/glass-card';
 import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
 
 import type { DashboardResult } from '@/types';
@@ -110,7 +111,7 @@ export function ResultsDashboard({
 				) : null}
 
 				{isDemoData && !hasPersistedResults ? (
-					<div className="results-dashboard__data-state card flex flex-col gap-2 p-4">
+					<GlassCard className="results-dashboard__data-state flex flex-col gap-2 p-4">
 						<div className="results-dashboard__data-state-row flex items-center justify-between gap-3">
 							<p className="results-dashboard__data-state-label meta">Data source</p>
 							<span className="results-dashboard__data-state-badge rounded-full border border-[var(--warning)] bg-[var(--warning-soft)] px-2.5 py-1 text-xs font-semibold text-[var(--warning)]">
@@ -121,11 +122,11 @@ export function ResultsDashboard({
 							No evaluation results were found in the database yet. The dashboard is showing demo
 							results until a real run is saved.
 						</p>
-					</div>
+					</GlassCard>
 				) : null}
 
 				{!hasPersistedResults ? (
-					<div className="results-dashboard__empty-state card flex flex-col gap-3 p-8">
+					<GlassCard className="results-dashboard__empty-state flex flex-col gap-3 p-8">
 						<p className="results-dashboard__empty-state-label meta">No results yet</p>
 						<h3 className="results-dashboard__empty-state-title t-h3">
 							Run an evaluation to populate this dashboard
@@ -134,7 +135,7 @@ export function ResultsDashboard({
 							When a run is saved, scenarios and their detailed scores will appear here
 							automatically.
 						</p>
-					</div>
+					</GlassCard>
 				) : null}
 
 				{hasPersistedResults ? (

@@ -29,6 +29,24 @@ export default function RootLayout({
 			suppressHydrationWarning
 			className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
 		>
+			<head>
+				<script>
+					{`
+						(function() {
+							try {
+								var storedTheme = window.localStorage.getItem('myrilo-theme');
+								if (storedTheme === 'light' || storedTheme === 'dark') {
+									document.documentElement.setAttribute('data-theme', storedTheme);
+									document.documentElement.style.colorScheme = storedTheme;
+								} else {
+									document.documentElement.setAttribute('data-theme', 'dark');
+									document.documentElement.style.colorScheme = 'dark';
+								}
+							} catch (e) {}
+						})();
+					`}
+				</script>
+			</head>
 			<body className="min-h-full flex flex-col" suppressHydrationWarning>
 				<ThemeProvider attribute="data-theme" defaultTheme="dark" enableSystem={false}>
 					{children}
