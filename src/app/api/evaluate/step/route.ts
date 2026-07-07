@@ -3,6 +3,7 @@ import { evaluationRequestSchema } from '@/lib/contracts/evaluation';
 import { getMockEvaluationSubmitState, isMockModeEnabled } from '@/lib/dev/static-registry';
 import { ERRORS } from '@/lib/errors';
 import { evaluateResponse, generateOutput } from '@/lib/evaluator';
+import { sanitizeText } from '@/lib/guardrails/output-rails';
 import { Logger } from '@/lib/logger/logger';
 import { ConsoleSink } from '@/lib/logger/sinks';
 import { prisma } from '@/lib/prisma';
@@ -61,7 +62,7 @@ export async function POST(req: Request) {
 			'claude-3-5-haiku-20241022',
 			'claude-3-haiku-20240307',
 		];
-		const parsedResponse = await evaluateResponse(
+		const { parsedResponse, failureLabels, judgeScores } = await evaluateResponse(
 			judgeModels,
 			scenario.taskDescription,
 			scoringMetrics,
@@ -70,6 +71,7 @@ export async function POST(req: Request) {
 		);
 
 		// 5. Persist Run and Result to Database
+		const sanitizedOutput = sanitizeText(rawOutput);
 		const run = await prisma.evaluationRun.create({
 			data: {
 				projectId: project.id,
@@ -86,12 +88,15 @@ export async function POST(req: Request) {
 						{
 							scenarioId: scenario.id,
 							rawOutput,
+							sanitizedOutput,
 							totalScore: parsedResponse.score,
 							scores: { overall: parsedResponse.score },
 							reasoning: parsedResponse.summary,
 							rubricSnapshot: scenario.scoringMetrics
 								? JSON.parse(JSON.stringify(scenario.scoringMetrics))
 								: [],
+							failureLabels,
+							judgeScores,
 						},
 					],
 				},
@@ -105,6 +110,7 @@ export async function POST(req: Request) {
 				scenario: scenario.name,
 				rawResponse: rawOutput,
 				parsedResponse,
+				failureLabels,
 			},
 			source: 'live',
 		};

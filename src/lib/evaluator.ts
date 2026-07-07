@@ -1,8 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk';
 import type { z } from 'zod';
 import { evaluationParsedResponseSchema } from '@/lib/contracts/evaluation';
+import { detectFailureLabels, parseWithRetry } from '@/lib/guardrails/output-rails';
 import { Logger } from '@/lib/logger/logger';
 import { ConsoleSink } from '@/lib/logger/sinks';
+import type { FailureLabel } from '@/types';
 
 const logger = new Logger({
 	scope: 'lib:evaluator',
@@ -101,8 +103,16 @@ export async function generateOutput(
 	}
 }
 
+type JudgeScore = { model: string; score: number };
+
+export type EvaluateResponseResult = {
+	parsedResponse: z.infer<typeof evaluationParsedResponseSchema>;
+	failureLabels: FailureLabel[];
+	judgeScores: JudgeScore[];
+};
+
 /**
- * Evaluates a raw response using a judge model and returns the parsed XML results.
+ * Evaluates a raw response using a judge model and returns parsed results with failure labels.
  */
 export async function evaluateResponse(
 	judgeModels: string[],
@@ -110,7 +120,7 @@ export async function evaluateResponse(
 	scoringMetrics: string[],
 	rawResponse: string,
 	overrides: { instruction: string; priority: number }[] = []
-): Promise<z.infer<typeof evaluationParsedResponseSchema>> {
+): Promise<EvaluateResponseResult> {
 	const client = getAnthropicClient();
 
 	const sortedOverrides = [...overrides].sort((a, b) => b.priority - a.priority);
@@ -130,7 +140,7 @@ ${
 
 Your only output should be a single XML block following exactly this structure:
 <evaluation>
-  <reasoning>Detailed step-by-step reasoning evaluating each metric.</reasoning>
+  <reasoning>Detailed step-by-step reasoning evaluating each metric. For each point you make, quote the specific phrase from the evaluated response that supports your claim, using double quotes. Example: The response states "exact phrase here" which demonstrates...</reasoning>
   <summary>Short summary of the response quality.</summary>
   <risks>
     <risk>Risk 1</risk>
@@ -145,6 +155,7 @@ Important:
 - Provide ONLY the XML. Do not use markdown wrappers.
 - If there are no risks, omit the <risks> and <mitigations> blocks entirely or leave them empty.
 - Ensure the score is an integer between 0 and 40.
+- Every claim in <reasoning> MUST be backed by a direct quote from the evaluated response.
 `;
 
 	const userPrompt = `Evaluate the following untrusted response:
@@ -163,7 +174,9 @@ ${rawResponse}
 			});
 
 			if (response.content[0].type === 'text') {
-				return { model, result: parseEvaluationXML(response.content[0].text) };
+				const rawXml = response.content[0].text;
+				const { result, didRetry } = parseWithRetry(() => parseEvaluationXML(rawXml));
+				return { model, result, didRetry };
 			}
 			throw new Error(`Unexpected response format from Judge model: ${model}`);
 		});
@@ -176,6 +189,7 @@ ${rawResponse}
 				): o is PromiseFulfilledResult<{
 					model: string;
 					result: z.infer<typeof evaluationParsedResponseSchema>;
+					didRetry: boolean;
 				}> => o.status === 'fulfilled'
 			)
 			.map((o) => o.value);
@@ -184,7 +198,28 @@ ${rawResponse}
 			throw new Error('All panel judges failed to return a valid evaluation');
 		}
 
-		return aggregatePanelResults(successes);
+		const parsedResponse = aggregatePanelResults(successes);
+		const parsedWithRetry = successes.some((s) => s.didRetry);
+		const judgeScores: JudgeScore[] = successes.map((s) => ({
+			model: s.model,
+			score: s.result.score,
+		}));
+		const failureLabels = detectFailureLabels(
+			parsedResponse.summary,
+			parsedWithRetry,
+			judgeScores.map((j) => j.score),
+			rawResponse
+		);
+
+		if (failureLabels.includes('EVALUATOR_DISAGREEMENT')) {
+			logger.warn('Low-confidence evaluation: panel judges disagree', {
+				judgeScores,
+				aggregatedScore: parsedResponse.score,
+				failureLabels,
+			});
+		}
+
+		return { parsedResponse, failureLabels, judgeScores };
 	} catch (error) {
 		logger.error('Anthropic API Error (evaluateResponse)', {}, error);
 		throw error;
