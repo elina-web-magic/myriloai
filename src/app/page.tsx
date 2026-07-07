@@ -1,6 +1,8 @@
 import { ResultsDashboard } from '@/components/dashboard/ResultsDashboard';
-import { HeaderBar } from '@/components/shell/HeaderBar';
+import { ConsoleSidebar } from '@/components/shell/ConsoleSidebar';
 import { PromptInputZone } from '@/components/shell/PromptInputZone';
+import { Sidebar } from '@/components/shell/Sidebar';
+import { GlassCard } from '@/components/ui/glass-card';
 import type { JsonValue } from '@/generated/prisma/runtime/client';
 import { dashboardResultSchema } from '@/lib/contracts/evaluation';
 import { getDashboardMockState, isMockModeEnabled } from '@/lib/dev/static-registry';
@@ -89,52 +91,48 @@ async function getDashboardReportData(): Promise<DashboardDataState> {
 	};
 }
 
+import { MobileHeader } from '@/components/shell/MobileHeader';
+
 export default async function Home() {
 	const { reportData, source } = await getDashboardReportData();
 
 	return (
-		<main className="app min-h-screen p-6 md:p-12 lg:p-24 max-w-7xl mx-auto flex flex-col gap-8 relative z-10">
-			<HeaderBar />
+		<main className="app flex flex-col lg:grid lg:grid-cols-[auto_1fr_auto] h-screen relative z-10 overflow-hidden">
+			<Sidebar />
 
-			<section
-				className="app__composer-section flex flex-col gap-4"
-				aria-labelledby="app-composer-title"
-			>
-				<div className="app__section-header flex flex-col gap-2">
-					<p className="app__section-eyebrow meta">Compose Run</p>
-					<div className="app__section-copy flex flex-col gap-1">
-						<h2 id="app-composer-title" className="app__section-title t-h2">
-							Write the next prompt to evaluate
-						</h2>
-						<p className="app__section-description lead max-w-3xl">
-							Use this area to compose the next run. Evaluation results appear separately in the
-							review workspace below.
-						</p>
-					</div>
+			<div className="app-wrapper h-full overflow-y-auto w-full max-w-7xl mx-auto flex flex-col">
+				<MobileHeader />
+
+				<div className="p-6 md:p-12 flex flex-col gap-4">
+					<section
+						className="app__composer-section flex flex-col gap-4"
+						aria-labelledby="app-composer-title"
+					>
+						<PromptInputZone />
+					</section>
+
+					<GlassCard
+						className="app__review-section flex flex-col gap-6 p-6 md:p-8 w-full max-w-7xl mx-auto"
+						aria-labelledby="app-review-title"
+					>
+						<div className="app__section-header flex flex-col gap-2">
+							<p className="app__section-eyebrow meta">Review Workspace</p>
+							<div className="app__section-copy flex flex-col gap-1">
+								<h2 id="app-review-title" className="app__section-title t-h2">
+									Inspect run quality, scores, and raw output
+								</h2>
+								<p className="app__section-description lead max-w-3xl">
+									This area is dashboard-first: scan scenarios, compare scores, and open raw model
+									output only when you need detail.
+								</p>
+							</div>
+						</div>
+
+						<ResultsDashboard reportData={reportData} dataSource={source} />
+					</GlassCard>
 				</div>
-
-				<PromptInputZone />
-			</section>
-
-			<section
-				className="app__review-section flex flex-col gap-4"
-				aria-labelledby="app-review-title"
-			>
-				<div className="app__section-header flex flex-col gap-2">
-					<p className="app__section-eyebrow meta">Review Workspace</p>
-					<div className="app__section-copy flex flex-col gap-1">
-						<h2 id="app-review-title" className="app__section-title t-h2">
-							Inspect run quality, scores, and raw output
-						</h2>
-						<p className="app__section-description lead max-w-3xl">
-							This area is dashboard-first: scan scenarios, compare scores, and open raw model
-							output only when you need detail.
-						</p>
-					</div>
-				</div>
-
-				<ResultsDashboard reportData={reportData} dataSource={source} />
-			</section>
+			</div>
+			<ConsoleSidebar />
 		</main>
 	);
 }
