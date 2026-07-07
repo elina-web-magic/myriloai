@@ -167,14 +167,33 @@
 
 #### `[NEW] lib/guardrails/input-rails.ts`
 
-1. ⬜️ 6.1 Implement payload size validation
-    1. ⬜️ 6.1.a Enforce max scenario input size (characters + estimated tokens)
-    1. ⬜️ 6.1.b Enforce max dataset import size (row count + total payload)
-    1. ⬜️ 6.1.c Return structured `StandardizedError` with code `INPUT_TOO_LARGE` on violation
-1. ⬜️ 6.2 Implement prompt injection detection (server-side)
-    1. ⬜️ 6.2.a Add regex/keyword heuristic scanner for known injection patterns in scenario content
-    1. ⬜️ 6.2.b Flag detected injections as warnings and persist flags on `EvaluationResult`
-    1. ⬜️ 6.2.c Add XML-tag fencing utility for wrapping untrusted scenario input and model output
+1. ✅ 6.1 Implement payload size validation
+    1. ✅ 6.1.a Enforce max scenario input size (characters + estimated tokens)
+    1. ✅ 6.1.b Enforce max dataset import size (row count + total payload)
+    1. ✅ 6.1.c Return structured `StandardizedError` with code `INPUT_TOO_LARGE` on violation
+1. ✅ 6.2 Implement prompt injection detection (server-side)
+    1. ✅ 6.2.a Add regex/keyword heuristic scanner for known injection patterns in scenario content
+    1. ✅ 6.2.b Flag detected injections as warnings and persist flags on `EvaluationResult`
+    1. ✅ 6.2.c Add XML-tag fencing utility for wrapping untrusted scenario input and model output
+    1. ⬜️ 6.2.d Extend injection scanner with missing high-risk patterns (from `docs/GUARDRAILS_GUIDE.md`)
+        1. ⬜️ 6.2.d.i `authority-escalation` — fake `SYSTEM:` / `ADMIN:` / `[DEVELOPER MODE]` / `Anthropic override:` headers (Guide #7, Risk 8)
+        1. ⬜️ 6.2.d.ii `instruction-substitution` — `from now on you must`, `your real task is`, `your actual task` (Guide #2, Risk 8)
+        1. ⬜️ 6.2.d.iii `meta-instruction-to-judge` — `skip the rubric`, `do not penalize`, `ignore quality issues` (Guide #15, Risk 9)
+        1. ⬜️ 6.2.d.iv `fake-rubric-injection` — `according to (the )?evaluation guidelines`, `scoring rule` inside payload (Guide #16, Risk 8)
+        1. ⬜️ 6.2.d.v `judge-impersonation` — `As the evaluator`, `Evaluation: PASS`, `I confirm.*verdict` (Guide #31, Risk 8)
+        1. ⬜️ 6.2.d.vi `self-assessment-injection` — `\[APPROVED\]`, `already passed review`, `Verified by expert` (Guide #17, Risk 7)
+        1. ⬜️ 6.2.d.vii `fake-conversation-turns` — `^Human:`, `^Assistant:`, `<\|im_start\|>` role markers (Guide #14, Risk 7)
+        1. ⬜️ 6.2.d.viii `homoglyph-normalization` — NFKC + strip zero-width chars (U+200B, U+FEFF) before all pattern matching (Guide #8, Risk 7)
+        1. ⬜️ 6.2.d.ix `hypothetical-wrapper` — `hypothetical|fictional|imagine` + constraint-removal phrase (Guide #18, Risk 6)
+        1. ⬜️ 6.2.d.x `test-simulation-framing` — `sandbox mode`, `test mode`, `simulation.*no restrictions` (Guide #19, Risk 6)
+        1. ⬜️ 6.2.d.xi Fix false positive: narrow `xml-escape-attempt` to only OUR fence tags (`</untrusted-input>`, `</model-output>`); remove `system|instruction|context` — these are legitimate prompt engineering tags
+        1. ⬜️ 6.2.d.xii Escape developer-authored content before fencing: in `fenceUntrustedInput`, replace `<` → `&lt;` and `>` → `&gt;` for the developer `prompt` field only (trusted source, escape not flag)
+    1. ⬜️ 6.2.e Write Vitest unit tests for `src/lib/guardrails/input-rails.test.ts`
+        1. ⬜️ 6.2.e.i Size validation — `validateScenarioInputSize`: input within limit → `null`; input at exact limit → `null`; input +1 char over limit → `INPUT_TOO_LARGE` (field `scenario`); estimated tokens over limit → `INPUT_TOO_LARGE`
+        1. ⬜️ 6.2.e.ii Size validation — `validateDatasetImportSize`: 500 rows → `null`; 501 rows → `INPUT_TOO_LARGE` (field `dataset`); rows within count but total chars over limit → `INPUT_TOO_LARGE`
+        1. ⬜️ 6.2.e.iii Injection scanner — true positives: one test case per pattern (all 21 patterns after 6.2.d); each must return `flagged: true` with correct `pattern` name in `matches`
+        1. ⬜️ 6.2.e.iv Injection scanner — true negatives: clean plain text → `flagged: false, matches: []`; legitimate `</context>` tag (after fix xi) → `flagged: false`; `</untrusted-input>` → `flagged: true`
+        1. ⬜️ 6.2.e.v Fencing utilities — `fenceUntrustedInput`: wraps content in correct tags; content containing `<` / `>` is escaped (after fix xii); `fenceModelOutput`: wraps in `<model-output>` tags
 1. ⬜️ 6.3 Implement rate limiting for evaluation runs
     1. ⬜️ 6.3.a Add per-user rate limit for run creation (configurable, e.g. 20 runs/hour)
     1. ⬜️ 6.3.b Add per-project concurrent run limit
@@ -213,6 +232,8 @@
     1. ⬜️ 6.10.a Add uncertainty badge component
     1. ⬜️ 6.10.b Replace single opaque score with dimension-level breakdown + confidence indicators
     1. ⬜️ 6.10.c Surface failure labels and disagreement flags in `ResultsDashboard` and `DetailSplitPane`
+    1. ⬜️ 6.10.d Surface `injectionFlags` in `ResultsDashboard` — warning badge per result when `injectionFlags` is non-empty; show flagged pattern names on hover/expand
+    1. ⬜️ 6.10.e Add client-side payload size guard in `PromptInputZone` — check char count against `INPUT_LIMITS.SCENARIO_MAX_CHARS` on input change; pass `INPUT_TOO_LARGE` `StandardizedError` to existing error renderer and disable submit button
 
 #### `[DEFERRED] Retrieval Rails`
 

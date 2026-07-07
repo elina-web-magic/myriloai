@@ -1,6 +1,13 @@
 import type { z } from 'zod';
 import type { StandardizedError } from '@/types';
 
+type InputTooLargeContext = {
+	field: string;
+	actual: Record<string, number>;
+	limit: Record<string, number>;
+	reason: string;
+};
+
 export const ERRORS = {
 	MOCK_SCENARIO_EXECUTION_FAILED: (): StandardizedError => ({
 		code: 'MOCK_SCENARIO_EXECUTION_FAILED',
@@ -38,5 +45,13 @@ export const ERRORS = {
 		code: 'INTERNAL_ERROR',
 		message,
 		severity: 'error',
+	}),
+
+	INPUT_TOO_LARGE: (ctx: InputTooLargeContext): StandardizedError => ({
+		code: 'INPUT_TOO_LARGE',
+		message: `Input too large on field "${ctx.field}": ${ctx.reason}.`,
+		field: ctx.field,
+		severity: 'error',
+		details: { actual: ctx.actual, limit: ctx.limit },
 	}),
 } as const;

@@ -249,6 +249,10 @@ model EvaluationResult {
   // historical score meant.
   rubricSnapshot Json
 
+  // Prompt injection scan result persisted at evaluation time.
+  // null = not scanned; [] = clean; non-empty = flagged pattern names.
+  injectionFlags Json?
+
   run          EvaluationRun     @relation(fields: [runId], references: [id], onDelete: Cascade)
   scenario     Scenario          @relation(fields: [scenarioId], references: [id], onDelete: Cascade)
   chainResults ChainStepResult[]
