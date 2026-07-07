@@ -144,7 +144,10 @@
 
 #### `[NEW] Human-in-the-Loop Interactivity`
 
-1. ⬜️ Visual Override Score workflow with text notes for log traces
+1. ✅ 5.4 Implement Visual Override Score workflow with text notes for log traces
+    1. ✅ 5.4.a Add `overrideSubmitSchema` to Zod contracts
+    2. ✅ 5.4.b Create `POST /api/evaluate/override` endpoint for logging traces
+    3. ✅ 5.4.c Add `Override Score` dialog and action button to `DetailSplitPane`
 
 #### `[MODIFY] Error Factory & Logger Adaptation`
 
