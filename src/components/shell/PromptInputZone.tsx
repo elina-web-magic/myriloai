@@ -17,6 +17,7 @@ import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
+import { ERRORS } from '@/lib/errors';
 import type { MockScenarioId, StandardizedError } from '@/types';
 
 const modelOptions = ['Claude Sonnet', 'GPT-4.1', 'Gemini 2.5 Pro'] as const;
@@ -176,12 +177,7 @@ export function PromptInputZone() {
 
 	const handleRun = async () => {
 		if (prompt.trim().length === 0) {
-			const promptError: StandardizedError = {
-				code: 'EMPTY_PROMPT',
-				message: 'Prompt is required before an evaluation can start.',
-				field: 'prompt',
-				severity: 'error',
-			};
+			const promptError = ERRORS.EMPTY_PROMPT();
 
 			setSubmitError(promptError);
 			setRunOutput(`Error: ${promptError.message}`);
@@ -227,11 +223,7 @@ export function PromptInputZone() {
 				const errorResult = standardizedErrorSchema.safeParse(responseBody);
 				const submitFailure = errorResult.success
 					? errorResult.data
-					: ({
-							code: 'UNEXPECTED_EVALUATION_ERROR',
-							message: 'Evaluation submit failed.',
-							severity: 'error',
-						} satisfies StandardizedError);
+					: ERRORS.UNEXPECTED_EVALUATION_ERROR('Evaluation submit failed.');
 
 				throw submitFailure;
 			}
@@ -270,11 +262,9 @@ export function PromptInputZone() {
 			setActiveRunState('completed');
 		} catch (error) {
 			let normalizedError: StandardizedError;
-			const fallbackError: StandardizedError = {
-				code: 'UNEXPECTED_EVALUATION_ERROR',
-				message: error instanceof Error ? error.message : 'Evaluation submit failed unexpectedly.',
-				severity: 'error',
-			};
+			const fallbackError = ERRORS.UNEXPECTED_EVALUATION_ERROR(
+				error instanceof Error ? error.message : 'Evaluation submit failed unexpectedly.'
+			);
 
 			if (
 				error !== null &&

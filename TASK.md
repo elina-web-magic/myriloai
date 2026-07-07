@@ -129,22 +129,29 @@
 
 #### `[NEW] app/api/evaluate/step/route.ts`
 
-1. ⬜️ Create single-step execution endpoint
-1. ⬜️ Add Claude API integration
-1. ⬜️ Enforce `maxTotalTokens`
-1. ⬜️ Enforce `Scenario` immutability rules
+1. ✅ 5.1.a Create single-step execution endpoint
+1. ✅ 5.1.b Add Claude API integration
+1. ✅ 5.1.c Enforce `maxTotalTokens`
+1. ✅ 5.1.d Enforce `Scenario` immutability rules
 
 #### `[NEW] lib/evaluator.ts`
 
-1. ⬜️ Implement evaluator agent
-1. ⬜️ Read scoring dimensions dynamically from `Scenario.scoringMetrics`
-1. ⬜️ Restrict override criteria to explicit use cases
-1. ⬜️ Implement panel-of-judges scoring (PoLL pattern: 2–3 diverse cheap models + majority/average vote) instead of a single judge — see `docs/ARCHITECTURE_RESEARCH_AUDIT.md` §3.1
-1. ⬜️ Decide Zod schema field order (`reasoning`/`evidence` before numeric `scores`) and prompted-JSON-with-retry vs. constrained decoding for the judge call — see `docs/ARCHITECTURE_RESEARCH_AUDIT.md` §3.2
+1. ✅ 5.2.a Implement evaluator agent
+1. ✅ 5.2.b Read scoring dimensions dynamically from `Scenario.scoringMetrics`
+1. ✅ 5.2.c Restrict override criteria to explicit use cases
+1. ⬜️ 5.2.d Implement panel-of-judges scoring (PoLL pattern: 2–3 diverse cheap models + majority/average vote) instead of a single judge — see `docs/ARCHITECTURE_RESEARCH_AUDIT.md` §3.1
+1. ✅ 5.2.e Decide Zod schema field order (`reasoning`/`evidence` before numeric `scores`) and prompted-JSON-with-retry vs. constrained decoding for the judge call (Switched to XML + Regex parsing)
 
 #### `[NEW] Human-in-the-Loop Interactivity`
 
 1. ⬜️ Visual Override Score workflow with text notes for log traces
+
+#### `[MODIFY] Error Factory & Logger Adaptation`
+
+1. ✅ 5.3.a Create `src/lib/errors.ts` to centralize `StandardizedError` definitions
+1. ✅ 5.3.b Update `src/lib/logger/types.ts` to support `code`, `severity`, `field`, `details`
+1. ✅ 5.3.c Update `Logger.serializeError` in `logger.ts` to map `StandardizedError` fields
+1. ✅ 5.3.d Refactor `PromptInputZone.tsx` and API routes to use the new Error Factory
 
 ---
 
