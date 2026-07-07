@@ -58,6 +58,13 @@ const evaluateSubmitSuccessSchema = z.object({
 	source: z.literal('mock'),
 });
 
+const overrideSubmitSchema = z.object({
+	evaluationResultId: z.string().trim().min(1),
+	originalScore: z.number().finite().min(0).max(40),
+	overriddenScore: z.number().finite().min(0).max(40),
+	comment: z.string().trim().min(1),
+});
+
 export {
 	dashboardResultSchema,
 	evaluateSubmitSuccessSchema,
@@ -65,5 +72,6 @@ export {
 	evaluationRequestSchema,
 	evaluationResponseSchema,
 	mockScenarioIdSchema,
+	overrideSubmitSchema,
 	standardizedErrorSchema,
 };
