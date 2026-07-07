@@ -229,12 +229,20 @@
     1. ✅ 6.9.a Require evidence-backed scoring per rubric dimension
     1. ✅ 6.9.b Add groundedness verification: check that cited evidence exists in evaluated output
     1. ✅ 6.9.c Flag `GROUNDING_FAILURE` when evidence doesn't match source
-1. ⬜️ 6.10 Implement uncertainty surfacing in UI
-    1. ⬜️ 6.10.a Add uncertainty badge component
-    1. ⬜️ 6.10.b Replace single opaque score with dimension-level breakdown + confidence indicators
-    1. ⬜️ 6.10.c Surface failure labels and disagreement flags in `ResultsDashboard` and `DetailSplitPane`
-    1. ⬜️ 6.10.d Surface `injectionFlags` in `ResultsDashboard` — warning badge per result when `injectionFlags` is non-empty; show flagged pattern names on hover/expand
-    1. ⬜️ 6.10.e Add client-side payload size guard in `PromptInputZone` — check char count against `INPUT_LIMITS.SCENARIO_MAX_CHARS` on input change; pass `INPUT_TOO_LARGE` `StandardizedError` to existing error renderer and disable submit button
+1. ✅ 6.10 Implement uncertainty surfacing in UI
+    1. ✅ 6.10.a Add uncertainty badge component
+    1. ✅ 6.10.b Replace single opaque score with dimension-level breakdown + confidence indicators
+    1. ✅ 6.10.c Surface failure labels and disagreement flags in `ResultsDashboard` and `DetailSplitPane`
+    1. ✅ 6.10.d Surface `injectionFlags` in `ResultsDashboard` — warning badge per result when `injectionFlags` is non-empty; show flagged pattern names on hover/expand
+    1. ✅ 6.10.e Add client-side payload size guard in `PromptInputZone` — check char count against `INPUT_LIMITS.SCENARIO_MAX_CHARS` on input change; pass `INPUT_TOO_LARGE` `StandardizedError` to existing error renderer and disable submit button
+
+#### `[MODIFY] lib/guardrails/input-rails.ts` — Amendment 6.A: Injection Normalizer Gaps
+
+1. ⬜️ 6.A.1 Strip **Bidi Control Characters** (U+202A–202E, U+2066–2069) in `normalizeForScanning` — NFKC does NOT remove them; RTL override can mask file extensions and line endings
+1. ⬜️ 6.A.2 Strip **Unicode Tags Block** (U+E0000–E007F) in `normalizeForScanning` — fully invisible chars, documented injection vector; no standard normalization touches them
+1. ⬜️ 6.A.3 Verify **Mathematical Alphanumeric Symbols** (U+1D400–1D7FF) NFKC coverage — confirm `𝐢𝐠𝐧𝐨𝐫𝐞` → `ignore` after `.normalize('NFKC')`; add supplemental strip if not fully covered
+1. ⬜️ 6.A.4 Update `normalizeForScanning` comment — document what NFKC covers (fullwidth, compatibility chars) and what requires separate regex (Bidi, Tags block)
+1. ⏸️ 6.A.D1 [DEFERRED] Cross-Script Confusables (Greek, Armenian, extended Cyrillic) — requires `confusables` npm package (UTS39 base); defer until dependency is approved
 
 #### `[DEFERRED] Retrieval Rails`
 

@@ -81,6 +81,8 @@ async function getDashboardReportData(): Promise<DashboardDataState> {
 				reasoning: result.reasoning,
 				strengths: [],
 				weaknesses: [],
+				failureLabels: result.failureLabels,
+				injectionFlags: result.injectionFlags ? getStringArray(result.injectionFlags) : null,
 			}))
 		),
 		source: 'live',

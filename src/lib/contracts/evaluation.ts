@@ -51,6 +51,8 @@ const dashboardResultSchema = z.object({
 	reasoning: z.string(),
 	strengths: z.array(z.string()),
 	weaknesses: z.array(z.string()),
+	failureLabels: z.array(z.string()).optional().default([]),
+	injectionFlags: z.array(z.string()).nullable().optional(),
 });
 
 const evaluateSubmitSuccessSchema = z.object({

@@ -1,9 +1,10 @@
 'use client';
 
-import { Activity, Brain, ListChecks } from 'lucide-react';
+import { Activity, Brain, ListChecks, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { DetailSplitPane } from '@/components/dashboard/DetailSplitPane';
 import { Button } from '@/components/ui/button';
+import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
 
 import type { DashboardResult } from '@/types';
 
@@ -151,6 +152,8 @@ export function ResultsDashboard({
 									<div className="results-dashboard__scenario-items flex flex-col gap-3">
 										{reportData.map((row, index) => {
 											const isActive = index === selectedScenarioIndex;
+											const hasInjectionFlags =
+												Array.isArray(row.injectionFlags) && row.injectionFlags.length > 0;
 
 											return (
 												<Button
@@ -171,15 +174,27 @@ export function ResultsDashboard({
 														<span className="results-dashboard__scenario-item-title text-sm font-semibold text-[var(--ink)]">
 															{row.test_case.scenario}
 														</span>
-														<span
-															className={`results-dashboard__scenario-item-score rounded-full border px-2 py-0.5 text-xs font-semibold ${getScoreColor(row.total_score)}`}
-														>
-															{row.total_score}/40
-														</span>
+														<div className="flex items-center gap-1.5 shrink-0">
+															{hasInjectionFlags && (
+																<span
+																	title={`Injection flags: ${(row.injectionFlags ?? []).join(', ')}`}
+																	className="results-dashboard__scenario-item-injection flex items-center gap-1 rounded-full border border-[var(--error)] bg-[var(--error-soft)] px-2 py-0.5 text-[10px] font-bold text-[var(--error)]"
+																>
+																	<ShieldAlert size={10} />
+																	Injection
+																</span>
+															)}
+															<span
+																className={`results-dashboard__scenario-item-score rounded-full border px-2 py-0.5 text-xs font-semibold ${getScoreColor(row.total_score)}`}
+															>
+																{row.total_score}/40
+															</span>
+														</div>
 													</div>
 													<p className="results-dashboard__scenario-item-meta t-small line-clamp-2 text-[var(--ink-3)]">
 														{row.test_case.solution_criteria.join(' • ')}
 													</p>
+													<UncertaintyBadge labels={row.failureLabels ?? []} />
 												</Button>
 											);
 										})}

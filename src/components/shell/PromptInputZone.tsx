@@ -18,6 +18,7 @@ import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
 import { ERRORS } from '@/lib/errors';
+import { INPUT_LIMITS } from '@/lib/guardrails/input-rails';
 import { sanitizeText } from '@/lib/guardrails/output-rails';
 import type { MockScenarioId, StandardizedError } from '@/types';
 
@@ -362,13 +363,33 @@ export function PromptInputZone() {
 								className="prompt-input-zone__textarea min-h-64"
 								rows={12}
 								value={prompt}
-								onChange={(event) => setPrompt(event.target.value)}
+								onChange={(event) => {
+									const value = event.target.value;
+									setPrompt(value);
+									if (value.length > INPUT_LIMITS.SCENARIO_MAX_CHARS) {
+										setSubmitError(
+											ERRORS.INPUT_TOO_LARGE({
+												field: 'prompt',
+												actual: { chars: value.length },
+												limit: { chars: INPUT_LIMITS.SCENARIO_MAX_CHARS },
+												reason: 'Prompt exceeds maximum character limit',
+											})
+										);
+									} else if (submitError?.code === 'INPUT_TOO_LARGE') {
+										setSubmitError(null);
+									}
+								}}
 								placeholder="Describe the task or message you want to test"
 							/>
 						</div>
 
 						<div className="prompt-input-zone__primary-actions flex flex-wrap items-center gap-3">
-							<Button type="button" size="default" onClick={handleRun}>
+							<Button
+								type="button"
+								size="default"
+								onClick={handleRun}
+								disabled={submitError?.code === 'INPUT_TOO_LARGE'}
+							>
 								<Play size={16} />
 								Run
 							</Button>

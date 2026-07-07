@@ -5,7 +5,7 @@ import fallbackData from '@/data/output.json';
 import { DetailSplitPane } from './DetailSplitPane';
 import { type OutputData, ResultsDashboard } from './ResultsDashboard';
 
-const reportData = fallbackData as OutputData[];
+const reportData = fallbackData as unknown as OutputData[];
 
 export const ResultsDashboardLiveState: Story = () => (
 	<div className="min-h-screen p-8">

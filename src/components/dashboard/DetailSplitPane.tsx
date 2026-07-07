@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
 
 const CopyButton = ({ text }: { text: string }) => {
 	const [copied, setCopied] = useState(false);
@@ -81,7 +82,6 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 				setIsOverridden(true);
 				setIsOverrideOpen(false);
 				setOverrideNote('');
-			} else {
 			}
 		} catch (_e) {
 		} finally {
@@ -108,92 +108,97 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 					</div>
 				</div>
 
-				<div className="detail-split-pane__score-container flex items-center gap-3">
-					<div
-						className={`detail-split-pane__score flex flex-col items-center justify-center rounded-xl border px-5 py-2 text-nowrap shadow-sm ${getScoreColor(localScore)} ${isOverridden ? 'ring-2 ring-violet-500/50 ring-offset-1 ring-offset-[var(--surface)]' : ''}`}
-					>
-						<div className="detail-split-pane__score-row flex items-baseline gap-1">
-							<span className="detail-split-pane__score-value text-2xl font-black">
-								{localScore}
-							</span>
-							<span className="detail-split-pane__score-max text-sm font-medium opacity-70">
-								/ 40
-							</span>
+				<div className="detail-split-pane__score-container flex flex-col items-end gap-2">
+					<div className="flex items-center gap-3">
+						<div
+							className={`detail-split-pane__score flex flex-col items-center justify-center rounded-xl border px-5 py-2 text-nowrap shadow-sm ${getScoreColor(localScore)} ${isOverridden ? 'ring-2 ring-violet-500/50 ring-offset-1 ring-offset-[var(--surface)]' : ''}`}
+						>
+							<div className="detail-split-pane__score-row flex items-baseline gap-1">
+								<span className="detail-split-pane__score-value text-2xl font-black">
+									{localScore}
+								</span>
+								<span className="detail-split-pane__score-max text-sm font-medium opacity-70">
+									/ 40
+								</span>
+							</div>
+							{isOverridden && (
+								<span className="detail-split-pane__score-badge text-[10px] font-bold uppercase tracking-wider opacity-80">
+									Overridden
+								</span>
+							)}
 						</div>
-						{isOverridden && (
-							<span className="detail-split-pane__score-badge text-[10px] font-bold uppercase tracking-wider opacity-80">
-								Overridden
-							</span>
-						)}
+
+						<DialogRoot open={isOverrideOpen} onOpenChange={setIsOverrideOpen}>
+							<DialogTrigger
+								render={
+									<Button
+										variant="secondary"
+										size="icon"
+										title="Override Score"
+										className="h-10 w-10 shrink-0 shadow-sm border-[var(--line)]"
+									>
+										<Edit2 size={16} className="text-[var(--ink-2)]" />
+									</Button>
+								}
+							/>
+							<DialogPortal>
+								<DialogBackdrop />
+								<DialogPopup className="w-full max-w-md">
+									<DialogHeader>
+										<DialogTitle>Override Evaluation Score</DialogTitle>
+									</DialogHeader>
+									<DialogBody className="flex flex-col gap-4">
+										<div className="flex flex-col gap-2">
+											<label
+												htmlFor="override-score"
+												className="text-sm font-medium text-[var(--ink-2)]"
+											>
+												New Score (0-40)
+											</label>
+											<Input
+												id="override-score"
+												type="number"
+												min={0}
+												max={40}
+												value={overrideScore}
+												onChange={(e) =>
+													setOverrideScore(e.target.value === '' ? '' : Number(e.target.value))
+												}
+												placeholder="Enter new score"
+											/>
+										</div>
+										<div className="flex flex-col gap-2">
+											<label
+												htmlFor="override-note"
+												className="text-sm font-medium text-[var(--ink-2)]"
+											>
+												Reasoning / Text Note
+											</label>
+											<Textarea
+												id="override-note"
+												value={overrideNote}
+												onChange={(e) => setOverrideNote(e.target.value)}
+												placeholder="Explain why the AI judge's score was incorrect..."
+												className="min-h-[100px] resize-y"
+											/>
+										</div>
+									</DialogBody>
+									<DialogFooter>
+										<DialogClose render={<Button variant="ghost">Cancel</Button>} />
+										<Button
+											onClick={handleOverrideSubmit}
+											disabled={isSubmitting || overrideScore === '' || !overrideNote.trim()}
+										>
+											{isSubmitting ? 'Saving...' : 'Save Override'}
+										</Button>
+									</DialogFooter>
+								</DialogPopup>
+							</DialogPortal>
+						</DialogRoot>
 					</div>
 
-					<DialogRoot open={isOverrideOpen} onOpenChange={setIsOverrideOpen}>
-						<DialogTrigger
-							render={
-								<Button
-									variant="secondary"
-									size="icon"
-									title="Override Score"
-									className="h-10 w-10 shrink-0 shadow-sm border-[var(--line)]"
-								>
-									<Edit2 size={16} className="text-[var(--ink-2)]" />
-								</Button>
-							}
-						/>
-						<DialogPortal>
-							<DialogBackdrop />
-							<DialogPopup className="w-full max-w-md">
-								<DialogHeader>
-									<DialogTitle>Override Evaluation Score</DialogTitle>
-								</DialogHeader>
-								<DialogBody className="flex flex-col gap-4">
-									<div className="flex flex-col gap-2">
-										<label
-											htmlFor="override-score"
-											className="text-sm font-medium text-[var(--ink-2)]"
-										>
-											New Score (0-40)
-										</label>
-										<Input
-											id="override-score"
-											type="number"
-											min={0}
-											max={40}
-											value={overrideScore}
-											onChange={(e) =>
-												setOverrideScore(e.target.value === '' ? '' : Number(e.target.value))
-											}
-											placeholder="Enter new score"
-										/>
-									</div>
-									<div className="flex flex-col gap-2">
-										<label
-											htmlFor="override-note"
-											className="text-sm font-medium text-[var(--ink-2)]"
-										>
-											Reasoning / Text Note
-										</label>
-										<Textarea
-											id="override-note"
-											value={overrideNote}
-											onChange={(e) => setOverrideNote(e.target.value)}
-											placeholder="Explain why the AI judge's score was incorrect..."
-											className="min-h-[100px] resize-y"
-										/>
-									</div>
-								</DialogBody>
-								<DialogFooter>
-									<DialogClose render={<Button variant="ghost">Cancel</Button>} />
-									<Button
-										onClick={handleOverrideSubmit}
-										disabled={isSubmitting || overrideScore === '' || !overrideNote.trim()}
-									>
-										{isSubmitting ? 'Saving...' : 'Save Override'}
-									</Button>
-								</DialogFooter>
-							</DialogPopup>
-						</DialogPortal>
-					</DialogRoot>
+					{/* 6.10.b+c: confidence indicator — failure labels below the score */}
+					<UncertaintyBadge labels={row.failureLabels ?? []} />
 				</div>
 			</div>
 
@@ -251,7 +256,7 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 											<div
 												className={`detail-split-pane__breakdown-bar-fill h-full ${bgColor}`}
 												style={{ width: `${(score / 10) * 100}%` }}
-											></div>
+											/>
 										</div>
 									</div>
 								);
