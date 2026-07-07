@@ -175,19 +175,19 @@
     1. ✅ 6.2.a Add regex/keyword heuristic scanner for known injection patterns in scenario content
     1. ✅ 6.2.b Flag detected injections as warnings and persist flags on `EvaluationResult`
     1. ✅ 6.2.c Add XML-tag fencing utility for wrapping untrusted scenario input and model output
-    1. ⬜️ 6.2.d Extend injection scanner with missing high-risk patterns (from `docs/GUARDRAILS_GUIDE.md`)
-        1. ⬜️ 6.2.d.i `authority-escalation` — fake `SYSTEM:` / `ADMIN:` / `[DEVELOPER MODE]` / `Anthropic override:` headers (Guide #7, Risk 8)
-        1. ⬜️ 6.2.d.ii `instruction-substitution` — `from now on you must`, `your real task is`, `your actual task` (Guide #2, Risk 8)
-        1. ⬜️ 6.2.d.iii `meta-instruction-to-judge` — `skip the rubric`, `do not penalize`, `ignore quality issues` (Guide #15, Risk 9)
-        1. ⬜️ 6.2.d.iv `fake-rubric-injection` — `according to (the )?evaluation guidelines`, `scoring rule` inside payload (Guide #16, Risk 8)
-        1. ⬜️ 6.2.d.v `judge-impersonation` — `As the evaluator`, `Evaluation: PASS`, `I confirm.*verdict` (Guide #31, Risk 8)
-        1. ⬜️ 6.2.d.vi `self-assessment-injection` — `\[APPROVED\]`, `already passed review`, `Verified by expert` (Guide #17, Risk 7)
-        1. ⬜️ 6.2.d.vii `fake-conversation-turns` — `^Human:`, `^Assistant:`, `<\|im_start\|>` role markers (Guide #14, Risk 7)
-        1. ⬜️ 6.2.d.viii `homoglyph-normalization` — NFKC + strip zero-width chars (U+200B, U+FEFF) before all pattern matching (Guide #8, Risk 7)
-        1. ⬜️ 6.2.d.ix `hypothetical-wrapper` — `hypothetical|fictional|imagine` + constraint-removal phrase (Guide #18, Risk 6)
-        1. ⬜️ 6.2.d.x `test-simulation-framing` — `sandbox mode`, `test mode`, `simulation.*no restrictions` (Guide #19, Risk 6)
-        1. ⬜️ 6.2.d.xi Fix false positive: narrow `xml-escape-attempt` to only OUR fence tags (`</untrusted-input>`, `</model-output>`); remove `system|instruction|context` — these are legitimate prompt engineering tags
-        1. ⬜️ 6.2.d.xii Escape developer-authored content before fencing: in `fenceUntrustedInput`, replace `<` → `&lt;` and `>` → `&gt;` for the developer `prompt` field only (trusted source, escape not flag)
+    1. ✅ 6.2.d Extend injection scanner with missing high-risk patterns (from `docs/GUARDRAILS_GUIDE.md`)
+        1. ✅ 6.2.d.i `authority-escalation` — fake `SYSTEM:` / `ADMIN:` / `[DEVELOPER MODE]` / `Anthropic override:` headers (Guide #7, Risk 8)
+        1. ✅ 6.2.d.ii `instruction-substitution` — `from now on you must`, `your real task is`, `your actual task` (Guide #2, Risk 8)
+        1. ✅ 6.2.d.iii `meta-instruction-to-judge` — `skip the rubric`, `do not penalize`, `ignore quality issues` (Guide #15, Risk 9)
+        1. ✅ 6.2.d.iv `fake-rubric-injection` — `according to (the )?evaluation guidelines`, `scoring rule` inside payload (Guide #16, Risk 8)
+        1. ✅ 6.2.d.v `judge-impersonation` — `As the evaluator`, `Evaluation: PASS`, `I confirm.*verdict` (Guide #31, Risk 8)
+        1. ✅ 6.2.d.vi `self-assessment-injection` — `\[APPROVED\]`, `already passed review`, `Verified by expert` (Guide #17, Risk 7)
+        1. ✅ 6.2.d.vii `fake-conversation-turns` — `^Human:`, `^Assistant:`, `<\|im_start\|>` role markers (Guide #14, Risk 7)
+        1. ✅ 6.2.d.viii `homoglyph-normalization` — NFKC + strip zero-width chars (U+200B, U+FEFF) before all pattern matching (Guide #8, Risk 7)
+        1. ✅ 6.2.d.ix `hypothetical-wrapper` — `hypothetical|fictional|imagine` + constraint-removal phrase (Guide #18, Risk 6)
+        1. ✅ 6.2.d.x `test-simulation-framing` — `sandbox mode`, `test mode`, `simulation.*no restrictions` (Guide #19, Risk 6)
+        1. ✅ 6.2.d.xi Fix false positive: narrow `xml-escape-attempt` to only OUR fence tags (`</untrusted-input>`, `</model-output>`); remove `system|instruction|context` — these are legitimate prompt engineering tags
+        1. ✅ 6.2.d.xii Escape developer-authored content before fencing: in `fenceUntrustedInput`, replace `<` → `&lt;` and `>` → `&gt;` for the developer `prompt` field only (trusted source, escape not flag)
     1. ⬜️ 6.2.e Write Vitest unit tests for `src/lib/guardrails/input-rails.test.ts`
         1. ⬜️ 6.2.e.i Size validation — `validateScenarioInputSize`: input within limit → `null`; input at exact limit → `null`; input +1 char over limit → `INPUT_TOO_LARGE` (field `scenario`); estimated tokens over limit → `INPUT_TOO_LARGE`
         1. ⬜️ 6.2.e.ii Size validation — `validateDatasetImportSize`: 500 rows → `null`; 501 rows → `INPUT_TOO_LARGE` (field `dataset`); rows within count but total chars over limit → `INPUT_TOO_LARGE`
