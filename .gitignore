@@ -55,3 +55,6 @@ docs/
 .pnpm-store/
 # Claude Code — personal, per-machine settings (not shared config)
 .claude/settings.local.json
+
+# Project planning — private, not for public repo
+TASK.md
