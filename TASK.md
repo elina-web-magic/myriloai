@@ -139,7 +139,10 @@
 1. ✅ 5.2.a Implement evaluator agent
 1. ✅ 5.2.b Read scoring dimensions dynamically from `Scenario.scoringMetrics`
 1. ✅ 5.2.c Restrict override criteria to explicit use cases
-1. ⬜️ 5.2.d Implement panel-of-judges scoring (PoLL pattern: 2–3 diverse cheap models + majority/average vote) instead of a single judge — see `docs/ARCHITECTURE_RESEARCH_AUDIT.md` §3.1
+1. ✅ 5.2.d Implement panel-of-judges scoring (PoLL pattern: 2–3 diverse cheap models + majority/average vote) instead of a single judge — see `docs/ARCHITECTURE_RESEARCH_AUDIT.md` §3.1
+    1. ✅ Refactor `evaluateResponse` to accept an array of models and run `Promise.all`
+    2. ✅ Implement `aggregatePanelResults` logic
+    3. ✅ Update API route to supply the Anthropic PoLL panel and set `judgeModel` to `'poll-anthropic-v1'`
 1. ✅ 5.2.e Decide Zod schema field order (`reasoning`/`evidence` before numeric `scores`) and prompted-JSON-with-retry vs. constrained decoding for the judge call (Switched to XML + Regex parsing)
 
 #### `[NEW] Human-in-the-Loop Interactivity`

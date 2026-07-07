@@ -105,7 +105,7 @@ export async function generateOutput(
  * Evaluates a raw response using a judge model and returns the parsed XML results.
  */
 export async function evaluateResponse(
-	judgeModel: string,
+	judgeModels: string[],
 	taskDescription: string | undefined,
 	scoringMetrics: string[],
 	rawResponse: string,
@@ -154,19 +154,62 @@ ${rawResponse}
 `;
 
 	try {
-		const response = await client.messages.create({
-			model: judgeModel,
-			max_tokens: 4096,
-			system: systemPrompt,
-			messages: [{ role: 'user', content: userPrompt }],
+		const promises = judgeModels.map(async (model) => {
+			const response = await client.messages.create({
+				model,
+				max_tokens: 4096,
+				system: systemPrompt,
+				messages: [{ role: 'user', content: userPrompt }],
+			});
+
+			if (response.content[0].type === 'text') {
+				return { model, result: parseEvaluationXML(response.content[0].text) };
+			}
+			throw new Error(`Unexpected response format from Judge model: ${model}`);
 		});
 
-		if (response.content[0].type === 'text') {
-			return parseEvaluationXML(response.content[0].text);
+		const outcomes = await Promise.allSettled(promises);
+		const successes = outcomes
+			.filter(
+				(
+					o
+				): o is PromiseFulfilledResult<{
+					model: string;
+					result: z.infer<typeof evaluationParsedResponseSchema>;
+				}> => o.status === 'fulfilled'
+			)
+			.map((o) => o.value);
+
+		if (successes.length === 0) {
+			throw new Error('All panel judges failed to return a valid evaluation');
 		}
-		throw new Error('Unexpected response format from Judge model');
+
+		return aggregatePanelResults(successes);
 	} catch (error) {
 		logger.error('Anthropic API Error (evaluateResponse)', {}, error);
 		throw error;
 	}
+}
+
+function aggregatePanelResults(
+	successes: { model: string; result: z.infer<typeof evaluationParsedResponseSchema> }[]
+): z.infer<typeof evaluationParsedResponseSchema> {
+	if (successes.length === 1) return successes[0].result;
+
+	const totalScore = successes.reduce((sum, s) => sum + s.result.score, 0);
+	const avgScore = Math.round(totalScore / successes.length);
+
+	const combinedSummary = successes
+		.map((s) => `[Judge ${s.model}]:\n${s.result.summary}`)
+		.join('\n\n---\n\n');
+
+	const allRisks = Array.from(new Set(successes.flatMap((s) => s.result.topRisks || [])));
+	const allMitigations = Array.from(new Set(successes.flatMap((s) => s.result.mitigations || [])));
+
+	return {
+		summary: combinedSummary,
+		topRisks: allRisks,
+		mitigations: allMitigations,
+		score: avgScore,
+	};
 }

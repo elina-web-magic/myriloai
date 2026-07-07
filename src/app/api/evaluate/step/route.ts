@@ -56,9 +56,13 @@ export async function POST(req: Request) {
 			scoringMetrics = scenario.scoringMetrics.filter((m) => typeof m === 'string') as string[];
 		}
 
-		const judgeModel = 'claude-3-5-sonnet-20241022';
+		const judgeModels = [
+			'claude-3-5-sonnet-20241022',
+			'claude-3-5-haiku-20241022',
+			'claude-3-haiku-20240307',
+		];
 		const parsedResponse = await evaluateResponse(
-			judgeModel,
+			judgeModels,
 			scenario.taskDescription,
 			scoringMetrics,
 			rawOutput,
@@ -75,7 +79,7 @@ export async function POST(req: Request) {
 					userPrompt: parsedRequest.prompt,
 				},
 				model: parsedRequest.model,
-				judgeModel,
+				judgeModel: 'poll-anthropic-v1',
 				maxTotalTokens: 8000,
 				results: {
 					create: [
