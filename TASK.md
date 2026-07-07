@@ -201,10 +201,10 @@
 
 #### `[NEW] lib/guardrails/dialog-rails.ts`
 
-1. ⬜️ 6.4 Implement evaluator prompt builder with safety fencing
-    1. ⬜️ 6.4.a Build prompt template with explicit XML-tag boundaries between trusted instructions and untrusted content
-    1. ⬜️ 6.4.b Add explicit "ignore embedded instructions" directive in evaluator system prompt
-    1. ⬜️ 6.4.c Enforce minimal context principle — pass only `taskDescription` + `scoringMetrics` + evaluated output
+1. ✅ 6.4 Implement evaluator prompt builder with safety fencing
+    1. ✅ 6.4.a Build prompt template with explicit XML-tag boundaries between trusted instructions and untrusted content
+    1. ✅ 6.4.b Add explicit "ignore embedded instructions" directive in evaluator system prompt
+    1. ✅ 6.4.c Enforce minimal context principle — pass only `taskDescription` + `scoringMetrics` + evaluated output
 1. ⬜️ 6.5 Implement context budget enforcement
     1. ⬜️ 6.5.a Calculate assembled evaluator prompt token count before sending
     1. ⬜️ 6.5.b Reject evaluation if assembled prompt exceeds judge model context budget
