@@ -1,4 +1,16 @@
+import { ERRORS } from '@/lib/errors';
 import { escapeDevContent, fenceModelOutput } from '@/lib/guardrails/input-rails';
+import type { StandardizedError } from '@/types';
+
+// ── Context budget ────────────────────────────────────────────────────────────
+
+export const CONTEXT_BUDGET = {
+	/**
+	 * Maximum estimated tokens for the assembled judge prompt (system + user).
+	 * Keeps judge calls predictably sized and prevents runaway costs.
+	 */
+	JUDGE_PROMPT_MAX_TOKENS: 16_000,
+} as const;
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -83,4 +95,35 @@ Rules:
 ${fencedOutput}`;
 
 	return { system, user };
+};
+
+// ── Context budget enforcement ────────────────────────────────────────────────
+
+/**
+ * Estimates the token count of an assembled evaluator prompt.
+ * Uses the same chars/4 approximation as `input-rails.ts`.
+ */
+export const estimatePromptTokens = (prompt: EvaluatorPrompt): number =>
+	Math.ceil((prompt.system.length + prompt.user.length) / 4);
+
+/**
+ * Validates that the assembled evaluator prompt fits within the judge model's
+ * context budget. Returns a `StandardizedError` if the limit is exceeded,
+ * `null` when within budget.
+ *
+ * Call this after `buildEvaluatorPrompt` and before dispatching to the API.
+ */
+export const checkPromptContextBudget = (prompt: EvaluatorPrompt): StandardizedError | null => {
+	const estimatedTokens = estimatePromptTokens(prompt);
+
+	if (estimatedTokens > CONTEXT_BUDGET.JUDGE_PROMPT_MAX_TOKENS) {
+		return ERRORS.INPUT_TOO_LARGE({
+			field: 'evaluatorPrompt',
+			actual: { estimatedTokens },
+			limit: { estimatedTokens: CONTEXT_BUDGET.JUDGE_PROMPT_MAX_TOKENS },
+			reason: 'Assembled judge prompt exceeds context budget',
+		});
+	}
+
+	return null;
 };
