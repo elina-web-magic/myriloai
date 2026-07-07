@@ -103,7 +103,7 @@ export async function generateOutput(
 	}
 }
 
-export type JudgeScore = { model: string; score: number };
+type JudgeScore = { model: string; score: number };
 
 export type EvaluateResponseResult = {
 	parsedResponse: z.infer<typeof evaluationParsedResponseSchema>;
