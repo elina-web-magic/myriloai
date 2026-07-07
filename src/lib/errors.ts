@@ -54,4 +54,17 @@ export const ERRORS = {
 		severity: 'error',
 		details: { actual: ctx.actual, limit: ctx.limit },
 	}),
+
+	RATE_LIMIT_EXCEEDED: (ctx: RateLimitContext): StandardizedError => ({
+		code: 'RATE_LIMIT_EXCEEDED',
+		message: `Rate limit exceeded: ${ctx.reason}. Retry after ${ctx.retryAfterSeconds}s.`,
+		severity: 'error',
+		details: { limit: ctx.limit, retryAfterSeconds: ctx.retryAfterSeconds },
+	}),
 } as const;
+
+type RateLimitContext = {
+	reason: string;
+	limit: number;
+	retryAfterSeconds: number;
+};

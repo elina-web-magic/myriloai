@@ -194,10 +194,10 @@
         1. ✅ 6.2.e.iii Injection scanner — true positives: one test case per pattern (all 21 patterns after 6.2.d); each must return `flagged: true` with correct `pattern` name in `matches`
         1. ✅ 6.2.e.iv Injection scanner — true negatives: clean plain text → `flagged: false, matches: []`; legitimate `</context>` tag (after fix xi) → `flagged: false`; `</untrusted-input>` → `flagged: true`
         1. ✅ 6.2.e.v Fencing utilities — `fenceUntrustedInput`: wraps content in correct tags; content containing `<` / `>` is escaped (after fix xii); `fenceModelOutput`: wraps in `<model-output>` tags
-1. ⬜️ 6.3 Implement rate limiting for evaluation runs
-    1. ⬜️ 6.3.a Add per-user rate limit for run creation (configurable, e.g. 20 runs/hour)
-    1. ⬜️ 6.3.b Add per-project concurrent run limit
-    1. ⬜️ 6.3.c Return structured `StandardizedError` with code `RATE_LIMIT_EXCEEDED`
+1. ✅ 6.3 Implement rate limiting for evaluation runs
+    1. ✅ 6.3.a Add per-user rate limit for run creation (configurable, e.g. 20 runs/hour)
+    1. ✅ 6.3.b Add per-project concurrent run limit
+    1. ✅ 6.3.c Return structured `StandardizedError` with code `RATE_LIMIT_EXCEEDED`
 
 #### `[NEW] lib/guardrails/dialog-rails.ts`
 
