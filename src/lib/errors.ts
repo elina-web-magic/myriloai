@@ -1,6 +1,13 @@
 import type { z } from 'zod';
 import type { StandardizedError } from '@/types';
 
+type InputTooLargeContext = {
+	field: string;
+	actual: Record<string, number>;
+	limit: Record<string, number>;
+	reason: string;
+};
+
 export const ERRORS = {
 	MOCK_SCENARIO_EXECUTION_FAILED: (): StandardizedError => ({
 		code: 'MOCK_SCENARIO_EXECUTION_FAILED',
@@ -39,4 +46,25 @@ export const ERRORS = {
 		message,
 		severity: 'error',
 	}),
+
+	INPUT_TOO_LARGE: (ctx: InputTooLargeContext): StandardizedError => ({
+		code: 'INPUT_TOO_LARGE',
+		message: `Input too large on field "${ctx.field}": ${ctx.reason}.`,
+		field: ctx.field,
+		severity: 'error',
+		details: { actual: ctx.actual, limit: ctx.limit },
+	}),
+
+	RATE_LIMIT_EXCEEDED: (ctx: RateLimitContext): StandardizedError => ({
+		code: 'RATE_LIMIT_EXCEEDED',
+		message: `Rate limit exceeded: ${ctx.reason}. Retry after ${ctx.retryAfterSeconds}s.`,
+		severity: 'error',
+		details: { limit: ctx.limit, retryAfterSeconds: ctx.retryAfterSeconds },
+	}),
 } as const;
+
+type RateLimitContext = {
+	reason: string;
+	limit: number;
+	retryAfterSeconds: number;
+};
