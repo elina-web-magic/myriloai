@@ -22,12 +22,10 @@ describe('Red-team fixture sweep — single pattern detection', () => {
 
 	it('miss rate is 0% across all single-pattern fixtures', () => {
 		if (misses.length > 0) {
-			console.warn(`[adversarial] MISSES (${misses.length}/${SINGLE_PATTERN_FIXTURES.length}):`);
-			for (const m of misses) console.warn(` — ${m}`);
-		} else {
-			console.info(
-				`[adversarial] Single-pattern: 0 misses / ${SINGLE_PATTERN_FIXTURES.length} fixtures`
+			process.stdout.write(
+				`[adversarial] MISSES (${misses.length}/${SINGLE_PATTERN_FIXTURES.length}):\n`
 			);
+			for (const m of misses) process.stdout.write(` — ${m}\n`);
 		}
 		expect(misses).toHaveLength(0);
 	});

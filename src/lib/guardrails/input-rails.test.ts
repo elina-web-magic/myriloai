@@ -288,7 +288,7 @@ describe('detectDegradedTranslation', () => {
 		// Two paragraphs clearly separated — each 200-char window stays in one script
 		const latin = 'This is a normal English paragraph. '.repeat(6);
 		const cyrillic = 'Це звичайний абзац українською мовою. '.repeat(6);
-		const doc = latin + '\n\n' + cyrillic;
+		const doc = `${latin}\n\n${cyrillic}`;
 		expect(detectDegradedTranslation(doc)).toBe(false);
 	});
 
