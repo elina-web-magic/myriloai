@@ -3,6 +3,7 @@
 import { Activity, Brain, ListChecks, ShieldAlert } from 'lucide-react';
 import { useState } from 'react';
 import { DetailSplitPane } from '@/components/dashboard/DetailSplitPane';
+import { ScoreChart } from '@/components/dashboard/ScoreChart';
 import { Button } from '@/components/ui/button';
 import { GlassCard } from '@/components/ui/glass-card';
 import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
@@ -135,6 +136,12 @@ export function ResultsDashboard({
 							When a run is saved, scenarios and their detailed scores will appear here
 							automatically.
 						</p>
+					</GlassCard>
+				) : null}
+
+				{reportData.length > 0 ? (
+					<GlassCard className="results-dashboard__chart p-5">
+						<ScoreChart reportData={reportData} />
 					</GlassCard>
 				) : null}
 
