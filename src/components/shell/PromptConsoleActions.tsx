@@ -44,7 +44,7 @@ export function PromptConsoleActions({
 	getSeverityBadgeVariant,
 }: PromptConsoleActionsProps) {
 	return (
-		<div className="prompt-input-zone__header-actions flex min-w-full flex-col gap-3 lg:min-w-[16rem] lg:max-w-[18rem]">
+		<div className="prompt-input-zone__header-actions flex min-w-full flex-col gap-3">
 			{!isZoneCollapsed && (
 				<div className="prompt-input-zone__rail cell flex flex-col gap-2 p-4">
 					<p className="prompt-input-zone__rail-label meta">Run status</p>

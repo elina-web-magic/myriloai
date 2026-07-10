@@ -81,8 +81,8 @@ export function ConsoleSidebar() {
 
 			<aside
 				className={`console-zone fixed lg:sticky right-0 top-0 h-screen border-l border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)] transition-all z-50 lg:z-40 p-4 overflow-y-auto ${
-					isZoneCollapsed ? 'lg:w-20' : 'lg:w-80'
-				} w-80 lg:translate-x-0 ${isMobileConsoleOpen ? 'translate-x-0' : 'translate-x-full'}`}
+					isZoneCollapsed ? 'w-20' : 'w-auto'
+				} lg:translate-x-0 ${isMobileConsoleOpen ? 'translate-x-0' : 'translate-x-full'}`}
 			>
 				<div
 					className={`console-zone__header flex mb-4 transition-all ${isZoneCollapsed ? 'lg:justify-center justify-start' : 'justify-start'}`}

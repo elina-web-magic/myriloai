@@ -105,7 +105,19 @@ export const Section02: Story = () => {
 							style={{ background: 'linear-gradient(120deg,#3340D6,#2563EB)' }}
 						></div>
 						<div className="l">
-							<b>Gradient</b>brand
+							<b>Gradient</b>brand dark
+						</div>
+					</div>
+					<div className="sw">
+						<div
+							className="c"
+							style={{
+								background:
+									'linear-gradient(160deg, #ede8ff 0%, #e2f5ff 40%, #e2fff8 70%, #f0e8ff 100%)',
+							}}
+						></div>
+						<div className="l">
+							<b>Gradient</b>brand light
 						</div>
 					</div>
 				</div>

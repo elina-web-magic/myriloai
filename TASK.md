@@ -419,7 +419,7 @@
 
 ##### 8.UI.4 Ladle Stories — Light Theme Aurora Background
 
-1. ⬜️ Fix all component stories in light theme: add Aurora gradient background (currently absent)
+1. ✅ Fix all component stories in light theme: add Aurora gradient background (currently absent)
 
 ##### 8.UI.5 Glass Effect
 
