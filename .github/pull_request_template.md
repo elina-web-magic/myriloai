@@ -1,4 +1,4 @@
-## Overview
+# Overview
 
 <!-- One paragraph: what this PR does and why. -->
 
@@ -6,17 +6,28 @@
 
 ## Key Changes
 
-### <!-- Area name (e.g. API, UI, Guardrails, Database) -->
-- 
+## <!-- Area name (e.g. API, UI, Guardrails, Database) -->
 
-### <!-- Area name -->
-- 
+-
+
+## <!-- Area name -->
+
+-
 
 ---
 
 ## Files Touched
 
-- 
+-
+
+---
+
+## Test Coverage
+
+| File | Tests |
+|---|---|
+| `<!-- test file -->` | <!-- N passed --> |
+| **Total** | **<!-- N passed -->** |
 
 ---
 
