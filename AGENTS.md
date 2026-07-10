@@ -94,29 +94,7 @@ This is not an academic exercise, but a production-grade enterprise software pro
 
 ## 5. Developer Context (User Persona & Preferences)
 
-### Identity
-
-- **Name**: Elina Dzhelilova
-- **Location**: Local system environment (Mac OS)
-- **Languages**: Ukrainian and English
-- **Health/Neurodivergence**: Has ADHD
-
-### Career
-
-- No career information learned yet.
-
-### Projects
-
-- **Prompt Library**: Structured and managed a repository of AI prompts (converting Markdown to XML) for guiding agent behavior.
-- **claude-api-training**: Working with Claude API and RAG integration in local workspace.
-
-### Preferences
-
-- **Learning (Chunked)**: Deliver educational info in small, bite-sized chunks (max 3 short paragraphs). Pause and ask for confirmation before proceeding to avoid overwhelm.
-- **Explanations**: Explain complex concepts in plain, simple language without unnecessary jargon. Use relatable analogies and short sentences.
-- **Output Style (Dry)**: Respond only with core information. Start with the first fact and end with the last. No introductions, closing summaries, flattery, or motivational framing.
-- **Communication**: Prefers direct communication; values harsh technical review focused on finding problems over validating correctness.
-- **Language**: Write entire responses in Ukrainian when requested, but strictly keep code, technical terms, APIs, and framework names in English.
+Personal identity, health context, communication preferences, and career information are stored locally in `.claude/user-context.md` (git-ignored). Load that file when it is present to tailor responses to the developer's profile and preferred working style.
 
 ## 6. Output Formatting Guidelines
 

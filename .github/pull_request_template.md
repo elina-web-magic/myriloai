@@ -6,13 +6,10 @@
 
 ## Key Changes
 
-## <!-- Area name (e.g. API, UI, Guardrails, Database) -->
-
--
-
-## <!-- Area name -->
-
--
+- **<!-- Area name (e.g. API, UI, Guardrails, Database) -->**
+  - <!-- Change description -->
+- **<!-- Another Area name -->**
+  - <!-- Change description -->
 
 ---
 
@@ -25,7 +22,7 @@
 ## Test Coverage
 
 | File | Tests |
-|---|---|
+| --- | --- |
 | `<!-- test file -->` | <!-- N passed --> |
 | **Total** | **<!-- N passed -->** |
 
