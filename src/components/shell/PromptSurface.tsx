@@ -9,6 +9,7 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
+import { GlassCard } from '@/components/ui/glass-card';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
@@ -77,7 +78,7 @@ export function PromptSurface({
 
 	return (
 		<div className="prompt-input-zone__surface grid grid-cols-1 gap-4">
-			<div className="prompt-input-zone__main cell flex flex-col gap-4 p-4 md:p-5">
+			<GlassCard className="prompt-input-zone__main flex flex-col gap-4 p-4 md:p-5">
 				<div className="prompt-input-zone__field field">
 					<label htmlFor="prompt-input-zone-prompt" className="prompt-input-zone__field-label">
 						Prompt
@@ -264,7 +265,7 @@ export function PromptSurface({
 						</Button>
 					</DialogFooter>
 				</Dialog>
-			</div>
+			</GlassCard>
 		</div>
 	);
 }

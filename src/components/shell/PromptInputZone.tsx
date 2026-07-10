@@ -1,8 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Badge } from '@/components/ui/badge';
-import { GlassCard } from '@/components/ui/glass-card';
 import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
 import { ERRORS } from '@/lib/errors';
 import { sanitizeText } from '@/lib/guardrails/output-rails';
@@ -54,15 +52,12 @@ export function PromptInputZone() {
 	const [isAdvancedOpen, setIsAdvancedOpen] = useState(false);
 
 	const isZoneCollapsed = usePromptStore((state) => state.isZoneCollapsed);
-	const activeRunState = usePromptStore((state) => state.activeRunState);
 	const setActiveRunState = usePromptStore((state) => state.setActiveRunState);
 	const setRunOutput = usePromptStore((state) => state.setRunOutput);
 	const setRunNotice = usePromptStore((state) => state.setRunNotice);
 	const submitError = usePromptStore((state) => state.submitError);
 	const setSubmitError = usePromptStore((state) => state.setSubmitError);
 	const setLastResponseMeta = usePromptStore((state) => state.setLastResponseMeta);
-
-	const currentRunState = runStateMeta[activeRunState];
 
 	const handleRun = async () => {
 		if (prompt.trim().length === 0) {
@@ -176,23 +171,7 @@ export function PromptInputZone() {
 	};
 
 	return (
-		<GlassCard
-			className="prompt-input-zone flex flex-col gap-6 p-6 md:p-8 flex-1 w-full max-w-7xl mx-auto"
-			aria-labelledby="prompt-input-zone-title"
-		>
-			<div className="prompt-input-zone__header flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
-				<div className="prompt-input-zone__copy flex flex-col gap-2">
-					<div className="prompt-input-zone__eyebrow flex items-center gap-2">
-						<Badge variant="soft" className="prompt-input-zone__badge">
-							Manual testing
-						</Badge>
-						<Badge variant={currentRunState.badgeVariant} className="prompt-input-zone__status">
-							{currentRunState.label}
-						</Badge>
-					</div>
-				</div>
-			</div>
-
+		<div className="prompt-input-zone flex-1 w-full max-w-7xl mx-auto">
 			<PromptSurface
 				isZoneCollapsed={isZoneCollapsed}
 				prompt={prompt}
@@ -216,6 +195,6 @@ export function PromptInputZone() {
 				projectInstructions={projectInstructions}
 				setProjectInstructions={setProjectInstructions}
 			/>
-		</GlassCard>
+		</div>
 	);
 }
