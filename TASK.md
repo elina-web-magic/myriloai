@@ -409,7 +409,7 @@
 
 ##### 8.UI.2 Review Workspace Width
 
-1. ⬜️ Align Review Workspace block width to match the prompt input zone block width
+1. ✅ Align Review Workspace block width to match the prompt input zone block width
 
 ##### 8.UI.3 PromptInputZone Visual Nesting
 

@@ -15,7 +15,7 @@ export const MainContentColumn = ({ children }: MainContentColumnProps) => (
 			<PromptInputZone />
 
 			<GlassCard
-				className="app__review-section flex flex-col gap-6 p-6 md:p-8 mx-auto"
+				className="app__review-section flex flex-col gap-6 p-6 md:p-8 w-full max-w-7xl mx-auto"
 				aria-labelledby="app-review-title"
 			>
 				<ReviewWorkspaceHeader />
