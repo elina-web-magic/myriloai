@@ -284,7 +284,17 @@ export const scanForInjection = (content: string): InjectionScanResult => {
 		});
 	}
 
-	// Step 4: regex pattern matching.
+	// Step 4 (6.15.c): translation-chain heuristic on normalised body.
+	if (detectDegradedTranslation(normalized)) {
+		matches.push({
+			pattern: 'translation-chain',
+			index: 0,
+			snippet: normalized.slice(0, 60),
+			weight: 2,
+		});
+	}
+
+	// Step 5: regex pattern matching.
 	for (const [pattern, regex, weight] of INJECTION_PATTERNS) {
 		const match = regex.exec(normalized);
 		if (match) {
@@ -302,6 +312,60 @@ export const scanForInjection = (content: string): InjectionScanResult => {
 	const stackedAttack = matches.length >= HIGH_RISK_THRESHOLD;
 
 	return { flagged: matches.length > 0, matches, riskScore, stackedAttack };
+};
+
+// ── Translation-Chain Detection (6.15) ───────────────────────────────────────
+
+/** Sliding-window size for Unicode block diversity check. */
+const TRANSLATION_WINDOW_SIZE = 200;
+
+/**
+ * Classifies a character into a broad Unicode script bucket.
+ * Returns a string key representing the script group, or null for whitespace/punctuation.
+ */
+const getScriptBlock = (char: string): string | null => {
+	const cp = char.codePointAt(0) ?? 0;
+	if (cp >= 0x0041 && cp <= 0x024f) return 'latin';
+	if (cp >= 0x0400 && cp <= 0x04ff) return 'cyrillic';
+	if (cp >= 0x0370 && cp <= 0x03ff) return 'greek';
+	if (cp >= 0x0600 && cp <= 0x06ff) return 'arabic';
+	if (cp >= 0x0900 && cp <= 0x097f) return 'devanagari';
+	if (cp >= 0x4e00 && cp <= 0x9fff) return 'cjk';
+	if (cp >= 0xac00 && cp <= 0xd7af) return 'hangul';
+	if (cp >= 0x0e00 && cp <= 0x0e7f) return 'thai';
+	return null;
+};
+
+/**
+ * Returns `true` when any 200-char sliding window in `text` contains more than
+ * 2 distinct Unicode script blocks. Detects translation-chain injection where
+ * attackers interleave scripts to bypass keyword regex while remaining
+ * intelligible to the LLM.
+ *
+ * Paragraph-separated multilingual documents are NOT flagged because each
+ * 200-char window stays within one dominant script.
+ */
+export const detectDegradedTranslation = (text: string): boolean => {
+	if (text.length === 0) return false;
+
+	const countScripts = (segment: string): number => {
+		const seen = new Set<string>();
+		for (const char of segment) {
+			const block = getScriptBlock(char);
+			if (block) seen.add(block);
+		}
+		return seen.size;
+	};
+
+	if (text.length <= TRANSLATION_WINDOW_SIZE) {
+		return countScripts(text) > 2;
+	}
+
+	for (let i = 0; i <= text.length - TRANSLATION_WINDOW_SIZE; i++) {
+		if (countScripts(text.slice(i, i + TRANSLATION_WINDOW_SIZE)) > 2) return true;
+	}
+
+	return false;
 };
 
 // ── Frontmatter Stripping (6.12) ─────────────────────────────────────────────
