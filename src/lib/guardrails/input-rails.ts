@@ -208,16 +208,60 @@ const INJECTION_PATTERNS: [string, RegExp, number][] = [
 	['trusted-tag-claim', /\[TRUSTED\]|\[VERIFIED\]|\[APPROVED_BY\]/i, 1],
 ];
 
+// ── Adversarial Suffix Heuristic (6.14) ──────────────────────────────────────
+
+/** Minimum special-character ratio in a window to trigger the adversarial suffix flag. */
+const ADVERSARIAL_SUFFIX_THRESHOLD = 0.3;
+
+/** Sliding-window size in characters. */
+const ADVERSARIAL_WINDOW_SIZE = 80;
+
+/**
+ * Returns `true` when any 80-char sliding window in `text` contains more than
+ * 30% special characters (`[^\w\s]`). Detects adversarial suffix attacks
+ * (e.g. `!!!###~~~^^^`) that bypass keyword-based filters.
+ *
+ * Uses a sliding window so short bursts deep inside long inputs are still caught.
+ */
+export const detectAdversarialSuffix = (text: string): boolean => {
+	if (text.length === 0) return false;
+
+	const specialCharCount = (segment: string): number => {
+		let count = 0;
+		for (const char of segment) {
+			if (/[^\w\s]/.test(char)) count++;
+		}
+		return count;
+	};
+
+	// For inputs shorter than window: check the whole string as one segment.
+	if (text.length <= ADVERSARIAL_WINDOW_SIZE) {
+		return specialCharCount(text) / text.length > ADVERSARIAL_SUFFIX_THRESHOLD;
+	}
+
+	for (let i = 0; i <= text.length - ADVERSARIAL_WINDOW_SIZE; i++) {
+		const window = text.slice(i, i + ADVERSARIAL_WINDOW_SIZE);
+		if (specialCharCount(window) / ADVERSARIAL_WINDOW_SIZE > ADVERSARIAL_SUFFIX_THRESHOLD) {
+			return true;
+		}
+	}
+
+	return false;
+};
+
 /**
  * Scans `content` for known prompt injection patterns.
- * Pipeline (6.12.c): strip frontmatter → detect frontmatter injection →
- * normalise homoglyphs → pattern match on stripped body.
+ * Pipeline (6.12.c + 6.14.c):
+ *   1. Frontmatter injection check
+ *   2. Strip frontmatter + normalise homoglyphs
+ *   3. Adversarial suffix heuristic
+ *   4. Regex pattern matching
  * Returns `{ flagged: false, matches: [], riskScore: 0, stackedAttack: false }` when clean.
  */
 export const scanForInjection = (content: string): InjectionScanResult => {
 	const matches: InjectionMatch[] = [];
 
-	// 6.12.c step 1: frontmatter injection check (runs on raw content before normalisation)
+	// Step 1: frontmatter injection check (runs on raw content before normalisation)
 	if (detectFrontmatterInjection(content)) {
 		matches.push({
 			pattern: 'frontmatter-injection',
@@ -227,10 +271,20 @@ export const scanForInjection = (content: string): InjectionScanResult => {
 		});
 	}
 
-	// 6.12.c step 2: strip frontmatter so its body doesn't produce false positives,
-	// then normalise homoglyphs before pattern matching.
+	// Step 2: strip frontmatter, then normalise homoglyphs before pattern matching.
 	const normalized = normalizeForScanning(stripFrontmatter(content));
 
+	// Step 3 (6.14.c): adversarial suffix heuristic on normalised body.
+	if (detectAdversarialSuffix(normalized)) {
+		matches.push({
+			pattern: 'adversarial-suffix',
+			index: 0,
+			snippet: normalized.slice(0, 60),
+			weight: 2,
+		});
+	}
+
+	// Step 4: regex pattern matching.
 	for (const [pattern, regex, weight] of INJECTION_PATTERNS) {
 		const match = regex.exec(normalized);
 		if (match) {
