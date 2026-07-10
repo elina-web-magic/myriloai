@@ -86,12 +86,17 @@ export type InjectionMatch = {
 	pattern: string;
 	index: number;
 	snippet: string;
+	weight: number;
 };
 
 /** Result of scanning content for prompt injection patterns. */
 export type InjectionScanResult = {
 	flagged: boolean;
 	matches: InjectionMatch[];
+	/** Sum of weights of all matched patterns. */
+	riskScore: number;
+	/** True when ≥ HIGH_RISK_THRESHOLD distinct patterns matched. */
+	stackedAttack: boolean;
 };
 
 /**
@@ -108,74 +113,125 @@ const normalizeForScanning = (text: string): string =>
 		.normalize('NFKC');
 
 /**
+ * Number of distinct matched patterns that triggers `stackedAttack`.
+ * Two or more simultaneous patterns = coordinated injection attempt.
+ */
+export const HIGH_RISK_THRESHOLD = 2;
+
+/**
  * Patterns covering the most common prompt injection / jailbreak techniques.
- * Each entry is a tuple of [label, RegExp].
- * Keep patterns case-insensitive and anchored as narrowly as possible to
- * minimise false positives on legitimate evaluation content.
+ * Each entry is a tuple of [label, RegExp, weight].
+ * Weight reflects exploitation severity: 3 = direct control hijack,
+ * 2 = authority/impersonation, 1 = framing/probing.
  *
  * Pattern count: 21 (11 original + 10 added in 6.2.d).
  */
-const INJECTION_PATTERNS: [string, RegExp][] = [
+const INJECTION_PATTERNS: [string, RegExp, number][] = [
 	// ── Original 11 ──────────────────────────────────────────────────────────
-	['ignore-instructions', /ignore\s+(all\s+)?(previous|prior|above)\s+instructions/i],
-	['disregard-instructions', /disregard\s+(all\s+)?(previous|prior|above)\s+instructions/i],
-	['forget-instructions', /forget\s+(all\s+)?(previous|prior|above)\s+instructions/i],
-	['override-instructions', /override\s+(your\s+)?(system\s+)?instructions/i],
-	['new-instructions', /new\s+instructions?\s*:/i],
-	['system-prompt-leak', /reveal\s+(your\s+)?(system\s+)?prompt/i],
-	['act-as', /\bact\s+as\s+(an?\s+)?(?:evil|unrestricted|jailbreak)/i],
-	['dan-jailbreak', /\bDAN\b.*\bjailbreak\b|\bjailbreak\b.*\bDAN\b/i],
-	['role-play-bypass', /pretend\s+(you\s+are|to\s+be)\s+(an?\s+)?(?:ai\s+without|unrestricted)/i],
+	['ignore-instructions', /ignore\s+(all\s+)?(previous|prior|above)\s+instructions/i, 3],
+	['disregard-instructions', /disregard\s+(all\s+)?(previous|prior|above)\s+instructions/i, 3],
+	['forget-instructions', /forget\s+(all\s+)?(previous|prior|above)\s+instructions/i, 3],
+	['override-instructions', /override\s+(your\s+)?(system\s+)?instructions/i, 3],
+	['new-instructions', /new\s+instructions?\s*:/i, 1],
+	['system-prompt-leak', /reveal\s+(your\s+)?(system\s+)?prompt/i, 2],
+	['act-as', /\bact\s+as\s+(an?\s+)?(?:evil|unrestricted|jailbreak)/i, 3],
+	['dan-jailbreak', /\bDAN\b.*\bjailbreak\b|\bjailbreak\b.*\bDAN\b/i, 3],
+	[
+		'role-play-bypass',
+		/pretend\s+(you\s+are|to\s+be)\s+(an?\s+)?(?:ai\s+without|unrestricted)/i,
+		3,
+	],
 	[
 		'score-manipulation',
 		/(?:give|assign|set)\s+(?:a\s+)?(?:score|rating)\s+of\s+(?:40|max|maximum|perfect|full)/i,
+		3,
 	],
 	// Fixed (6.2.d.xi): only flag OUR fence closing tags, not generic <system>/<context>.
-	['xml-escape-attempt', /<\/(?:untrusted-input|model-output)>/i],
+	['xml-escape-attempt', /<\/(?:untrusted-input|model-output)>/i, 2],
 
 	// ── 6.2.d new patterns ────────────────────────────────────────────────────
 	// 6.2.d.i  Authority escalation — fake privileged headers
 	[
 		'authority-escalation',
 		/(?:^|\n)\s*(?:SYSTEM|ADMIN|DEVELOPER\s+MODE|Anthropic\s+override)\s*:/im,
+		2,
 	],
 	// 6.2.d.ii Instruction substitution — overwrite task identity
-	['instruction-substitution', /from\s+now\s+on\s+you\s+must|your\s+(?:real|actual)\s+task\s+is/i],
+	[
+		'instruction-substitution',
+		/from\s+now\s+on\s+you\s+must|your\s+(?:real|actual)\s+task\s+is/i,
+		2,
+	],
 	// 6.2.d.iii Meta-instruction to judge — suppress rubric
 	[
 		'meta-instruction-to-judge',
 		/skip\s+the\s+rubric|do\s+not\s+penali[sz]e|ignore\s+quality\s+issues/i,
+		2,
 	],
 	// 6.2.d.iv Fake rubric injection — smuggle scoring rules into payload
-	['fake-rubric-injection', /according\s+to\s+(?:the\s+)?evaluation\s+guidelines|scoring\s+rule/i],
+	[
+		'fake-rubric-injection',
+		/according\s+to\s+(?:the\s+)?evaluation\s+guidelines|scoring\s+rule/i,
+		1,
+	],
 	// 6.2.d.v Judge impersonation — pretend to be the evaluator
 	[
 		'judge-impersonation',
 		/\bAs\s+the\s+evaluator\b|Evaluation\s*:\s*PASS|I\s+confirm.{0,30}verdict/i,
+		2,
 	],
 	// 6.2.d.vi Self-assessment injection — claim pre-approval
-	['self-assessment-injection', /\[APPROVED\]|already\s+passed\s+review|Verified\s+by\s+expert/i],
+	[
+		'self-assessment-injection',
+		/\[APPROVED\]|already\s+passed\s+review|Verified\s+by\s+expert/i,
+		1,
+	],
 	// 6.2.d.vii Fake conversation turns — inject role markers
-	['fake-conversation-turns', /(?:^|\n)(?:Human|Assistant)\s*:|<\|im_start\|>/im],
+	['fake-conversation-turns', /(?:^|\n)(?:Human|Assistant)\s*:|<\|im_start\|>/im, 1],
 	// 6.2.d.ix Hypothetical wrapper — frame constraint removal as fiction
 	[
 		'hypothetical-wrapper',
 		/(?:hypothetical|fictional|imagine)\b[\s\S]{0,80}(?:no\s+restrictions|ignore\s+(?:all\s+)?(?:rules|guidelines|constraints)|bypass)/i,
+		1,
 	],
 	// 6.2.d.x Test/simulation framing — claim sandbox with no restrictions
-	['test-simulation-framing', /sandbox\s+mode|test\s+mode|simulation.{0,30}no\s+restrictions/i],
+	['test-simulation-framing', /sandbox\s+mode|test\s+mode|simulation.{0,30}no\s+restrictions/i, 1],
+
+	// ── 6.13 authority-escalation extensions ─────────────────────────────────
+	// 6.13.a Fake external citation — invoke non-existent official docs to justify scoring
+	[
+		'fake-external-citation',
+		/per\s+(official|anthropic|openai).{0,40}(documentation|guidelines|policy|section)/i,
+		2,
+	],
+	// 6.13.b Trusted-tag claim — forge trust badges not caught by self-assessment-injection
+	['trusted-tag-claim', /\[TRUSTED\]|\[VERIFIED\]|\[APPROVED_BY\]/i, 1],
 ];
 
 /**
  * Scans `content` for known prompt injection patterns.
- * Applies homoglyph normalisation (6.2.d.viii) before matching.
- * Returns `{ flagged: false, matches: [] }` when clean.
+ * Pipeline (6.12.c): strip frontmatter → detect frontmatter injection →
+ * normalise homoglyphs → pattern match on stripped body.
+ * Returns `{ flagged: false, matches: [], riskScore: 0, stackedAttack: false }` when clean.
  */
 export const scanForInjection = (content: string): InjectionScanResult => {
-	const normalized = normalizeForScanning(content);
 	const matches: InjectionMatch[] = [];
 
-	for (const [pattern, regex] of INJECTION_PATTERNS) {
+	// 6.12.c step 1: frontmatter injection check (runs on raw content before normalisation)
+	if (detectFrontmatterInjection(content)) {
+		matches.push({
+			pattern: 'frontmatter-injection',
+			index: 0,
+			snippet: content.slice(0, 60),
+			weight: 3,
+		});
+	}
+
+	// 6.12.c step 2: strip frontmatter so its body doesn't produce false positives,
+	// then normalise homoglyphs before pattern matching.
+	const normalized = normalizeForScanning(stripFrontmatter(content));
+
+	for (const [pattern, regex, weight] of INJECTION_PATTERNS) {
 		const match = regex.exec(normalized);
 		if (match) {
 			matches.push({
@@ -183,11 +239,57 @@ export const scanForInjection = (content: string): InjectionScanResult => {
 				index: match.index,
 				// 60-char context window around the match for logging
 				snippet: normalized.slice(Math.max(0, match.index - 20), match.index + 40),
+				weight,
 			});
 		}
 	}
 
-	return { flagged: matches.length > 0, matches };
+	const riskScore = matches.reduce((sum, m) => sum + m.weight, 0);
+	const stackedAttack = matches.length >= HIGH_RISK_THRESHOLD;
+
+	return { flagged: matches.length > 0, matches, riskScore, stackedAttack };
+};
+
+// ── Frontmatter Stripping (6.12) ─────────────────────────────────────────────
+
+/**
+ * Extracts YAML (`---…---`) or TOML (`+++…+++`) frontmatter from `content`.
+ * Returns the raw frontmatter block (without delimiters) and the remaining body.
+ * If no frontmatter is present both fields are empty/original respectively.
+ */
+const extractFrontmatter = (content: string): { frontmatter: string; body: string } => {
+	const yamlMatch = /^---\r?\n([\s\S]*?)\r?\n---(\r?\n|$)/m.exec(content);
+	if (yamlMatch) {
+		return { frontmatter: yamlMatch[1], body: content.slice(yamlMatch[0].length) };
+	}
+	const tomlMatch = /^\+\+\+\r?\n([\s\S]*?)\r?\n\+\+\+(\r?\n|$)/m.exec(content);
+	if (tomlMatch) {
+		return { frontmatter: tomlMatch[1], body: content.slice(tomlMatch[0].length) };
+	}
+	return { frontmatter: '', body: content };
+};
+
+/**
+ * Strips YAML or TOML frontmatter from `content` and returns only the body.
+ * Call this before pattern scanning to prevent frontmatter from polluting matches.
+ */
+export const stripFrontmatter = (content: string): string => extractFrontmatter(content).body;
+
+/** Keys inside frontmatter that signal an injection attempt. */
+const FRONTMATTER_INJECTION_KEYS = ['system_override', 'verdict', 'score', 'approved'] as const;
+
+/**
+ * Returns `true` when the frontmatter block (if present) contains any of the
+ * reserved injection keys (`system_override`, `verdict`, `score`, `approved`).
+ * Returns `false` when content has no frontmatter or frontmatter is clean.
+ */
+export const detectFrontmatterInjection = (content: string): boolean => {
+	const { frontmatter } = extractFrontmatter(content);
+	if (!frontmatter) return false;
+	// Match YAML (`key:`) and TOML (`key =`) assignment syntax.
+	return FRONTMATTER_INJECTION_KEYS.some((key) =>
+		new RegExp(`^${key}\\s*[:=]`, 'm').test(frontmatter)
+	);
 };
 
 // ── XML-tag Fencing ───────────────────────────────────────────────────────────
