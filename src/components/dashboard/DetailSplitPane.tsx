@@ -2,7 +2,6 @@
 
 import { Brain, Database, Edit2, ListChecks } from 'lucide-react';
 import { useState } from 'react';
-import type { OutputData } from '@/components/dashboard/ResultsDashboard';
 import { Button } from '@/components/ui/button';
 import {
 	DialogBackdrop,
@@ -19,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
+import type { OutputData } from './types';
 
 const CopyButton = ({ text }: { text: string }) => {
 	const [copied, setCopied] = useState(false);
@@ -35,7 +35,7 @@ const CopyButton = ({ text }: { text: string }) => {
 			onClick={handleCopy}
 			variant="secondary"
 			size="icon-sm"
-			className="copy-btn absolute top-2 right-2 border-[var(--line)] bg-[var(--surface-2)] p-0 [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)]"
+			className="copy-btn absolute top-2 right-2 border-[var(--line)] bg-[var(--surface-2)] p-0 glass"
 			title="Copy to clipboard"
 			aria-label="Copy to clipboard"
 		>
@@ -48,13 +48,9 @@ const CopyButton = ({ text }: { text: string }) => {
 	);
 };
 
-const getScoreColor = (score: number): string => {
-	if (score >= 35) return 'text-[var(--success)] border-[var(--success)] bg-[var(--success-soft)]';
-	if (score >= 25) return 'text-[var(--warning)] border-[var(--warning)] bg-[var(--warning-soft)]';
-	return 'text-[var(--error)] border-[var(--error)] bg-[var(--error-soft)]';
-};
+import { getScoreColor, getWidthClass } from './utils';
 
-export function DetailSplitPane({ row }: { row: OutputData }) {
+export const DetailSplitPane = ({ row }: { row: OutputData }) => {
 	const [activeTab, setActiveTab] = useState<'reasoning' | 'output'>('reasoning');
 	const [isOverrideOpen, setIsOverrideOpen] = useState(false);
 	const [overrideScore, setOverrideScore] = useState<number | ''>(row.total_score);
@@ -254,8 +250,7 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 										</div>
 										<div className="detail-split-pane__breakdown-bar-wrapper h-1 w-full overflow-hidden rounded-full bg-[var(--surface-2)]">
 											<div
-												className={`detail-split-pane__breakdown-bar-fill h-full ${bgColor}`}
-												style={{ width: `${(score / 10) * 100}%` }}
+												className={`detail-split-pane__breakdown-bar-fill h-full ${bgColor} ${getWidthClass(score)}`}
 											/>
 										</div>
 									</div>
@@ -284,11 +279,11 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 							onClick={() => setActiveTab('reasoning')}
 							variant="ghost"
 							size="sm"
-							className="detail-split-pane__tab detail-split-pane__tab--reasoning rounded-none border-b-2 px-4 py-2 t-h6 transition-colors"
-							style={{
-								borderColor: activeTab === 'reasoning' ? 'var(--accent)' : 'transparent',
-								color: activeTab === 'reasoning' ? 'var(--accent)' : 'var(--ink-2)',
-							}}
+							className={`detail-split-pane__tab detail-split-pane__tab--reasoning rounded-none border-b-2 px-4 py-2 t-h6 transition-colors ${
+								activeTab === 'reasoning'
+									? 'border-[var(--accent)] text-[var(--accent)]'
+									: 'border-transparent text-[var(--ink-2)]'
+							}`}
 						>
 							<span className="detail-split-pane__tab-inner flex items-center gap-2">
 								<Brain size={16} /> Review Summary
@@ -298,11 +293,11 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 							onClick={() => setActiveTab('output')}
 							variant="ghost"
 							size="sm"
-							className="detail-split-pane__tab detail-split-pane__tab--output rounded-none border-b-2 px-4 py-2 t-h6 transition-colors"
-							style={{
-								borderColor: activeTab === 'output' ? 'var(--info)' : 'transparent',
-								color: activeTab === 'output' ? 'var(--info)' : 'var(--ink-2)',
-							}}
+							className={`detail-split-pane__tab detail-split-pane__tab--output rounded-none border-b-2 px-4 py-2 t-h6 transition-colors ${
+								activeTab === 'output'
+									? 'border-[var(--info)] text-[var(--info)]'
+									: 'border-transparent text-[var(--ink-2)]'
+							}`}
 						>
 							<span className="detail-split-pane__tab-inner flex items-center gap-2">
 								<Database size={16} /> Inspect Raw Output
@@ -326,10 +321,7 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 								</div>
 							</div>
 						) : (
-							<div
-								className="detail-split-pane__raw-output absolute inset-0 flex flex-col gap-3 overflow-hidden"
-								style={{ background: 'var(--surface)' }}
-							>
+							<div className="detail-split-pane__raw-output absolute inset-0 flex flex-col gap-3 overflow-hidden bg-[var(--surface)]">
 								<div className="detail-split-pane__raw-output-header cell relative flex flex-col gap-2 p-4 pr-14">
 									<CopyButton text={row.output} />
 									<p className="detail-split-pane__raw-output-label meta">Raw model output</p>
@@ -349,4 +341,4 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 			</div>
 		</div>
 	);
-}
+};

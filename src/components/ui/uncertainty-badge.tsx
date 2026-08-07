@@ -1,45 +1,6 @@
 import type { FailureLabel } from '@/types';
-
-type LabelConfig = {
-	label: string;
-	colorClass: string;
-};
-
-const LABEL_CONFIG: Record<FailureLabel, LabelConfig> = {
-	SCORE_WITHOUT_EVIDENCE: {
-		label: 'No Evidence',
-		colorClass: 'border-[var(--warning)] bg-[var(--warning-soft)] text-[var(--warning)]',
-	},
-	FORMATTING_DRIFT: {
-		label: 'Format Drift',
-		colorClass: 'border-[var(--info)] bg-[var(--info-soft)] text-[var(--info)]',
-	},
-	EVALUATOR_DISAGREEMENT: {
-		label: 'Panel Disagree',
-		colorClass: 'border-[var(--warning)] bg-[var(--warning-soft)] text-[var(--warning)]',
-	},
-	GROUNDING_FAILURE: {
-		label: 'Grounding Fail',
-		colorClass: 'border-[var(--error)] bg-[var(--error-soft)] text-[var(--error)]',
-	},
-	HALLUCINATION: {
-		label: 'Hallucination',
-		colorClass: 'border-[var(--error)] bg-[var(--error-soft)] text-[var(--error)]',
-	},
-	IRRELEVANCE: {
-		label: 'Irrelevant',
-		colorClass: 'border-[var(--warning)] bg-[var(--warning-soft)] text-[var(--warning)]',
-	},
-	REFUSAL: {
-		label: 'Refusal',
-		colorClass: 'border-[var(--info)] bg-[var(--info-soft)] text-[var(--info)]',
-	},
-};
-
-type UncertaintyBadgeProps = {
-	labels: string[];
-	className?: string;
-};
+import { LABEL_CONFIG } from './constants';
+import type { UncertaintyBadgeProps } from './types';
 
 export const UncertaintyBadge = ({ labels, className = '' }: UncertaintyBadgeProps) => {
 	if (labels.length === 0) return null;

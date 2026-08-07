@@ -3,7 +3,8 @@ import type { Story } from '@ladle/react';
 import fallbackData from '@/data/output.json';
 
 import { DetailSplitPane } from './DetailSplitPane';
-import { type OutputData, ResultsDashboard } from './ResultsDashboard';
+import { ResultsDashboard } from './ResultsDashboard';
+import type { OutputData } from './types';
 
 const reportData = fallbackData as unknown as OutputData[];
 

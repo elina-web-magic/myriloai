@@ -14,7 +14,7 @@ const logger = new Logger({
 
 // Initialize the Anthropic client lazily so it doesn't crash test environments immediately
 let _anthropic: Anthropic | null = null;
-function getAnthropicClient() {
+const getAnthropicClient = () => {
 	if (!_anthropic) {
 		_anthropic = new Anthropic({
 			apiKey: process.env.ANTHROPIC_API_KEY || '',
@@ -22,15 +22,15 @@ function getAnthropicClient() {
 		});
 	}
 	return _anthropic;
-}
+};
 
 /**
  * Parses the XML response from the judge model into a structured object
  * matching the evaluationParsedResponseSchema.
  */
-export function parseEvaluationXML(
+export const parseEvaluationXML = (
 	xmlString: string
-): z.infer<typeof evaluationParsedResponseSchema> {
+): z.infer<typeof evaluationParsedResponseSchema> => {
 	// Helper to extract text between tags
 	const extractTag = (xml: string, tag: string): string | null => {
 		const regex = new RegExp(`<${tag}>(.*?)</${tag}>`, 's');
@@ -73,7 +73,7 @@ export function parseEvaluationXML(
 	};
 
 	return evaluationParsedResponseSchema.parse(parsed);
-}
+};
 
 /**
  * Generates the raw output from the target model based on the provided prompt.
@@ -226,9 +226,9 @@ ${rawResponse}
 	}
 }
 
-function aggregatePanelResults(
+const aggregatePanelResults = (
 	successes: { model: string; result: z.infer<typeof evaluationParsedResponseSchema> }[]
-): z.infer<typeof evaluationParsedResponseSchema> {
+): z.infer<typeof evaluationParsedResponseSchema> => {
 	if (successes.length === 1) return successes[0].result;
 
 	const totalScore = successes.reduce((sum, s) => sum + s.result.score, 0);
@@ -247,4 +247,4 @@ function aggregatePanelResults(
 		mitigations: allMitigations,
 		score: avgScore,
 	};
-}
+};

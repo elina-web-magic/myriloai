@@ -2,9 +2,9 @@
 
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { X } from 'lucide-react';
-import type { ComponentProps, ReactNode } from 'react';
-
+import type { ComponentProps } from 'react';
 import { cn } from '@/lib/utils';
+import type { DialogProps } from './types';
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
@@ -137,16 +137,6 @@ const DialogFooter = ({ className, ...props }: ComponentProps<'div'>) => (
 );
 
 // ─── Composed helper: Dialog (wraps Portal + Backdrop + Popup) ────────────────
-
-interface DialogProps {
-	/** Controlled or uncontrolled open state. */
-	open?: boolean;
-	onOpenChange?: (open: boolean) => void;
-	/** Everything rendered inside the popup. */
-	children: ReactNode;
-	/** Extra className forwarded to DialogPopup. */
-	className?: string;
-}
 
 /**
  * Convenience wrapper that handles Portal + Backdrop + Popup boilerplate.

@@ -11,7 +11,7 @@ const GlassCard = React.forwardRef<
 		<div
 			ref={ref}
 			className={cn(
-				'rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)]',
+				'rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] glass',
 				interactive &&
 					'cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent)] hover:bg-[var(--surface-hover)] hover:shadow-[var(--shadow-interactive)]',
 				className
@@ -41,7 +41,7 @@ const GlassCardDescription = React.forwardRef<
 	HTMLParagraphElement,
 	React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-	<p ref={ref} className={cn('t-small', className)} style={{ color: 'var(--ink-3)' }} {...props} />
+	<p ref={ref} className={cn('t-small text-[var(--ink-3)]', className)} {...props} />
 ));
 GlassCardDescription.displayName = 'GlassCardDescription';
 

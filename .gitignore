@@ -53,10 +53,7 @@ docs/
 .vscode/
 .ladle-build
 .pnpm-store/
-# Claude Code — personal, per-machine settings (not shared config)
-.claude/settings.local.json
-# Claude Code — personal developer context (name, health info, preferences)
-.claude/user-context.md
+.claude/
 
 # Project planning — private, not for public repo
 TASK.md

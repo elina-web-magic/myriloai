@@ -4,44 +4,17 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
-	Cell,
+	Rectangle,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
 	YAxis,
 } from 'recharts';
 import type { DashboardResult } from '@/types';
+import { SCORE_COLORS, SCORE_THRESHOLDS } from './constants';
+import { buildDimensionData } from './utils';
 
 type DimensionAvg = { dimension: string; avg: number; fill: string };
-
-function getDimensionFill(avg: number): string {
-	if (avg >= 8) return '#10b981';
-	if (avg >= 5) return '#f59e0b';
-	return '#ef4444';
-}
-
-function buildDimensionData(reportData: DashboardResult[]): DimensionAvg[] {
-	if (reportData.length === 0) return [];
-
-	const totals: Record<string, { sum: number; count: number }> = {};
-
-	for (const row of reportData) {
-		for (const [dim, score] of Object.entries(row.scores)) {
-			if (!totals[dim]) totals[dim] = { sum: 0, count: 0 };
-			totals[dim].sum += score;
-			totals[dim].count += 1;
-		}
-	}
-
-	return Object.entries(totals).map(([dimension, { sum, count }]) => {
-		const avg = Number((sum / count).toFixed(1));
-		return {
-			dimension: dimension.replace(/_/g, ' '),
-			avg,
-			fill: getDimensionFill(avg),
-		};
-	});
-}
 
 const CustomTooltip = ({
 	active,
@@ -62,7 +35,7 @@ const CustomTooltip = ({
 	);
 };
 
-export function ScoreChart({ reportData }: { reportData: DashboardResult[] }) {
+export const ScoreChart = ({ reportData }: { reportData: DashboardResult[] }) => {
 	const data = buildDimensionData(reportData);
 
 	if (data.length === 0) return null;
@@ -73,16 +46,25 @@ export function ScoreChart({ reportData }: { reportData: DashboardResult[] }) {
 				<p className="score-chart__title meta">Avg Score by Dimension</p>
 				<div className="score-chart__legend flex items-center gap-3 text-[11px] text-[#64748b]">
 					<span className="flex items-center gap-1">
-						<span className="inline-block h-2 w-2 rounded-sm bg-[#10b981]" />
-						≥8
+						<span
+							className="inline-block h-2 w-2 rounded-sm"
+							style={{ backgroundColor: SCORE_COLORS.GOOD }}
+						/>
+						≥{SCORE_THRESHOLDS.GOOD}
 					</span>
 					<span className="flex items-center gap-1">
-						<span className="inline-block h-2 w-2 rounded-sm bg-[#f59e0b]" />
-						5–7
+						<span
+							className="inline-block h-2 w-2 rounded-sm"
+							style={{ backgroundColor: SCORE_COLORS.WARNING }}
+						/>
+						{SCORE_THRESHOLDS.WARNING}–{SCORE_THRESHOLDS.GOOD - 1}
 					</span>
 					<span className="flex items-center gap-1">
-						<span className="inline-block h-2 w-2 rounded-sm bg-[#ef4444]" />
-						&lt;5
+						<span
+							className="inline-block h-2 w-2 rounded-sm"
+							style={{ backgroundColor: SCORE_COLORS.CRITICAL }}
+						/>
+						&lt;{SCORE_THRESHOLDS.WARNING}
 					</span>
 				</div>
 			</div>
@@ -104,13 +86,18 @@ export function ScoreChart({ reportData }: { reportData: DashboardResult[] }) {
 						axisLine={false}
 					/>
 					<Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-					<Bar dataKey="avg" radius={[4, 4, 0, 0]} maxBarSize={40}>
-						{data.map((entry) => (
-							<Cell key={entry.dimension} fill={entry.fill} />
-						))}
-					</Bar>
+					<Bar
+						dataKey="avg"
+						shape={(props: unknown) => {
+							const { fill, payload, ...rest } = props as Record<string, unknown> & {
+								payload: { fill: string };
+							};
+							return <Rectangle {...rest} fill={payload.fill} radius={[4, 4, 0, 0]} />;
+						}}
+						maxBarSize={40}
+					/>
 				</BarChart>
 			</ResponsiveContainer>
 		</div>
 	);
-}
+};

@@ -9,38 +9,17 @@ import {
 	DialogHeader,
 	DialogTitle,
 } from '@/components/ui/dialog';
+import { GlassCard } from '@/components/ui/glass-card';
 import { Input } from '@/components/ui/input';
 import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ERRORS } from '@/lib/errors';
 import { INPUT_LIMITS } from '@/lib/guardrails/input-rails';
-import type { MockScenarioId, StandardizedError } from '@/types';
+import type { MockScenarioId } from '@/types';
 
-interface PromptSurfaceProps {
-	isZoneCollapsed: boolean;
-	prompt: string;
-	setPrompt: (value: string) => void;
-	handleRun: () => void;
-	submitError: StandardizedError | null;
-	setSubmitError: (error: StandardizedError | null) => void;
-	isAdvancedOpen: boolean;
-	setIsAdvancedOpen: (value: boolean) => void;
-	runLabel: string;
-	setRunLabel: (value: string) => void;
-	selectedModel: string;
-	setSelectedModel: (value: string) => void;
-	modelOptions: readonly string[];
-	selectedDataset: string;
-	setSelectedDataset: (value: string) => void;
-	datasetOptions: readonly string[];
-	selectedMockScenario: MockScenarioId;
-	setSelectedMockScenario: (value: MockScenarioId) => void;
-	mockScenarioOptions: readonly { value: MockScenarioId; label: string; description: string }[];
-	projectInstructions: string;
-	setProjectInstructions: (value: string) => void;
-}
+import type { PromptSurfaceProps } from './types';
 
-export function PromptSurface({
+export const PromptSurface = ({
 	isZoneCollapsed,
 	prompt,
 	setPrompt,
@@ -62,7 +41,7 @@ export function PromptSurface({
 	mockScenarioOptions,
 	projectInstructions,
 	setProjectInstructions,
-}: PromptSurfaceProps) {
+}: PromptSurfaceProps) => {
 	if (isZoneCollapsed) {
 		return (
 			<div className="prompt-input-zone__collapsed cell flex flex-col gap-2 p-4">
@@ -77,7 +56,7 @@ export function PromptSurface({
 
 	return (
 		<div className="prompt-input-zone__surface grid grid-cols-1 gap-4">
-			<div className="prompt-input-zone__main cell flex flex-col gap-4 p-4 md:p-5">
+			<GlassCard className="prompt-input-zone__main flex flex-col gap-4 p-4 md:p-5">
 				<div className="prompt-input-zone__field field">
 					<label htmlFor="prompt-input-zone-prompt" className="prompt-input-zone__field-label">
 						Prompt
@@ -264,7 +243,7 @@ export function PromptSurface({
 						</Button>
 					</DialogFooter>
 				</Dialog>
-			</div>
+			</GlassCard>
 		</div>
 	);
-}
+};

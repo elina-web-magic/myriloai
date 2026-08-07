@@ -1,45 +1,24 @@
 'use client';
 
-import {
-	createContext,
-	type ReactNode,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { STORAGE_KEY } from '@/constants';
+import type { Theme, ThemeContextValue, ThemeProviderProps } from '@/types';
 
-type Theme = 'light' | 'dark';
-
-type ThemeProviderProps = {
-	attribute?: string;
-	children: ReactNode;
-	defaultTheme?: Theme;
-	enableSystem?: boolean;
-};
-
-type ThemeContextValue = {
-	resolvedTheme: Theme;
-	setTheme: (theme: Theme) => void;
-};
-
-const STORAGE_KEY = 'myrilo-theme';
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function getSystemTheme(): Theme {
+const getSystemTheme = (): Theme => {
 	if (typeof window === 'undefined') {
 		return 'dark';
 	}
 
 	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
+};
 
-export function ThemeProvider({
+export const ThemeProvider = ({
 	children,
 	defaultTheme = 'dark',
 	enableSystem = false,
-}: ThemeProviderProps) {
+}: ThemeProviderProps) => {
 	const [resolvedTheme, setResolvedTheme] = useState<Theme>(defaultTheme);
 
 	useEffect(() => {
@@ -114,9 +93,9 @@ export function ThemeProvider({
 	);
 
 	return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
-}
+};
 
-export function useTheme() {
+export const useTheme = () => {
 	const contextValue = useContext(ThemeContext);
 
 	if (!contextValue) {
@@ -124,4 +103,4 @@ export function useTheme() {
 	}
 
 	return contextValue;
-}
+};

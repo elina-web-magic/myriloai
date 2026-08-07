@@ -39,9 +39,13 @@ This is not an academic exercise, but a production-grade enterprise software pro
 - **Prisma Singleton:** Always import `prisma` from `src/lib/prisma.ts`.
 - **Prisma Client Import:** Never import `PrismaClient` from `@prisma/client`. Always use `import { PrismaClient } from '@/generated/prisma'` in app code. Scripts outside `src/` (e.g. `prisma/seed.ts`) must use the equivalent relative path `@/generated/prisma` because the `@/` alias is not available there.
 - **Prisma Types:** Do not import `Prisma` namespace types from `@prisma/client` in app code. Use `import type { Prisma } from '@/generated/prisma'` when the namespace is needed, or prefer narrow runtime types such as `import type { JsonValue } from '@/generated/prisma/runtime/client'` when only JSON typing is required.
-- **Type Placement:** Put cross-project reusable types in a global `src/types.ts`. Put component-local types in a sibling `types.ts` inside that component folder.
-- **Utility Placement:** Move helper functions out of components into `utils/` files. Use global utils for shared logic and component-scoped `utils/<theme>/` files only when the logic is truly local to that component.
+- **Type Placement:** Move all types and interfaces out of component bodies. Put cross-project reusable types in a global `src/types.ts`. Put component-local types in a sibling `types.ts` inside that component folder.
+- **Constants Placement:** Move magic values, constant literals, and config objects into a shared `src/constants.ts` or a component-scoped `constants.ts` inside that component folder.
+- **Functions & Utils:** Move any function defined inside a component to a helper file. Use global utils for shared logic and component-scoped `utils/<theme>/` (or `utils.ts`) files only when the logic is truly local to that component.
 - **Hooks Placement:** Move custom hooks into dedicated `hooks/` folders. Keep shared browser/runtime hooks under global `src/hooks/` (for example: timers, resize, debounce, interval-related hooks).
+- **UI Components Structure:** Keep large complex layouts composed of smaller extracted component chunks to improve readability and maintainability.
+- **Blur Effects:** Do not rely on CSS variables for `-webkit-backdrop-filter` blur values; use explicit blur values (e.g., `blur(12px)`) for cross-browser compatibility.
+- **Inline Styles:** Avoid inline `style={{}}` in React components. Replace with Tailwind utility classes or extract to CSS files keyed by BEM class.
 - **Import Paths:** Use alias imports such as `@/lib/auth` instead of deep relative paths like `../../../../lib/auth`.
 - **UI Primitives:** Prefer Shadcn UI primitives (`Button`, `Card`, inputs, dialogs, typography wrappers where available) over raw HTML elements when an equivalent shared UI primitive already exists.
 - **Early Returns:** Use early returns to avoid deep nesting (if-else).
@@ -102,6 +106,7 @@ Personal identity, health context, communication preferences, and career informa
 - **Mermaid Diagrams**: Use 3-backtick `mermaid` blocks (inside the 4-backtick markdown). Style nodes with `classDef` (Purple=server/infrastructure, Blue=client/UI, Orange=state/data, Green=logic/services, Red=failure/rollback). Always include a Legend table after the diagram.
 
 ---
+
 ## 7. Testing Conventions
 
 - **Component Tests (`.test.tsx`)**: Place directly alongside the component in the same folder (e.g., `src/components/shell/PromptInputZone.test.tsx`). Focus on Testing Library `user-event` behavior and DOM rendering.
