@@ -427,11 +427,11 @@
 
 ##### 8.Structure.1 BEM Classes
 
-1. ⬜️ Audit every component and add BEM-style classes to all meaningful elements that currently lack them
+1. ✅ Audit every component and add BEM-style classes to all meaningful elements that currently lack them
 
 ##### 8.Structure.2 Inline Styles Extraction
 
-1. ⬜️ Remove inline `style={{}}` from all components; replace with Tailwind utility classes or extract to a component-scoped `style.css` / page-level CSS file keyed by BEM class
+1. ✅ Remove inline `style={{}}` from all components; replace with Tailwind utility classes or extract to a component-scoped `style.css` / page-level CSS file keyed by BEM class
 
 ##### 8.Structure.3 Functions → Helpers / Utils
 
@@ -530,7 +530,7 @@
 
 ## Documentation / Standards Alignment
 
-- `D.1` `[x]` Sync `AGENTS.md` with current code standards
-- `D.2` `[x]` Move `Code Standards` under `3. Code Quality, Tooling & 2026 Best Practices`
-- `D.3` `[x]` Add structured micro-step reporting rule for agent output
-- `D.4` `[x]` Keep `TASK.md` synchronized with `docs/IMPLEMENTATION_PLAN.md` after each accepted step
+- `D.1` `✅` Sync `AGENTS.md` with current code standards
+- `D.2` `✅` Move `Code Standards` under `3. Code Quality, Tooling & 2026 Best Practices`
+- `D.3` `✅` Add structured micro-step reporting rule for agent output
+- `D.4` `✅` Keep `TASK.md` synchronized with `docs/IMPLEMENTATION_PLAN.md` after each accepted step
