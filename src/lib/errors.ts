@@ -8,6 +8,12 @@ type InputTooLargeContext = {
 	reason: string;
 };
 
+type RateLimitContext = {
+	reason: string;
+	limit: number;
+	retryAfterSeconds: number;
+};
+
 export const ERRORS = {
 	MOCK_SCENARIO_EXECUTION_FAILED: (): StandardizedError => ({
 		code: 'MOCK_SCENARIO_EXECUTION_FAILED',
@@ -62,9 +68,3 @@ export const ERRORS = {
 		details: { limit: ctx.limit, retryAfterSeconds: ctx.retryAfterSeconds },
 	}),
 } as const;
-
-type RateLimitContext = {
-	reason: string;
-	limit: number;
-	retryAfterSeconds: number;
-};

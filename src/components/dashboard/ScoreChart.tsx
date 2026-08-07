@@ -4,13 +4,14 @@ import {
 	Bar,
 	BarChart,
 	CartesianGrid,
-	Cell,
+	Rectangle,
 	ResponsiveContainer,
 	Tooltip,
 	XAxis,
 	YAxis,
 } from 'recharts';
 import type { DashboardResult } from '@/types';
+import { SCORE_COLORS, SCORE_THRESHOLDS } from './constants';
 import { buildDimensionData } from './utils';
 
 type DimensionAvg = { dimension: string; avg: number; fill: string };
@@ -45,16 +46,25 @@ export const ScoreChart = ({ reportData }: { reportData: DashboardResult[] }) =>
 				<p className="score-chart__title meta">Avg Score by Dimension</p>
 				<div className="score-chart__legend flex items-center gap-3 text-[11px] text-[#64748b]">
 					<span className="flex items-center gap-1">
-						<span className="inline-block h-2 w-2 rounded-sm bg-[#10b981]" />
-						≥8
+						<span
+							className="inline-block h-2 w-2 rounded-sm"
+							style={{ backgroundColor: SCORE_COLORS.GOOD }}
+						/>
+						≥{SCORE_THRESHOLDS.GOOD}
 					</span>
 					<span className="flex items-center gap-1">
-						<span className="inline-block h-2 w-2 rounded-sm bg-[#f59e0b]" />
-						5–7
+						<span
+							className="inline-block h-2 w-2 rounded-sm"
+							style={{ backgroundColor: SCORE_COLORS.WARNING }}
+						/>
+						{SCORE_THRESHOLDS.WARNING}–{SCORE_THRESHOLDS.GOOD - 1}
 					</span>
 					<span className="flex items-center gap-1">
-						<span className="inline-block h-2 w-2 rounded-sm bg-[#ef4444]" />
-						&lt;5
+						<span
+							className="inline-block h-2 w-2 rounded-sm"
+							style={{ backgroundColor: SCORE_COLORS.CRITICAL }}
+						/>
+						&lt;{SCORE_THRESHOLDS.WARNING}
 					</span>
 				</div>
 			</div>
@@ -76,11 +86,16 @@ export const ScoreChart = ({ reportData }: { reportData: DashboardResult[] }) =>
 						axisLine={false}
 					/>
 					<Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(255,255,255,0.04)' }} />
-					<Bar dataKey="avg" radius={[4, 4, 0, 0]} maxBarSize={40}>
-						{data.map((entry) => (
-							<Cell key={entry.dimension} fill={entry.fill} />
-						))}
-					</Bar>
+					<Bar
+						dataKey="avg"
+						shape={(props: unknown) => {
+							const { fill, payload, ...rest } = props as Record<string, unknown> & {
+								payload: { fill: string };
+							};
+							return <Rectangle {...rest} fill={payload.fill} radius={[4, 4, 0, 0]} />;
+						}}
+						maxBarSize={40}
+					/>
 				</BarChart>
 			</ResponsiveContainer>
 		</div>

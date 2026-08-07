@@ -1,12 +1,10 @@
-import type { DialogProps } from './types';
-
-('use client');
+'use client';
 
 import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 import { X } from 'lucide-react';
 import type { ComponentProps } from 'react';
-
 import { cn } from '@/lib/utils';
+import type { DialogProps } from './types';
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 

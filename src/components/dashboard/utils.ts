@@ -22,10 +22,12 @@ export const getWidthClass = (score: number): string => {
 	return 'w-0';
 };
 
-export const getDimensionFill = (avg: number): string => {
-	if (avg >= 8) return '#10b981';
-	if (avg >= 5) return '#f59e0b';
-	return '#ef4444';
+import { SCORE_COLORS, SCORE_THRESHOLDS } from './constants';
+
+const getDimensionFill = (avg: number): string => {
+	if (avg >= SCORE_THRESHOLDS.GOOD) return SCORE_COLORS.GOOD;
+	if (avg >= SCORE_THRESHOLDS.WARNING) return SCORE_COLORS.WARNING;
+	return SCORE_COLORS.CRITICAL;
 };
 
 export const buildDimensionData = (reportData: DashboardResult[]) => {

@@ -1,10 +1,9 @@
 'use client';
 
 import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
-
+import { STORAGE_KEY } from '@/constants';
 import type { Theme, ThemeContextValue, ThemeProviderProps } from '@/types';
 
-const STORAGE_KEY = 'myrilo-theme';
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 const getSystemTheme = (): Theme => {

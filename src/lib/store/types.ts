@@ -1,6 +1,6 @@
 import type { StandardizedError } from '@/types';
 
-export const runStates = ['queued', 'sending', 'streaming', 'completed', 'failed'] as const;
+import type { runStates } from './constants';
 export type RunState = (typeof runStates)[number];
 
 export interface PromptStore {

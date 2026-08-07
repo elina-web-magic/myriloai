@@ -18,15 +18,7 @@ export type StandardizedError = z.infer<typeof standardizedErrorSchema>;
 // HALLUCINATION FLAG TAXONOMY (6.6)
 // ───────────────────────────────────────────────
 
-const FAILURE_LABELS = [
-	'HALLUCINATION',
-	'IRRELEVANCE',
-	'REFUSAL',
-	'FORMATTING_DRIFT',
-	'GROUNDING_FAILURE',
-	'SCORE_WITHOUT_EVIDENCE',
-	'EVALUATOR_DISAGREEMENT',
-] as const;
+import type { FAILURE_LABELS } from '@/constants';
 
 export type FailureLabel = (typeof FAILURE_LABELS)[number];
 

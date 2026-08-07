@@ -451,7 +451,7 @@
 
 ##### 8.Structure.6 Constants Extraction
 
-1. ⬜️ Move magic values and constant literals into a shared `src/constants.ts` or a component-scoped `constants.ts`
+1. ✅ Move magic values and constant literals into a shared `src/constants.ts` or a component-scoped `constants.ts`
 
 ##### 8.Structure.7 Extract Review Workspace Header into a Component
 
@@ -463,8 +463,8 @@
 
 ##### 8.Structure.9 Update Rules in Implementation Plan & AGENTS.md
 
-1. ⬜️ Add the rules defined in this bug-fix block to `docs/IMPLEMENTATION_PLAN.md`
-1. ⬜️ Add or update the corresponding rules in `AGENTS.md` (Coding Guidelines section)
+1. ✅ Add the rules defined in this bug-fix block to `docs/IMPLEMENTATION_PLAN.md`
+1. ✅ Add or update the corresponding rules in `AGENTS.md` (Coding Guidelines section)
 
 ---
 

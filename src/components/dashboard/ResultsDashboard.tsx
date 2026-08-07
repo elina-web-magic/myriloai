@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { GlassCard } from '@/components/ui/glass-card';
 import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
 
+import { PASSING_SCORE_THRESHOLD } from './constants';
 import type { ResultsDashboardProps } from './types';
 import { getScoreColor } from './utils';
 
@@ -21,7 +22,11 @@ export const ResultsDashboard = ({ reportData, dataSource }: ResultsDashboardPro
 			: 0;
 	const passRate =
 		totalTests > 0
-			? ((reportData.filter((row) => row.total_score >= 30).length / totalTests) * 100).toFixed(1)
+			? (
+					(reportData.filter((row) => row.total_score >= PASSING_SCORE_THRESHOLD).length /
+						totalTests) *
+					100
+				).toFixed(1)
 			: 0;
 	const selectedScenario = reportData[selectedScenarioIndex] ?? reportData[0];
 	const isDemoData = dataSource === 'demo';
@@ -57,7 +62,9 @@ export const ResultsDashboard = ({ reportData, dataSource }: ResultsDashboardPro
 							<Brain size={28} />
 						</div>
 						<div className="stat-card__content">
-							<p className="stat-card__label meta mb-1">Pass Rate (&ge;30)</p>
+							<p className="stat-card__label meta mb-1">
+								Pass Rate (&ge;{PASSING_SCORE_THRESHOLD})
+							</p>
 							<p className="stat-card__value t-h2 font-mono">{passRate}%</p>
 						</div>
 					</div>
