@@ -48,27 +48,7 @@ const CopyButton = ({ text }: { text: string }) => {
 	);
 };
 
-const getScoreColor = (score: number): string => {
-	if (score >= 35) return 'text-[var(--success)] border-[var(--success)] bg-[var(--success-soft)]';
-	if (score >= 25) return 'text-[var(--warning)] border-[var(--warning)] bg-[var(--warning-soft)]';
-	return 'text-[var(--error)] border-[var(--error)] bg-[var(--error-soft)]';
-};
-
-const getWidthClass = (score: number): string => {
-	const w = Math.round(score) * 10;
-	if (w === 0) return 'w-0';
-	if (w === 10) return 'w-[10%]';
-	if (w === 20) return 'w-[20%]';
-	if (w === 30) return 'w-[30%]';
-	if (w === 40) return 'w-[40%]';
-	if (w === 50) return 'w-[50%]';
-	if (w === 60) return 'w-[60%]';
-	if (w === 70) return 'w-[70%]';
-	if (w === 80) return 'w-[80%]';
-	if (w === 90) return 'w-[90%]';
-	if (w >= 100) return 'w-[100%]';
-	return 'w-0';
-};
+import { getScoreColor, getWidthClass } from './utils';
 
 export function DetailSplitPane({ row }: { row: OutputData }) {
 	const [activeTab, setActiveTab] = useState<'reasoning' | 'output'>('reasoning');

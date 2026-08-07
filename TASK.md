@@ -435,9 +435,9 @@
 
 ##### 8.Structure.3 Functions → Helpers / Utils
 
-1. ⬜️ Move any function defined inside a component to a helper file
-    1. ⬜️ Place shared/repeated functions in the global `src/utils/` or `src/lib/` folder
-    1. ⬜️ Place component-local functions in a `utils.ts` (or `helpers.ts`) file co-located with the component
+1. ✅ Move any function defined inside a component to a helper file
+    1. ✅ Place shared/repeated functions in the global `src/utils/` or `src/lib/` folder
+    1. ✅ Place component-local functions in a `utils.ts` (or `helpers.ts`) file co-located with the component
 
 ##### 8.Structure.4 Arrow Functions
 

@@ -3,7 +3,6 @@
 import { PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { runStateMeta, runStates, usePromptStore } from '@/lib/store/prompt-store';
-import type { StandardizedError } from '@/types';
 import { PromptConsoleActions } from './PromptConsoleActions';
 
 export function ConsoleSidebar() {
@@ -16,54 +15,6 @@ export function ConsoleSidebar() {
 	const lastResponseMeta = usePromptStore((state) => state.lastResponseMeta);
 
 	const currentRunState = runStateMeta[activeRunState];
-
-	const getErrorMessage = (errorValue: StandardizedError | null): string | null => {
-		if (errorValue === null) {
-			return null;
-		}
-
-		return errorValue.field ? `${errorValue.field}: ${errorValue.message}` : errorValue.message;
-	};
-
-	const getErrorDetails = (errorValue: StandardizedError | null): string[] => {
-		if (errorValue?.details === undefined) {
-			return [];
-		}
-
-		return Object.entries(errorValue.details).flatMap(([key, value]) => {
-			if (typeof value === 'string' || typeof value === 'number' || typeof value === 'boolean') {
-				return [`${key}: ${String(value)}`];
-			}
-
-			if (Array.isArray(value)) {
-				return [`${key}: ${value.length} item(s)`];
-			}
-
-			if (value !== null && typeof value === 'object') {
-				return [`${key}: object payload`];
-			}
-
-			return [];
-		});
-	};
-
-	const getSeverityBadgeVariant = (
-		severity: StandardizedError['severity']
-	): 'secondary' | 'warning' | 'error' | 'success' => {
-		if (severity === 'warning') {
-			return 'warning';
-		}
-
-		if (severity === 'error') {
-			return 'error';
-		}
-
-		if (severity === 'info') {
-			return 'secondary';
-		}
-
-		return 'success';
-	};
 
 	const isMobileConsoleOpen = usePromptStore((state) => state.isMobileConsoleOpen);
 	const setIsMobileConsoleOpen = usePromptStore((state) => state.setIsMobileConsoleOpen);
@@ -118,9 +69,6 @@ export function ConsoleSidebar() {
 						runNotice={runNotice}
 						submitError={submitError}
 						lastResponseMeta={lastResponseMeta}
-						getErrorMessage={getErrorMessage}
-						getErrorDetails={getErrorDetails}
-						getSeverityBadgeVariant={getSeverityBadgeVariant}
 					/>
 				</div>
 			</aside>

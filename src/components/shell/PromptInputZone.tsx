@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
-import { ERRORS } from '@/lib/errors';
-import { sanitizeText } from '@/lib/guardrails/output-rails';
-import type { MockScenarioId, StandardizedError } from '@/types';
+import { usePromptStore } from '@/lib/store/prompt-store';
+import type { MockScenarioId } from '@/types';
+import { PromptSurface } from './PromptSurface';
+import { executeEvaluationRun } from './utils';
 
 const modelOptions = ['Claude Sonnet', 'GPT-4.1', 'Gemini 2.5 Pro'] as const;
 const datasetOptions = ['Manual session', 'Ailens seed set', 'Custom dataset'] as const;
@@ -29,9 +29,6 @@ const mockScenarioOptions = [
 	label: string;
 	description: string;
 }>;
-
-import { runStateMeta, usePromptStore } from '@/lib/store/prompt-store';
-import { PromptSurface } from './PromptSurface';
 
 export function PromptInputZone() {
 	const [projectInstructions, setProjectInstructions] = useState(
@@ -59,115 +56,20 @@ export function PromptInputZone() {
 	const setSubmitError = usePromptStore((state) => state.setSubmitError);
 	const setLastResponseMeta = usePromptStore((state) => state.setLastResponseMeta);
 
-	const handleRun = async () => {
-		if (prompt.trim().length === 0) {
-			const promptError = ERRORS.EMPTY_PROMPT();
-
-			setSubmitError(promptError);
-			setRunOutput(`Error: ${promptError.message}`);
-			setRunNotice('Add a prompt, then submit again.');
-			setLastResponseMeta(null);
-			setActiveRunState('failed');
-			return;
-		}
-
-		setSubmitError(null);
-		setLastResponseMeta(null);
-		setRunOutput(runStateMeta.queued.output);
-		setRunNotice(runStateMeta.queued.notice);
-		setActiveRunState('queued');
-
-		setRunOutput(runStateMeta.sending.output);
-		setRunNotice(runStateMeta.sending.notice);
-		setActiveRunState('sending');
-
-		try {
-			const response = await fetch('/api/evaluate/submit', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					runLabel,
-					model: selectedModel,
-					dataset: selectedDataset,
-					projectInstructions,
-					prompt,
-					mockScenarioId: selectedMockScenario,
-				}),
-			});
-
-			setRunOutput(runStateMeta.streaming.output);
-			setRunNotice(runStateMeta.streaming.notice);
-			setActiveRunState('streaming');
-
-			const responseBody: unknown = await response.json();
-
-			if (!response.ok) {
-				const errorResult = standardizedErrorSchema.safeParse(responseBody);
-				const submitFailure = errorResult.success
-					? errorResult.data
-					: ERRORS.UNEXPECTED_EVALUATION_ERROR('Evaluation submit failed.');
-
-				throw submitFailure;
-			}
-
-			const submitResponse = evaluateSubmitSuccessSchema.parse(responseBody);
-			const parsedResponse = submitResponse.response.parsedResponse;
-			const topRisks = parsedResponse.topRisks.map((risk) => `- ${risk}`).join('\n');
-			const mitigations = parsedResponse.mitigations.map((item) => `- ${item}`).join('\n');
-
-			setRunOutput(
-				[
-					`Scenario: ${submitResponse.response.scenario}`,
-					`Run ID: ${submitResponse.response.runId}`,
-					`Source: ${submitResponse.source}`,
-					`Score: ${parsedResponse.score}/40`,
-					'',
-					`Summary: ${parsedResponse.summary}`,
-					'',
-					'Top risks:',
-					topRisks,
-					'',
-					'Mitigations:',
-					mitigations,
-					'',
-					'Parsed from raw response payload:',
-					sanitizeText(submitResponse.response.rawResponse),
-				].join('\n')
-			);
-			setRunNotice('Mock registry response submitted and parsed through the API route.');
-			setLastResponseMeta({
-				runId: submitResponse.response.runId,
-				scenario: submitResponse.response.scenario,
-				source: submitResponse.source,
-				score: parsedResponse.score,
-			});
-			setActiveRunState('completed');
-		} catch (error) {
-			let normalizedError: StandardizedError;
-			const fallbackError = ERRORS.UNEXPECTED_EVALUATION_ERROR(
-				error instanceof Error ? error.message : 'Evaluation submit failed unexpectedly.'
-			);
-
-			if (
-				error !== null &&
-				typeof error === 'object' &&
-				'code' in error &&
-				'message' in error &&
-				'severity' in error
-			) {
-				normalizedError = standardizedErrorSchema.parse(error);
-			} else {
-				normalizedError = fallbackError;
-			}
-
-			setSubmitError(normalizedError);
-			setRunOutput(`Error: ${normalizedError.message}`);
-			setRunNotice('Review the request payload or environment mode and try again.');
-			setLastResponseMeta(null);
-			setActiveRunState('failed');
-		}
+	const handleRun = () => {
+		executeEvaluationRun({
+			prompt,
+			runLabel,
+			selectedModel,
+			selectedDataset,
+			projectInstructions,
+			selectedMockScenario,
+			setSubmitError,
+			setRunOutput,
+			setRunNotice,
+			setLastResponseMeta,
+			setActiveRunState,
+		});
 	};
 
 	return (

@@ -2,8 +2,9 @@ import { Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import type { StandardizedError } from '@/types';
+import { getErrorDetails, getErrorMessage, getSeverityBadgeVariant } from './utils';
 
-interface PromptConsoleActionsProps {
+export interface PromptConsoleActionsProps {
 	isZoneCollapsed: boolean;
 	runStates: readonly string[];
 	activeRunState: string;
@@ -23,11 +24,6 @@ interface PromptConsoleActionsProps {
 		source: string;
 		score: number;
 	} | null;
-	getErrorMessage: (errorValue: StandardizedError | null) => string | null;
-	getErrorDetails: (errorValue: StandardizedError | null) => string[];
-	getSeverityBadgeVariant: (
-		severity: StandardizedError['severity']
-	) => 'secondary' | 'warning' | 'error' | 'success';
 }
 
 export function PromptConsoleActions({
@@ -39,9 +35,6 @@ export function PromptConsoleActions({
 	runNotice,
 	submitError,
 	lastResponseMeta,
-	getErrorMessage,
-	getErrorDetails,
-	getSeverityBadgeVariant,
 }: PromptConsoleActionsProps) {
 	return (
 		<div className="prompt-input-zone__header-actions flex min-w-full flex-col gap-3">

@@ -12,11 +12,7 @@ import type { DashboardResult } from '@/types';
 
 export type OutputData = DashboardResult;
 
-const getScoreColor = (score: number): string => {
-	if (score >= 35) return 'text-[var(--success)] border-[var(--success)] bg-[var(--success-soft)]';
-	if (score >= 25) return 'text-[var(--warning)] border-[var(--warning)] bg-[var(--warning-soft)]';
-	return 'text-[var(--error)] border-[var(--error)] bg-[var(--error-soft)]';
-};
+import { getScoreColor } from './utils';
 
 export function ResultsDashboard({
 	reportData,

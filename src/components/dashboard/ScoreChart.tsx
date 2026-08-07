@@ -11,37 +11,9 @@ import {
 	YAxis,
 } from 'recharts';
 import type { DashboardResult } from '@/types';
+import { buildDimensionData } from './utils';
 
 type DimensionAvg = { dimension: string; avg: number; fill: string };
-
-function getDimensionFill(avg: number): string {
-	if (avg >= 8) return '#10b981';
-	if (avg >= 5) return '#f59e0b';
-	return '#ef4444';
-}
-
-function buildDimensionData(reportData: DashboardResult[]): DimensionAvg[] {
-	if (reportData.length === 0) return [];
-
-	const totals: Record<string, { sum: number; count: number }> = {};
-
-	for (const row of reportData) {
-		for (const [dim, score] of Object.entries(row.scores)) {
-			if (!totals[dim]) totals[dim] = { sum: 0, count: 0 };
-			totals[dim].sum += score;
-			totals[dim].count += 1;
-		}
-	}
-
-	return Object.entries(totals).map(([dimension, { sum, count }]) => {
-		const avg = Number((sum / count).toFixed(1));
-		return {
-			dimension: dimension.replace(/_/g, ' '),
-			avg,
-			fill: getDimensionFill(avg),
-		};
-	});
-}
 
 const CustomTooltip = ({
 	active,
