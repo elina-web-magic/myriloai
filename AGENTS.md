@@ -102,6 +102,7 @@ Personal identity, health context, communication preferences, and career informa
 - **Mermaid Diagrams**: Use 3-backtick `mermaid` blocks (inside the 4-backtick markdown). Style nodes with `classDef` (Purple=server/infrastructure, Blue=client/UI, Orange=state/data, Green=logic/services, Red=failure/rollback). Always include a Legend table after the diagram.
 
 ---
+
 ## 7. Testing Conventions
 
 - **Component Tests (`.test.tsx`)**: Place directly alongside the component in the same folder (e.g., `src/components/shell/PromptInputZone.test.tsx`). Focus on Testing Library `user-event` behavior and DOM rendering.
