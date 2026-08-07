@@ -29,3 +29,27 @@ const FAILURE_LABELS = [
 ] as const;
 
 export type FailureLabel = (typeof FAILURE_LABELS)[number];
+
+// ───────────────────────────────────────────────
+// SHARED UI / PAGE TYPES
+// ───────────────────────────────────────────────
+import type { ReactNode } from 'react';
+
+export type Theme = 'light' | 'dark';
+
+export type ThemeProviderProps = {
+	attribute?: string;
+	children: ReactNode;
+	defaultTheme?: Theme;
+	enableSystem?: boolean;
+};
+
+export type ThemeContextValue = {
+	resolvedTheme: Theme;
+	setTheme: (theme: Theme) => void;
+};
+
+export type DashboardDataState = {
+	reportData: DashboardResult[];
+	source: 'demo' | 'live';
+};

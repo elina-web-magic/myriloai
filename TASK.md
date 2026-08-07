@@ -445,9 +445,9 @@
 
 ##### 8.Structure.5 Types & Interfaces Extraction
 
-1. ⬜️ Move all types and interfaces out of component bodies
-    1. ⬜️ Place repeated/shared types in `src/types.ts`
-    1. ⬜️ Place component-local types in a sibling `types.ts` inside the component folder
+1. ✅ Move all types and interfaces out of component bodies
+    1. ✅ Place repeated/shared types in `src/types.ts`
+    1. ✅ Place component-local types in a sibling `types.ts` inside the component folder
 
 ##### 8.Structure.6 Constants Extraction
 

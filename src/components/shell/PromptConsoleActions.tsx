@@ -1,30 +1,8 @@
 import { Sparkles } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { StandardizedError } from '@/types';
+import type { PromptConsoleActionsProps } from './types';
 import { getErrorDetails, getErrorMessage, getSeverityBadgeVariant } from './utils';
-
-export interface PromptConsoleActionsProps {
-	isZoneCollapsed: boolean;
-	runStates: readonly string[];
-	activeRunState: string;
-	currentRunState: {
-		label: string;
-		helper: string;
-		output: string;
-		notice: string;
-		badgeVariant: 'secondary' | 'soft' | 'success' | 'error';
-	};
-	runOutput: string;
-	runNotice: string;
-	submitError: StandardizedError | null;
-	lastResponseMeta: {
-		runId: string;
-		scenario: string;
-		source: string;
-		score: number;
-	} | null;
-}
 
 export const PromptConsoleActions = ({
 	isZoneCollapsed,

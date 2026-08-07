@@ -1,11 +1,8 @@
-import type { ReactNode } from 'react';
 import { MobileHeader } from '@/components/shell/MobileHeader';
 import { PromptInputZone } from '@/components/shell/PromptInputZone';
 import { GlassCard } from '@/components/ui/glass-card';
 
-interface MainContentColumnProps {
-	children: ReactNode;
-}
+import type { MainContentColumnProps } from './types';
 
 export const MainContentColumn = ({ children }: MainContentColumnProps) => (
 	<div className="app__main-column app-wrapper min-w-0 h-full overflow-y-auto w-full mx-auto flex flex-col">

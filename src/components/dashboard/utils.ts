@@ -22,11 +22,6 @@ export const getWidthClass = (score: number): string => {
 	return 'w-0';
 };
 
-export interface DimensionAvg {
-	dimension: string;
-	avg: number;
-}
-
 export const getDimensionFill = (avg: number): string => {
 	if (avg >= 8) return '#10b981';
 	if (avg >= 5) return '#f59e0b';

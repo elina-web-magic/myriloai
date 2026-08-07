@@ -2,7 +2,6 @@
 
 import { Brain, Database, Edit2, ListChecks } from 'lucide-react';
 import { useState } from 'react';
-import type { OutputData } from '@/components/dashboard/ResultsDashboard';
 import { Button } from '@/components/ui/button';
 import {
 	DialogBackdrop,
@@ -19,6 +18,7 @@ import {
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
+import type { OutputData } from './types';
 
 const CopyButton = ({ text }: { text: string }) => {
 	const [copied, setCopied] = useState(false);

@@ -7,12 +7,7 @@ import type { JsonValue } from '@/generated/prisma/runtime/client';
 import { dashboardResultSchema } from '@/lib/contracts/evaluation';
 import { getDashboardMockState, isMockModeEnabled } from '@/lib/dev/static-registry';
 import { prisma } from '@/lib/prisma';
-import type { DashboardResult } from '@/types';
-
-type DashboardDataState = {
-	reportData: DashboardResult[];
-	source: 'demo' | 'live';
-};
+import type { DashboardDataState } from '@/types';
 
 const getStringRecord = (value: JsonValue): Record<string, string> => {
 	if (value === null || typeof value !== 'object' || Array.isArray(value)) {

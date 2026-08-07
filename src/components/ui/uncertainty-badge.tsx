@@ -1,9 +1,6 @@
 import type { FailureLabel } from '@/types';
 
-type LabelConfig = {
-	label: string;
-	colorClass: string;
-};
+import type { LabelConfig, UncertaintyBadgeProps } from './types';
 
 const LABEL_CONFIG: Record<FailureLabel, LabelConfig> = {
 	SCORE_WITHOUT_EVIDENCE: {
@@ -34,11 +31,6 @@ const LABEL_CONFIG: Record<FailureLabel, LabelConfig> = {
 		label: 'Refusal',
 		colorClass: 'border-[var(--info)] bg-[var(--info-soft)] text-[var(--info)]',
 	},
-};
-
-type UncertaintyBadgeProps = {
-	labels: string[];
-	className?: string;
 };
 
 export const UncertaintyBadge = ({ labels, className = '' }: UncertaintyBadgeProps) => {

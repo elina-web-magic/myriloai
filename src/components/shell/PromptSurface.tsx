@@ -15,31 +15,9 @@ import { Select } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { ERRORS } from '@/lib/errors';
 import { INPUT_LIMITS } from '@/lib/guardrails/input-rails';
-import type { MockScenarioId, StandardizedError } from '@/types';
+import type { MockScenarioId } from '@/types';
 
-interface PromptSurfaceProps {
-	isZoneCollapsed: boolean;
-	prompt: string;
-	setPrompt: (value: string) => void;
-	handleRun: () => void;
-	submitError: StandardizedError | null;
-	setSubmitError: (error: StandardizedError | null) => void;
-	isAdvancedOpen: boolean;
-	setIsAdvancedOpen: (value: boolean) => void;
-	runLabel: string;
-	setRunLabel: (value: string) => void;
-	selectedModel: string;
-	setSelectedModel: (value: string) => void;
-	modelOptions: readonly string[];
-	selectedDataset: string;
-	setSelectedDataset: (value: string) => void;
-	datasetOptions: readonly string[];
-	selectedMockScenario: MockScenarioId;
-	setSelectedMockScenario: (value: MockScenarioId) => void;
-	mockScenarioOptions: readonly { value: MockScenarioId; label: string; description: string }[];
-	projectInstructions: string;
-	setProjectInstructions: (value: string) => void;
-}
+import type { PromptSurfaceProps } from './types';
 
 export const PromptSurface = ({
 	isZoneCollapsed,

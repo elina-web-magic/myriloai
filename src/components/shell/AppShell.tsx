@@ -1,11 +1,8 @@
 'use client';
 
-import type { ReactNode } from 'react';
 import { usePromptStore } from '@/lib/store/prompt-store';
 
-interface AppShellProps {
-	children: ReactNode;
-}
+import type { AppShellProps } from './types';
 
 export const AppShell = ({ children }: AppShellProps) => {
 	const isZoneCollapsed = usePromptStore((state) => state.isZoneCollapsed);

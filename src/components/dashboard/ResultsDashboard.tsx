@@ -8,19 +8,10 @@ import { Button } from '@/components/ui/button';
 import { GlassCard } from '@/components/ui/glass-card';
 import { UncertaintyBadge } from '@/components/ui/uncertainty-badge';
 
-import type { DashboardResult } from '@/types';
-
-export type OutputData = DashboardResult;
-
+import type { ResultsDashboardProps } from './types';
 import { getScoreColor } from './utils';
 
-export const ResultsDashboard = ({
-	reportData,
-	dataSource,
-}: {
-	reportData: OutputData[];
-	dataSource: 'demo' | 'live';
-}) => {
+export const ResultsDashboard = ({ reportData, dataSource }: ResultsDashboardProps) => {
 	const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
 
 	const totalTests = reportData.length;

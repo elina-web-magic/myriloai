@@ -1,8 +1,8 @@
 import { evaluateSubmitSuccessSchema, standardizedErrorSchema } from '@/lib/contracts/evaluation';
 import { ERRORS } from '@/lib/errors';
 import { sanitizeText } from '@/lib/guardrails/output-rails';
-import { type RunState, runStateMeta } from '@/lib/store/prompt-store';
-import type { MockScenarioId, StandardizedError } from '@/types';
+import { runStateMeta } from '@/lib/store/prompt-store';
+import type { StandardizedError } from '@/types';
 
 export const getErrorMessage = (errorValue: StandardizedError | null): string | null => {
 	if (errorValue === null) {
@@ -48,26 +48,7 @@ export const getSeverityBadgeVariant = (
 	return 'secondary';
 };
 
-export interface ExecuteEvaluationRunParams {
-	prompt: string;
-	runLabel: string;
-	selectedModel: string;
-	selectedDataset: string;
-	projectInstructions: string;
-	selectedMockScenario: MockScenarioId;
-	setSubmitError: (error: StandardizedError | null) => void;
-	setRunOutput: (output: string) => void;
-	setRunNotice: (notice: string) => void;
-	setLastResponseMeta: (
-		meta: {
-			runId: string;
-			scenario: string;
-			source: 'mock';
-			score: number;
-		} | null
-	) => void;
-	setActiveRunState: (state: RunState) => void;
-}
+import type { ExecuteEvaluationRunParams } from './types';
 
 export const executeEvaluationRun = async ({
 	prompt,

@@ -1,28 +1,8 @@
 'use client';
 
-import {
-	createContext,
-	type ReactNode,
-	useContext,
-	useEffect,
-	useMemo,
-	useRef,
-	useState,
-} from 'react';
+import { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
 
-type Theme = 'light' | 'dark';
-
-type ThemeProviderProps = {
-	attribute?: string;
-	children: ReactNode;
-	defaultTheme?: Theme;
-	enableSystem?: boolean;
-};
-
-type ThemeContextValue = {
-	resolvedTheme: Theme;
-	setTheme: (theme: Theme) => void;
-};
+import type { Theme, ThemeContextValue, ThemeProviderProps } from '@/types';
 
 const STORAGE_KEY = 'myrilo-theme';
 const ThemeContext = createContext<ThemeContextValue | null>(null);
