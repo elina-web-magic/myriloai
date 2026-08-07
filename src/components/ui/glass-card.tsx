@@ -11,7 +11,7 @@ const GlassCard = React.forwardRef<
 		<div
 			ref={ref}
 			className={cn(
-				'rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)]',
+				'rounded-[var(--radius)] border border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] glass',
 				interactive &&
 					'cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent)] hover:bg-[var(--surface-hover)] hover:shadow-[var(--shadow-interactive)]',
 				className

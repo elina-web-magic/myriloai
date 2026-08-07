@@ -423,7 +423,7 @@
 
 ##### 8.UI.5 Glass Effect
 
-1. ⬜️ Audit and fix glass effect rendering on every component (backdrop-filter, bg-opacity tokens, border highlights)
+1. ✅ Audit and fix glass effect rendering on every component (backdrop-filter, bg-opacity tokens, border highlights)
 
 ##### 8.Structure.1 BEM Classes
 

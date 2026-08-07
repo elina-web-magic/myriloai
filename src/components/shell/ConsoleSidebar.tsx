@@ -80,47 +80,49 @@ export function ConsoleSidebar() {
 			/>
 
 			<aside
-				className={`console-zone fixed lg:sticky right-0 top-0 h-screen border-l border-[var(--line)] bg-[var(--surface)] shadow-[var(--shadow-3)] [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)] transition-all z-50 lg:z-40 p-4 overflow-y-auto ${
+				className={`console-zone fixed lg:sticky right-0 top-0 h-screen border-l border-[var(--line)] bg-paper shadow-[var(--shadow-3)] transition-all z-50 lg:z-40 ${
 					isZoneCollapsed ? 'w-20' : 'w-auto'
 				} lg:translate-x-0 ${isMobileConsoleOpen ? 'translate-x-0' : 'translate-x-full'}`}
 			>
-				<div
-					className={`console-zone__header flex mb-4 transition-all ${isZoneCollapsed ? 'lg:justify-center justify-start' : 'justify-start'}`}
-				>
-					<Button
-						onClick={() => setIsZoneCollapsed(!isZoneCollapsed)}
-						variant="ghost"
-						size="icon"
-						className="console-zone__toggle shrink-0 hidden lg:inline-flex"
-						aria-label={isZoneCollapsed ? 'Expand console' : 'Collapse console'}
+				<div className="flex h-full w-full flex-col bg-[var(--surface)] glass p-4 overflow-y-auto">
+					<div
+						className={`console-zone__header flex mb-4 transition-all ${isZoneCollapsed ? 'lg:justify-center justify-start' : 'justify-start'}`}
 					>
-						{isZoneCollapsed ? <PanelRightOpen size={18} /> : <PanelRightClose size={18} />}
-					</Button>
+						<Button
+							onClick={() => setIsZoneCollapsed(!isZoneCollapsed)}
+							variant="ghost"
+							size="icon"
+							className="console-zone__toggle shrink-0 hidden lg:inline-flex"
+							aria-label={isZoneCollapsed ? 'Expand console' : 'Collapse console'}
+						>
+							{isZoneCollapsed ? <PanelRightOpen size={18} /> : <PanelRightClose size={18} />}
+						</Button>
 
-					<Button
-						onClick={() => setIsMobileConsoleOpen(false)}
-						variant="ghost"
-						size="icon"
-						className="console-zone__toggle shrink-0 lg:hidden"
-						aria-label="Close console"
-					>
-						<PanelRightClose size={18} />
-					</Button>
+						<Button
+							onClick={() => setIsMobileConsoleOpen(false)}
+							variant="ghost"
+							size="icon"
+							className="console-zone__toggle shrink-0 lg:hidden"
+							aria-label="Close console"
+						>
+							<PanelRightClose size={18} />
+						</Button>
+					</div>
+
+					<PromptConsoleActions
+						isZoneCollapsed={isZoneCollapsed}
+						runStates={runStates}
+						activeRunState={activeRunState}
+						currentRunState={currentRunState}
+						runOutput={runOutput}
+						runNotice={runNotice}
+						submitError={submitError}
+						lastResponseMeta={lastResponseMeta}
+						getErrorMessage={getErrorMessage}
+						getErrorDetails={getErrorDetails}
+						getSeverityBadgeVariant={getSeverityBadgeVariant}
+					/>
 				</div>
-
-				<PromptConsoleActions
-					isZoneCollapsed={isZoneCollapsed}
-					runStates={runStates}
-					activeRunState={activeRunState}
-					currentRunState={currentRunState}
-					runOutput={runOutput}
-					runNotice={runNotice}
-					submitError={submitError}
-					lastResponseMeta={lastResponseMeta}
-					getErrorMessage={getErrorMessage}
-					getErrorDetails={getErrorDetails}
-					getSeverityBadgeVariant={getSeverityBadgeVariant}
-				/>
 			</aside>
 		</>
 	);

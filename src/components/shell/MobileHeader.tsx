@@ -14,7 +14,7 @@ export function MobileHeader() {
 	const setIsMobileConsoleOpen = usePromptStore((state) => state.setIsMobileConsoleOpen);
 
 	return (
-		<header className="mobile-header sticky top-0 z-40 flex w-full items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)] lg:hidden">
+		<header className="mobile-header sticky top-0 z-40 flex w-full items-center justify-between border-b border-[var(--line)] bg-[var(--surface)] p-4 shadow-sm glass lg:hidden">
 			<Button
 				variant="ghost"
 				size="icon"

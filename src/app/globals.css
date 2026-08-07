@@ -78,32 +78,6 @@
 		animation: float-3 30s ease-in-out infinite alternate;
 	}
 
-	.glass-panel {
-		background: var(--bg-surface);
-		backdrop-filter: blur(24px);
-		-webkit-backdrop-filter: blur(24px);
-		border: 1px solid var(--border-color);
-		box-shadow: var(--glass-shadow);
-		border-radius: 1rem;
-	}
-
-	.glass-panel-interactive {
-		background: var(--bg-surface);
-		backdrop-filter: blur(24px);
-		-webkit-backdrop-filter: blur(24px);
-		border: 1px solid var(--border-color);
-		box-shadow: var(--glass-shadow);
-		border-radius: 1rem;
-		transition: all 0.2s ease;
-	}
-
-	.glass-panel-interactive:hover {
-		background: var(--bg-surface-hover);
-		border-color: rgba(139, 92, 246, 0.5);
-		transform: translateY(-2px);
-		box-shadow: 0 12px 40px 0 rgba(31, 38, 135, 0.15);
-	}
-
 	.text-gradient {
 		background: linear-gradient(
 			135deg,
@@ -219,6 +193,15 @@
 	--radius-2xl: calc(var(--radius) * 1.8);
 	--radius-3xl: calc(var(--radius) * 2.2);
 	--radius-4xl: calc(var(--radius) * 2.6);
+}
+
+.glass {
+	backdrop-filter: blur(12px) saturate(180%);
+	-webkit-backdrop-filter: blur(12px) saturate(180%);
+}
+
+@utility bg-paper {
+	background: var(--paper);
 }
 
 :root {

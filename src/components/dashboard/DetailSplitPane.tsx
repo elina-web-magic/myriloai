@@ -35,7 +35,7 @@ const CopyButton = ({ text }: { text: string }) => {
 			onClick={handleCopy}
 			variant="secondary"
 			size="icon-sm"
-			className="copy-btn absolute top-2 right-2 border-[var(--line)] bg-[var(--surface-2)] p-0 [backdrop-filter:var(--glass-blur)] [-webkit-backdrop-filter:var(--glass-blur)]"
+			className="copy-btn absolute top-2 right-2 border-[var(--line)] bg-[var(--surface-2)] p-0 glass"
 			title="Copy to clipboard"
 			aria-label="Copy to clipboard"
 		>
