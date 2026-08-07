@@ -8,10 +8,10 @@ interface MainContentColumnProps {
 }
 
 export const MainContentColumn = ({ children }: MainContentColumnProps) => (
-	<div className="app-wrapper min-w-0 h-full overflow-y-auto w-full mx-auto flex flex-col">
+	<div className="app__main-column app-wrapper min-w-0 h-full overflow-y-auto w-full mx-auto flex flex-col">
 		<MobileHeader />
 
-		<div className="p-6 md:p-12 flex flex-col gap-4">
+		<div className="app__main-content p-6 md:p-12 flex flex-col gap-4">
 			<PromptInputZone />
 
 			<GlassCard

@@ -37,7 +37,7 @@ export function Sidebar() {
 					isCollapsed ? 'lg:w-20' : 'lg:w-80'
 				} w-80 lg:translate-x-0 ${isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}
 			>
-				<div className="flex h-full w-full flex-col bg-[var(--surface)] glass">
+				<div className="sidebar__wrapper flex h-full w-full flex-col bg-[var(--surface)] glass">
 					<div
 						className={`sidebar__header flex p-4 transition-all ${isCollapsed ? 'lg:flex-col lg:gap-4 lg:items-center items-center justify-between' : 'items-center justify-between'}`}
 					>

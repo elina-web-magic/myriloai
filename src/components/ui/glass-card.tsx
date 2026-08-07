@@ -41,7 +41,7 @@ const GlassCardDescription = React.forwardRef<
 	HTMLParagraphElement,
 	React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-	<p ref={ref} className={cn('t-small', className)} style={{ color: 'var(--ink-3)' }} {...props} />
+	<p ref={ref} className={cn('t-small text-[var(--ink-3)]', className)} {...props} />
 ));
 GlassCardDescription.displayName = 'GlassCardDescription';
 

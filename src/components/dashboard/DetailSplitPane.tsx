@@ -54,6 +54,22 @@ const getScoreColor = (score: number): string => {
 	return 'text-[var(--error)] border-[var(--error)] bg-[var(--error-soft)]';
 };
 
+const getWidthClass = (score: number): string => {
+	const w = Math.round(score) * 10;
+	if (w === 0) return 'w-0';
+	if (w === 10) return 'w-[10%]';
+	if (w === 20) return 'w-[20%]';
+	if (w === 30) return 'w-[30%]';
+	if (w === 40) return 'w-[40%]';
+	if (w === 50) return 'w-[50%]';
+	if (w === 60) return 'w-[60%]';
+	if (w === 70) return 'w-[70%]';
+	if (w === 80) return 'w-[80%]';
+	if (w === 90) return 'w-[90%]';
+	if (w >= 100) return 'w-[100%]';
+	return 'w-0';
+};
+
 export function DetailSplitPane({ row }: { row: OutputData }) {
 	const [activeTab, setActiveTab] = useState<'reasoning' | 'output'>('reasoning');
 	const [isOverrideOpen, setIsOverrideOpen] = useState(false);
@@ -254,8 +270,7 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 										</div>
 										<div className="detail-split-pane__breakdown-bar-wrapper h-1 w-full overflow-hidden rounded-full bg-[var(--surface-2)]">
 											<div
-												className={`detail-split-pane__breakdown-bar-fill h-full ${bgColor}`}
-												style={{ width: `${(score / 10) * 100}%` }}
+												className={`detail-split-pane__breakdown-bar-fill h-full ${bgColor} ${getWidthClass(score)}`}
 											/>
 										</div>
 									</div>
@@ -284,11 +299,11 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 							onClick={() => setActiveTab('reasoning')}
 							variant="ghost"
 							size="sm"
-							className="detail-split-pane__tab detail-split-pane__tab--reasoning rounded-none border-b-2 px-4 py-2 t-h6 transition-colors"
-							style={{
-								borderColor: activeTab === 'reasoning' ? 'var(--accent)' : 'transparent',
-								color: activeTab === 'reasoning' ? 'var(--accent)' : 'var(--ink-2)',
-							}}
+							className={`detail-split-pane__tab detail-split-pane__tab--reasoning rounded-none border-b-2 px-4 py-2 t-h6 transition-colors ${
+								activeTab === 'reasoning'
+									? 'border-[var(--accent)] text-[var(--accent)]'
+									: 'border-transparent text-[var(--ink-2)]'
+							}`}
 						>
 							<span className="detail-split-pane__tab-inner flex items-center gap-2">
 								<Brain size={16} /> Review Summary
@@ -298,11 +313,11 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 							onClick={() => setActiveTab('output')}
 							variant="ghost"
 							size="sm"
-							className="detail-split-pane__tab detail-split-pane__tab--output rounded-none border-b-2 px-4 py-2 t-h6 transition-colors"
-							style={{
-								borderColor: activeTab === 'output' ? 'var(--info)' : 'transparent',
-								color: activeTab === 'output' ? 'var(--info)' : 'var(--ink-2)',
-							}}
+							className={`detail-split-pane__tab detail-split-pane__tab--output rounded-none border-b-2 px-4 py-2 t-h6 transition-colors ${
+								activeTab === 'output'
+									? 'border-[var(--info)] text-[var(--info)]'
+									: 'border-transparent text-[var(--ink-2)]'
+							}`}
 						>
 							<span className="detail-split-pane__tab-inner flex items-center gap-2">
 								<Database size={16} /> Inspect Raw Output
@@ -326,10 +341,7 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 								</div>
 							</div>
 						) : (
-							<div
-								className="detail-split-pane__raw-output absolute inset-0 flex flex-col gap-3 overflow-hidden"
-								style={{ background: 'var(--surface)' }}
-							>
+							<div className="detail-split-pane__raw-output absolute inset-0 flex flex-col gap-3 overflow-hidden bg-[var(--surface)]">
 								<div className="detail-split-pane__raw-output-header cell relative flex flex-col gap-2 p-4 pr-14">
 									<CopyButton text={row.output} />
 									<p className="detail-split-pane__raw-output-label meta">Raw model output</p>

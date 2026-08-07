@@ -79,14 +79,11 @@ export function PromptConsoleActions({
 									key={runState}
 									variant="secondary"
 									size="xs"
-									className="prompt-input-zone__output-state capitalize shadow-[0_8px_20px_rgba(148,163,184,0.1),inset_0_1px_0_rgba(255,255,255,0.26)]"
-									style={{
-										borderColor: isActive ? 'rgba(4, 120, 87, 0.7)' : 'rgba(255, 255, 255, 0.5)',
-										background: isActive
-											? 'linear-gradient(145deg, rgba(52, 211, 153, 0.16) 0%, rgba(255, 255, 255, 0.22) 100%)'
-											: 'linear-gradient(145deg, rgba(255, 255, 255, 0.34) 0%, rgba(255, 255, 255, 0.18) 100%)',
-										color: isActive ? 'var(--accent)' : 'var(--ink)',
-									}}
+									className={`prompt-input-zone__output-state capitalize shadow-[0_8px_20px_rgba(148,163,184,0.1),inset_0_1px_0_rgba(255,255,255,0.26)] ${
+										isActive
+											? 'border-[rgba(4,120,87,0.7)] bg-[linear-gradient(145deg,rgba(52,211,153,0.16)_0%,rgba(255,255,255,0.22)_100%)] text-[var(--accent)]'
+											: 'border-[rgba(255,255,255,0.5)] bg-[linear-gradient(145deg,rgba(255,255,255,0.34)_0%,rgba(255,255,255,0.18)_100%)] text-[var(--ink)]'
+									}`}
 									aria-pressed={isActive}
 									disabled
 								>
@@ -147,18 +144,13 @@ export function PromptConsoleActions({
 					) : null}
 
 					<div
-						className="prompt-input-zone__output-notice rounded-[var(--radius)] border px-3 py-2"
-						style={{
-							borderColor: activeRunState === 'failed' ? 'var(--error)' : 'var(--line)',
-							background: activeRunState === 'failed' ? 'var(--error-soft)' : 'var(--surface)',
-						}}
+						className={`prompt-input-zone__output-notice rounded-[var(--radius)] border px-3 py-2 ${
+							activeRunState === 'failed'
+								? 'border-[var(--error)] bg-[var(--error-soft)] text-[var(--error)]'
+								: 'border-[var(--line)] bg-[var(--surface)] text-[var(--ink-3)]'
+						}`}
 					>
-						<p
-							className="prompt-input-zone__output-notice-text t-small"
-							style={{
-								color: activeRunState === 'failed' ? 'var(--error)' : 'var(--ink-3)',
-							}}
-						>
+						<p className="prompt-input-zone__output-notice-text t-small">
 							{getErrorMessage(submitError) ?? runNotice}
 						</p>
 					</div>

@@ -45,15 +45,7 @@ export function ResultsDashboard({
 			{hasPersistedResults ? (
 				<section className="app__stats grid grid-cols-1 gap-6 md:grid-cols-3">
 					<div className="stat-card card flex items-center gap-4 p-6 transition-transform hover:-translate-y-1">
-						<div
-							className="stat-card__avatar avatar flex items-center justify-center"
-							style={{
-								width: '56px',
-								height: '56px',
-								background: 'var(--surface-2)',
-								color: 'var(--accent)',
-							}}
-						>
+						<div className="stat-card__avatar avatar flex items-center justify-center w-14 h-14 bg-[var(--surface-2)] text-[var(--accent)]">
 							<ListChecks size={28} />
 						</div>
 						<div className="stat-card__content">
@@ -62,37 +54,19 @@ export function ResultsDashboard({
 						</div>
 					</div>
 					<div className="stat-card card flex items-center gap-4 p-6 transition-transform hover:-translate-y-1">
-						<div
-							className="stat-card__avatar avatar flex items-center justify-center"
-							style={{
-								width: '56px',
-								height: '56px',
-								background: 'var(--surface-2)',
-								color: 'var(--success)',
-							}}
-						>
+						<div className="stat-card__avatar avatar flex items-center justify-center w-14 h-14 bg-[var(--surface-2)] text-[var(--success)]">
 							<Activity size={28} />
 						</div>
 						<div className="stat-card__content">
 							<p className="stat-card__label meta mb-1">Average Score</p>
 							<p className="stat-card__value t-h2 font-mono">
 								{averageScore}{' '}
-								<span className="stat-card__value-max t-h4" style={{ color: 'var(--ink-3)' }}>
-									/ 40
-								</span>
+								<span className="stat-card__value-max t-h4 text-[var(--ink-3)]">/ 40</span>
 							</p>
 						</div>
 					</div>
 					<div className="stat-card card flex items-center gap-4 p-6 transition-transform hover:-translate-y-1">
-						<div
-							className="stat-card__avatar avatar flex items-center justify-center"
-							style={{
-								width: '56px',
-								height: '56px',
-								background: 'var(--surface-2)',
-								color: 'var(--warning)',
-							}}
-						>
+						<div className="stat-card__avatar avatar flex items-center justify-center w-14 h-14 bg-[var(--surface-2)] text-[var(--warning)]">
 							<Brain size={28} />
 						</div>
 						<div className="stat-card__content">
@@ -106,7 +80,7 @@ export function ResultsDashboard({
 			<section className="app__results flex flex-col gap-8 mt-4">
 				{hasPersistedResults ? (
 					<h2 className="app__results-title t-h2 flex items-center gap-3">
-						<Activity size={32} style={{ color: 'var(--accent)' }} />
+						<Activity size={32} className="text-[var(--accent)]" />
 						Evaluation Results
 					</h2>
 				) : null}
@@ -168,14 +142,11 @@ export function ResultsDashboard({
 													key={row.test_case.scenario}
 													onClick={() => setSelectedScenarioIndex(index)}
 													variant="secondary"
-													className="results-dashboard__scenario-item flex h-auto flex-col gap-2 rounded-[var(--radius)] border p-3 text-left transition-all"
-													style={{
-														borderColor: isActive ? 'var(--accent)' : 'var(--line)',
-														background: isActive ? 'var(--accent-soft)' : 'var(--surface)',
-														boxShadow: isActive
-															? '0 10px 24px rgba(4, 120, 87, 0.12)'
-															: '0 6px 18px rgba(148, 163, 184, 0.08)',
-													}}
+													className={`results-dashboard__scenario-item flex h-auto flex-col gap-2 rounded-[var(--radius)] border p-3 text-left transition-all ${
+														isActive
+															? 'border-[var(--accent)] bg-[var(--accent-soft)] shadow-[0_10px_24px_rgba(4,120,87,0.12)]'
+															: 'border-[var(--line)] bg-[var(--surface)] shadow-[0_6px_18px_rgba(148,163,184,0.08)]'
+													}`}
 													aria-pressed={isActive}
 												>
 													<div className="results-dashboard__scenario-item-top flex items-start justify-between gap-3">

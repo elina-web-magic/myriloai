@@ -84,7 +84,7 @@ export function ConsoleSidebar() {
 					isZoneCollapsed ? 'w-20' : 'w-auto'
 				} lg:translate-x-0 ${isMobileConsoleOpen ? 'translate-x-0' : 'translate-x-full'}`}
 			>
-				<div className="flex h-full w-full flex-col bg-[var(--surface)] glass p-4 overflow-y-auto">
+				<div className="console-zone__wrapper flex h-full w-full flex-col bg-[var(--surface)] glass p-4 overflow-y-auto">
 					<div
 						className={`console-zone__header flex mb-4 transition-all ${isZoneCollapsed ? 'lg:justify-center justify-start' : 'justify-start'}`}
 					>
