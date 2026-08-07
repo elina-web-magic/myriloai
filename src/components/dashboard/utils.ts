@@ -27,13 +27,13 @@ export interface DimensionAvg {
 	avg: number;
 }
 
-export function getDimensionFill(avg: number): string {
+export const getDimensionFill = (avg: number): string => {
 	if (avg >= 8) return '#10b981';
 	if (avg >= 5) return '#f59e0b';
 	return '#ef4444';
-}
+};
 
-export function buildDimensionData(reportData: DashboardResult[]) {
+export const buildDimensionData = (reportData: DashboardResult[]) => {
 	if (reportData.length === 0) return [];
 
 	const totals: Record<string, { sum: number; count: number }> = {};
@@ -54,4 +54,4 @@ export function buildDimensionData(reportData: DashboardResult[]) {
 			fill: getDimensionFill(avg),
 		};
 	});
-}
+};

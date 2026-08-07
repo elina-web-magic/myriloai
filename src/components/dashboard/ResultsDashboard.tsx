@@ -14,13 +14,13 @@ export type OutputData = DashboardResult;
 
 import { getScoreColor } from './utils';
 
-export function ResultsDashboard({
+export const ResultsDashboard = ({
 	reportData,
 	dataSource,
 }: {
 	reportData: OutputData[];
 	dataSource: 'demo' | 'live';
-}) {
+}) => {
 	const [selectedScenarioIndex, setSelectedScenarioIndex] = useState(0);
 
 	const totalTests = reportData.length;
@@ -192,4 +192,4 @@ export function ResultsDashboard({
 			</section>
 		</>
 	);
-}
+};

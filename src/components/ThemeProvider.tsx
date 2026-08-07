@@ -27,19 +27,19 @@ type ThemeContextValue = {
 const STORAGE_KEY = 'myrilo-theme';
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function getSystemTheme(): Theme {
+const getSystemTheme = (): Theme => {
 	if (typeof window === 'undefined') {
 		return 'dark';
 	}
 
 	return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-}
+};
 
-export function ThemeProvider({
+export const ThemeProvider = ({
 	children,
 	defaultTheme = 'dark',
 	enableSystem = false,
-}: ThemeProviderProps) {
+}: ThemeProviderProps) => {
 	const [resolvedTheme, setResolvedTheme] = useState<Theme>(defaultTheme);
 
 	useEffect(() => {
@@ -114,9 +114,9 @@ export function ThemeProvider({
 	);
 
 	return <ThemeContext.Provider value={contextValue}>{children}</ThemeContext.Provider>;
-}
+};
 
-export function useTheme() {
+export const useTheme = () => {
 	const contextValue = useContext(ThemeContext);
 
 	if (!contextValue) {
@@ -124,4 +124,4 @@ export function useTheme() {
 	}
 
 	return contextValue;
-}
+};

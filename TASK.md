@@ -441,7 +441,7 @@
 
 ##### 8.Structure.4 Arrow Functions
 
-1. ⬜️ Replace all `function` declarations inside app code and component helpers with arrow function equivalents
+1. ✅ Replace all `function` declarations inside app code and component helpers with arrow function equivalents
 
 ##### 8.Structure.5 Types & Interfaces Extraction
 

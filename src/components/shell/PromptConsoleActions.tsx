@@ -26,7 +26,7 @@ export interface PromptConsoleActionsProps {
 	} | null;
 }
 
-export function PromptConsoleActions({
+export const PromptConsoleActions = ({
 	isZoneCollapsed,
 	runStates,
 	activeRunState,
@@ -35,7 +35,7 @@ export function PromptConsoleActions({
 	runNotice,
 	submitError,
 	lastResponseMeta,
-}: PromptConsoleActionsProps) {
+}: PromptConsoleActionsProps) => {
 	return (
 		<div className="prompt-input-zone__header-actions flex min-w-full flex-col gap-3">
 			{!isZoneCollapsed && (
@@ -151,4 +151,4 @@ export function PromptConsoleActions({
 			)}
 		</div>
 	);
-}
+};

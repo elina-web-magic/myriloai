@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { runStateMeta, runStates, usePromptStore } from '@/lib/store/prompt-store';
 import { PromptConsoleActions } from './PromptConsoleActions';
 
-export function ConsoleSidebar() {
+export const ConsoleSidebar = () => {
 	const isZoneCollapsed = usePromptStore((state) => state.isZoneCollapsed);
 	const setIsZoneCollapsed = usePromptStore((state) => state.setIsZoneCollapsed);
 	const activeRunState = usePromptStore((state) => state.activeRunState);
@@ -74,4 +74,4 @@ export function ConsoleSidebar() {
 			</aside>
 		</>
 	);
-}
+};

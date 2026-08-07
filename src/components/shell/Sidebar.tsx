@@ -8,7 +8,7 @@ import { useTheme } from '@/components/ThemeProvider';
 import { Button } from '@/components/ui/button';
 import { usePromptStore } from '@/lib/store/prompt-store';
 
-export function Sidebar() {
+export const Sidebar = () => {
 	const { resolvedTheme, setTheme } = useTheme();
 	const [isCollapsed, setIsCollapsed] = useState(true);
 
@@ -104,4 +104,4 @@ export function Sidebar() {
 			</aside>
 		</>
 	);
-}
+};

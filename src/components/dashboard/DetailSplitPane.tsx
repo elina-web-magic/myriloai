@@ -50,7 +50,7 @@ const CopyButton = ({ text }: { text: string }) => {
 
 import { getScoreColor, getWidthClass } from './utils';
 
-export function DetailSplitPane({ row }: { row: OutputData }) {
+export const DetailSplitPane = ({ row }: { row: OutputData }) => {
 	const [activeTab, setActiveTab] = useState<'reasoning' | 'output'>('reasoning');
 	const [isOverrideOpen, setIsOverrideOpen] = useState(false);
 	const [overrideScore, setOverrideScore] = useState<number | ''>(row.total_score);
@@ -341,4 +341,4 @@ export function DetailSplitPane({ row }: { row: OutputData }) {
 			</div>
 		</div>
 	);
-}
+};

@@ -41,7 +41,7 @@ interface PromptSurfaceProps {
 	setProjectInstructions: (value: string) => void;
 }
 
-export function PromptSurface({
+export const PromptSurface = ({
 	isZoneCollapsed,
 	prompt,
 	setPrompt,
@@ -63,7 +63,7 @@ export function PromptSurface({
 	mockScenarioOptions,
 	projectInstructions,
 	setProjectInstructions,
-}: PromptSurfaceProps) {
+}: PromptSurfaceProps) => {
 	if (isZoneCollapsed) {
 		return (
 			<div className="prompt-input-zone__collapsed cell flex flex-col gap-2 p-4">
@@ -268,4 +268,4 @@ export function PromptSurface({
 			</GlassCard>
 		</div>
 	);
-}
+};

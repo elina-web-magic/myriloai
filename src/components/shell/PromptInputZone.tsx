@@ -30,7 +30,7 @@ const mockScenarioOptions = [
 	description: string;
 }>;
 
-export function PromptInputZone() {
+export const PromptInputZone = () => {
 	const [projectInstructions, setProjectInstructions] = useState(
 		'Score the answer against the rubric, surface tradeoffs clearly, and keep the reasoning concise.'
 	);
@@ -99,4 +99,4 @@ export function PromptInputZone() {
 			/>
 		</div>
 	);
-}
+};

@@ -14,7 +14,7 @@ type DashboardDataState = {
 	source: 'demo' | 'live';
 };
 
-function getStringRecord(value: JsonValue): Record<string, string> {
+const getStringRecord = (value: JsonValue): Record<string, string> => {
 	if (value === null || typeof value !== 'object' || Array.isArray(value)) {
 		return {};
 	}
@@ -25,9 +25,9 @@ function getStringRecord(value: JsonValue): Record<string, string> {
 	);
 
 	return Object.fromEntries(stringEntries);
-}
+};
 
-function getNumberRecord(value: JsonValue): Record<string, number> {
+const getNumberRecord = (value: JsonValue): Record<string, number> => {
 	if (value === null || typeof value !== 'object' || Array.isArray(value)) {
 		return {};
 	}
@@ -38,17 +38,17 @@ function getNumberRecord(value: JsonValue): Record<string, number> {
 	);
 
 	return Object.fromEntries(numberEntries);
-}
+};
 
-function getStringArray(value: JsonValue): string[] {
+const getStringArray = (value: JsonValue): string[] => {
 	if (!Array.isArray(value)) {
 		return [];
 	}
 
 	return value.filter((entryValue): entryValue is string => typeof entryValue === 'string');
-}
+};
 
-async function getDashboardReportData(): Promise<DashboardDataState> {
+const getDashboardReportData = async (): Promise<DashboardDataState> => {
 	if (isMockModeEnabled()) {
 		return getDashboardMockState();
 	}
@@ -89,9 +89,9 @@ async function getDashboardReportData(): Promise<DashboardDataState> {
 		),
 		source: 'live',
 	};
-}
+};
 
-export default async function Home() {
+const Home = async () => {
 	const { reportData, source } = await getDashboardReportData();
 
 	return (
@@ -103,4 +103,5 @@ export default async function Home() {
 			<ConsoleSidebar />
 		</AppShell>
 	);
-}
+};
+export default Home;

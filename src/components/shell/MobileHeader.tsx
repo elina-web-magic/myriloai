@@ -6,7 +6,7 @@ import logoSvg from '@/app/myrilo-ai-logo.svg';
 import { Button } from '@/components/ui/button';
 import { usePromptStore } from '@/lib/store/prompt-store';
 
-export function MobileHeader() {
+export const MobileHeader = () => {
 	const isMobileSidebarOpen = usePromptStore((state) => state.isMobileSidebarOpen);
 	const setIsMobileSidebarOpen = usePromptStore((state) => state.setIsMobileSidebarOpen);
 
@@ -50,4 +50,4 @@ export function MobileHeader() {
 			</Button>
 		</header>
 	);
-}
+};

@@ -34,7 +34,7 @@ const CustomTooltip = ({
 	);
 };
 
-export function ScoreChart({ reportData }: { reportData: DashboardResult[] }) {
+export const ScoreChart = ({ reportData }: { reportData: DashboardResult[] }) => {
 	const data = buildDimensionData(reportData);
 
 	if (data.length === 0) return null;
@@ -85,4 +85,4 @@ export function ScoreChart({ reportData }: { reportData: DashboardResult[] }) {
 			</ResponsiveContainer>
 		</div>
 	);
-}
+};
